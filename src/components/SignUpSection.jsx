@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import SignUpPopup from "./SignUpPopup";
 import { useSelector, useDispatch } from "react-redux";
 import { changeSignupEmail } from "../store/slices/SignupDataSlice";
+import SignupBg from "../assets/signupbg.jpg";
 
 function SignUpSection() {
     const { t } = useTranslation();
@@ -27,7 +28,7 @@ function SignUpSection() {
     }
 
     return (
-        <div id="sign-up" className="px-[16px] bg-[url(https://img.freepik.com/free-photo/smart-microchip-background-motherboard-closeup-technology-remix_53876-110820.jpg?t=st=1732003789~exp=1732007389~hmac=58ba1de0529d45ba69a6b7dfe4df774f4c8ca9fee3ad334bab81a26d1cc58aee&w=996)] bg-no-repeat bg-cover h-[281.6px] grid place-content-center">
+        <div id="sign-up" className={`px-[16px] bg-[url(${SignupBg})] bg-no-repeat bg-cover h-[281.6px] grid place-content-center`}>
             <div className="text-white font-semibold text-[24px] md:text-[32px] mb-[18px] text-center">Đăng ký dùng thử miễn phí ngay</div>
             <form className="md:flex md:justify-center px-[16px] md:px-0" onSubmit={handleSubmitEmail}>
                 <input name='email' type="email" className="rounded-lg px-[12px] pt-[11.2px] pb-[12.8px] mr-[16px] outline-none border-none w-full md:w-[374px]" placeholder="Email" onChange={handleChangeEmail} value={email}/>
