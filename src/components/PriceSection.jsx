@@ -4,6 +4,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import ContactPopup from "./ContactPopup";
+import PriceBg from "../assets/pricebg.png";
 
 function PriceSection() {
     const { t } = useTranslation();
@@ -71,7 +72,7 @@ function PriceSection() {
                 <div className="w-full">
                     <div className={`grid grid-cols-1 md:grid-cols-3 gap-20 mx-[16px]`}>
                         {
-                            packages.map( (onePackage, index) => <div key={index} className={`p-[16px] rounded-xl col-span-1 bg-[url('src/assets/pricebg.png')] shadow-lg`}>
+                            packages.map( (onePackage, index) => <div key={index} className={`p-[16px] rounded-xl col-span-1 bg-[url(${PriceBg})] shadow-lg`}>
                                 <div className={`w-full px-[16px] pt-[24px] font-semibold text-[18px] text-center`}>
                                     {onePackage.name}
                                 </div>
