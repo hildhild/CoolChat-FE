@@ -54,7 +54,7 @@ const WelcomeSection = () => {
   }, []);
 
   return (
-    <section className="welcome-section relative lg:bg-gradient-to-r bg-gradient-to-b from-[#4880FF] to-[#a3dffa] text-white pt-20 pb-16 flex items-center justify-center overflow-hidden">
+    <section className="welcome-section relative lg:bg-gradient-to-r bg-gradient-to-b from-[#4880FF] to-[#a3dffa] text-white mt-16 pt-20 pb-16 flex items-center justify-center overflow-hidden">
       <div className="w-full max-w-[1140px] mx-auto px-8 flex flex-col lg:flex-row items-center justify-between overflow-hidden mb-8 z-30">
         <div className="content max-w-lg text-center lg:text-left flex-1 z-20 lg:mr-8 overflow-hidden mb-16">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 mt-24 ">

@@ -10,7 +10,7 @@ import Welcome3 from "../../assets/welcome3.svg";
 const ImageCarousel = () => {
   const settings = {
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 3000,
     dots: true,
     infinite: true,
     speed: 500,
@@ -39,7 +39,7 @@ const ImageCarousel = () => {
   return (
     <div className="relative w-full max-w-screen-lg mx-auto mt-4 lg:mt-8">
       <Slider {...settings}>
-        <div className="focus:outline-none">
+        <div className="focus:outline-none mb-4">
           <img
             src={Welcome1}
             alt="Image 1"
