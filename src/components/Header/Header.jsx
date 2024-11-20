@@ -2,20 +2,30 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Logo from "../../assets/CoolChat Logo/2.png";
 import { useNavigate } from "react-router-dom";
-import "hamburgers/dist/hamburgers.css"; // Import Hamburgers CSS
-import "./Header.css"; // Import your custom CSS
+import "hamburgers/dist/hamburgers.css"; 
+import "./Header.css"; 
+import SelectLanguage from "../SelectLanguage";
 
 const Header = () => {
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const [showMenu, setShowMenu] = useState('');
+  const [showMenu1, setShowMenu1] = useState('');
 
   const menuItems = [
-    { name: "Tính năng", href: "feature-section" },
-    { name: "Biểu phí", href: "pricing-section" },
-    { name: "Giới thiệu", href: "/" },
-    { name: "Hướng dẫn", href: "/" },
+    { name: t('feature'), href: "feature-section" },
+    { name: t('price'), href: "pricing-section" },
+    { name: t('about_us'), href: "/" },
+    { name: t('guide'), href: "/" },
   ];
+
+  const handleSelectLangClick = () => {
+    setShowMenu('login')
+  }
+  const handleSelectLangClick1 = () => {
+    setShowMenu1('login')
+  }
 
   return (
     <header className="bg-white fixed top-0 w-full z-50 shadow-md font-nunito">
@@ -48,22 +58,26 @@ const Header = () => {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center space-x-8 ml-8">
+          <SelectLanguage handleClick={handleSelectLangClick} showMenu={showMenu} setShowMenu={setShowMenu} />
           <a
             href="https://agridential-dashboard.australiablockchain.au/login"
             className="text-base text-gray-700 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300 text-center"
           >
-            Đăng nhập
+            {t('login')}
           </a>
           <a
             href="https://agridential-dashboard.australiablockchain.au/register"
             className="bg-[#4880FF] text-white py-2 px-5 font-semibold rounded-lg hover:-translate-y-1 transition duration-300 whitespace-nowrap"
           >
-            Đăng ký
+            {t('signup')}
           </a>
         </div>
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center justify-center">
+          <div className="mr-6">
+            <SelectLanguage handleClick={handleSelectLangClick1} showMenu={showMenu1} setShowMenu={setShowMenu1} />
+          </div>
           <button
             className={`hamburger hamburger--spin ${
               isMobileMenuOpen ? "is-active" : ""
@@ -110,13 +124,13 @@ const Header = () => {
               className="block text-lg text-gray-800 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Đăng nhập
+              {t('login')}
             </a>
             <a
               href="https://agridential-dashboard.australiablockchain.au/register"
               className="block text-lg text-white font-semibold bg-[#4880FF] hover:bg-[#7fab3d] hover:-translate-y-1 transition duration-300 py-3 rounded mt-4 mx-auto w-full text-center"
             >
-              Đăng ký
+              {t('signup')}
             </a>
           </nav>
         </div>

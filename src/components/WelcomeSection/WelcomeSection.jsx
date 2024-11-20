@@ -1,33 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import ContactPopup from "../ContactPopup";
 import ImageCarousel from "./ImageCarousel";
-import ConsultPopup from "../ConsultPopup";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRightLong } from "@fortawesome/free-solid-svg-icons"; // Import icon
+import { useTranslation } from "react-i18next";
 
 const WelcomeSection = () => {
-  // const navigate = useNavigate();
-
-  const [isConsultPopupOpen, setIsConsultPopupOpen] = useState(false); // State to manage popup visibility
-  // const [isContactPopupOpen, setIsContactPopupOpen] = useState(false); // State to manage ContactPopup visibility
-
-  const handleConsultClick = () => {
-    setIsConsultPopupOpen(true);
-  };
-
-  const handleCloseConsultPopup = () => {
-    setIsConsultPopupOpen(false);
-  };
-
-  // const handleContactClick = () => {
-  //     setIsContactPopupOpen(true);
-  // };
-
-  // const handleCloseContactPopup = () => {
-  //     setIsContactPopupOpen(false);
-  // };
-
+  const {t} = useTranslation();
   const handleFreeTrialClick = () => {
     window.location.href =
       "https://agridential-dashboard.australiablockchain.au/register"; // Redirect to the specified URL
@@ -62,14 +38,14 @@ const WelcomeSection = () => {
             <div>MAKE IT COOL</div>
           </h1>
           <p className="text-base sm:text-lg mb-6">
-            Hệ thống hỗ trợ doanh nghiệp tạo Chatbot chăm sóc khách hàng
+            {t('web_des')}
           </p>
           <div className="signup-form max-w-lg lg:max-w-md text-center lg:text-left flex-1 z-20 lg:mr-8 xl:pb-[24px]">
             <button
               className="btn-signup rounded-lg text-[#4880FF] bg-[#fff] hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto mb-4 align-middle"
               onClick={handleFreeTrialClick}
             >
-              Dùng thử miễn phí
+              {t('free_trial')}
             </button>
           </div>
         </div>
@@ -77,10 +53,6 @@ const WelcomeSection = () => {
           <ImageCarousel />
         </div>
       </div>
-      <ConsultPopup
-        isOpen={isConsultPopupOpen}
-        onClose={handleCloseConsultPopup}
-      />
       <svg
         className="absolute bottom-0 left-0 w-full z-10"
         xmlns="http://www.w3.org/2000/svg"

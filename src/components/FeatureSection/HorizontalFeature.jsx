@@ -1,51 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight, faRobot, faBook, faDollarSign } from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
-const tabData = [
-  {
-    title: "Sẵn sàng",
-    icon: faRobot,
-    content: "AI Chatbot tự động trả lời tin nhắn khách hàng 24/7 trên Fanpage và Web",
-    bgColor: "bg-amber-500",
-    iconColor: "text-amber-500",
-  },
-  {
-    title: "Linh hoạt",
-    icon: faBook,
-    content: "Không cần tạo kịch bản sẵn theo motip, chủ động trả lời tin nhắn theo ngữ cảnh",
-    bgColor: "bg-cyan-500",
-    iconColor: "text-cyan-500",
-  },
-  {
-    title: "Đa dạng",
-    icon: faDollarSign,
-    content: "Hỗ trợ dùng thử trải nghiệm miễn phí một năm. Ngoài ra, có thể đăng ký các gói tháng, quý, năm.",
-    bgColor: "bg-[#7fab3d]",
-    iconColor: "text-[#7fab3d]",
-  },
-  // {
-  //   title: "Task management",
-  //   icon: faTasks,
-  //   content: "Use Trello to track, manage, complete, and bring tasks together like the pieces of a puzzle, and make your team’s projects a cohesive success every time.",
-  //   bgColor: "bg-yellow-500",
-  //   iconColor: "text-yellow-500",
-  // },
-  // {
-  //   title: "Brainstorming",
-  //   icon: faLightbulb,
-  //   content: "Unleash your team’s creativity and keep ideas visible, collaborative, and actionable.",
-  //   bgColor: "bg-rose-400",
-  //   iconColor: "text-rose-400",
-  // },
-  // {
-  //   title: "Resource hub",
-  //   icon: faBook,
-  //   content: "Save time with a well-designed hub that helps teams find information easily and quickly.",
-  //   bgColor: "bg-teal-600",
-  //   iconColor: "text-teal-600",
-  // },
-];
+
 const NextArrow = (props) => {
   const { onClick } = props;
   return (
@@ -73,6 +31,52 @@ const PrevArrow = (props) => {
 const HorizontalTabs = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [slidesToShow, setSlidesToShow] = useState(3);
+  const {t} = useTranslation();
+
+  const tabData = [
+    {
+      title: t('fea1'),
+      icon: faRobot,
+      content: t('fea1_des'),
+      bgColor: "bg-amber-500",
+      iconColor: "text-amber-500",
+    },
+    {
+      title: t('fea2'),
+      icon: faBook,
+      content: t('fea2_des'),
+      bgColor: "bg-cyan-500",
+      iconColor: "text-cyan-500",
+    },
+    {
+      title: t('fea3'),
+      icon: faDollarSign,
+      content: t('fea3_des'),
+      bgColor: "bg-[#7fab3d]",
+      iconColor: "text-[#7fab3d]",
+    },
+    // {
+    //   title: "Task management",
+    //   icon: faTasks,
+    //   content: "Use Trello to track, manage, complete, and bring tasks together like the pieces of a puzzle, and make your team’s projects a cohesive success every time.",
+    //   bgColor: "bg-yellow-500",
+    //   iconColor: "text-yellow-500",
+    // },
+    // {
+    //   title: "Brainstorming",
+    //   icon: faLightbulb,
+    //   content: "Unleash your team’s creativity and keep ideas visible, collaborative, and actionable.",
+    //   bgColor: "bg-rose-400",
+    //   iconColor: "text-rose-400",
+    // },
+    // {
+    //   title: "Resource hub",
+    //   icon: faBook,
+    //   content: "Save time with a well-designed hub that helps teams find information easily and quickly.",
+    //   bgColor: "bg-teal-600",
+    //   iconColor: "text-teal-600",
+    // },
+  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -115,7 +119,7 @@ const HorizontalTabs = () => {
         {/* Container chứa nội dung */}
         <div className="flex-1 text-left md:text-left">
           <h2 className="text-2xl md:text-[32px] font-semibold text-gray-800 mb-6">
-            Các tính năng nổi bật
+            {t('outstanding_features')}
           </h2>
         </div>
 
