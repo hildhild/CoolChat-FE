@@ -13,7 +13,7 @@ function Footer() {
             <div className='w-full max-w-[1140px] px-[32px] my-[0px] mx-[auto]'>
                 <div className="md:flex border-b-[0.8px] border-[#8787875c]">
                     <div className="md:w-[400px] px-[32px] sm:px-[16px] py-[32px] grid grid-cols-1 sm:grid-cols-3 md:block w-full">
-                        <div className="w-[60%] flex sm:justify-center pr-[30%] sm:pr-0">
+                        <div className="w-full md:w-[60%] flex sm:justify-center pr-[30%] sm:pr-0">
                             <img className="object-contain mb-[16px] sm:pr-[20px] md:pr-0" src={Logo} alt="auschain"/>
                         </div>
                         <div className="text-[14px] text-[#9a9a9a] mb-[16px]"><strong>{t('address1_1')}</strong> {t('address1_2')}</div>
