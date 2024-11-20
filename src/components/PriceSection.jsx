@@ -47,7 +47,7 @@ function PriceSection() {
     return (
         <section id="pricing-section" className="py-[64px]">
             <div className="max-w-[1140px] px-[16px] mt-[32px] mx-[auto] relative">
-                <div className="text-[24px] md:text-[32px] min-[1140px]:h-[78px] flex items-end font-semibold justify-start py-[10px] mb-[32px] px-[16px]">{t('Các gói dịch vụ hỗ trợ')}</div>
+                <div className="text-[24px] md:text-[32px] min-[1140px]:h-[78px] flex items-end font-semibold justify-start py-[10px] mb-[32px] px-[16px]">{t('supported_price')}</div>
                 <div className="w-full">
                     <div className={`grid grid-cols-1 md:grid-cols-3 gap-20 mx-[16px]`}>
                         {
