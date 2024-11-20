@@ -71,8 +71,8 @@ const Header = () => {
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             style={{
-              width: "15px",
-              height: "15px",
+              width: "25px",
+              height: "25px",
               padding: "0",
               display: "flex",
               justifyContent: "center",

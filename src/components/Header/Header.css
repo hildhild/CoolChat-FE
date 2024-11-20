@@ -2,16 +2,16 @@
 .hamburger-inner::before,
 .hamburger-inner::after {
     background-color: rgb(109, 106, 106) !important;
-    width: 15px;
+    width: 25px;
     height: 2.5px;
 }
 
 .hamburger-inner::before {
-    top: -5px;
+    top: -8px;
 }
 
 .hamburger-inner::after {
-    bottom: -6px;
+    bottom: -8px;
 }
 
 .hamburger:hover .hamburger-inner,
@@ -19,7 +19,7 @@
 .hamburger:hover .hamburger-inner::after {
     background-color: rgb(109, 106, 106)  !important;
     opacity: 0.8;
-    width: 15px;
+    width: 25px;
     height: 2.5px;
 }
   
