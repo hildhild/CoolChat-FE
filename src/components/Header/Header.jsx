@@ -128,7 +128,7 @@ const Header = () => {
             </a>
             <a
               href="https://agridential-dashboard.australiablockchain.au/register"
-              className="block text-lg text-white font-semibold bg-[#4880FF] hover:bg-[#7fab3d] hover:-translate-y-1 transition duration-300 py-3 rounded mt-4 mx-auto w-full text-center"
+              className="block text-lg text-white font-semibold bg-[#4880FF] hover:-translate-y-1 transition duration-300 py-3 rounded mt-4 mx-auto w-full text-center"
             >
               {t('signup')}
             </a>

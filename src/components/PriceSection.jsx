@@ -52,7 +52,8 @@ function PriceSection() {
                     <div className={`grid grid-cols-1 md:grid-cols-3 gap-20 mx-[16px]`}>
                         {
                             packages.map( (onePackage, index) => <div key={index} className={`p-[16px] rounded-xl col-span-1 bg-[url(${PriceBg})] shadow-lg`}>
-                                <div className={`w-full px-[16px] pt-[24px] font-semibold text-[18px] text-center`}>
+                                <div className={`w-full px-[16px] pt-[24px] font-semibol
+                                    d text-[18px] text-center`}>
                                     {onePackage.name}
                                 </div>
                                 <div className={`w-full px-[16px] py-[24px] text-center text-[#4880FF] border-b-[2px] border-gray-200`}>

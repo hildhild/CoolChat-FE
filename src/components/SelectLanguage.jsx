@@ -48,7 +48,7 @@ export default function SelectLanguage({
       <DropdownMenu aria-label='countries' variant='flat' className='bg-white border-[1px] border-gray-200 rounded-lg'>
         {countries.map((country) => {
           return (
-            <DropdownItem key={country.id} textValue={country.name} className='hover:!rounded-md hover:bg-slate-200'>
+            <DropdownItem key={country.id} textValue={country.name} className='hover:!rounded-md text-gray-800 duration-300 hover:bg-[#4880FF] hover:text-white'>
               <button
                 className='flex gap-2 items-center w-full hover:!rounded-md'
                 onClick={() => handleChangeFlat(country)}
