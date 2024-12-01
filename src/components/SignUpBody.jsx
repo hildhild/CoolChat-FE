@@ -56,7 +56,7 @@ function SignUpBody() {
                 <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
                 <div className="w-[500px] text-center">Trang web được bảo vệ bởi reCAPTCHA và <a href="https://policies.google.com/privacy" className="underline">Chính sách quyền riêng tư</a> và <a href="https://policies.google.com/terms" className="underline">Điều khoản dịch vụ</a> của Google được áp dụng.</div>
             </div>
-            <GoogleReCaptchaProvider reCaptchaKey="6LcLJI8qAAAAAPaiPsLhXcr_d3U8vSk_RmdPWk8w">
+            <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}>
                 <GoogleReCaptcha
                     className="google-recaptcha-custom-class"
                     onVerify={setTokenFunc}
