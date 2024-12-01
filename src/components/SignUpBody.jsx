@@ -1,18 +1,17 @@
-import { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import Logo from "@/assets/CoolChat Logo/2.png"
+import Logo from "@/assets/CoolChat Logo/2.png";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
-import GoogleRecaptcha from "@/assets/googleRecaptcha.png"
-import { GoogleReCaptchaProvider, GoogleReCaptcha } from "react-google-recaptcha-v3";
+import GoogleRecaptcha from "@/assets/googleRecaptcha.png";
+import ReCAPTCHA from "react-google-recaptcha";
+
 
 function SignUpBody() {
     const { t } = useTranslation();
-    const [token, setToken] = useState("");
-    const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
-    
-    const setTokenFunc = (getToken) => {
-        setToken(getToken);
-    };
+    const recaptchaRef = React.useRef();
+    const onSubmitWithReCAPTCHA = async () => {
+        const token = await recaptchaRef.current.executeAsync();
+    }
 
     return (
         <div className="w-full h-full lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
@@ -49,20 +48,19 @@ function SignUpBody() {
                     </div>
                 </div>
                 <div className="text-[#676C70] mb-7 text-sm">Bằng cách đăng ký, bạn đồng ý với các <i className="text-coolchat underline">điều khoản dịch vụ</i> và <i className="text-coolchat underline">thông báo về quyền riêng tư</i> của chúng tôi.</div>
-                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7">TẠO TÀI KHOẢN MỚI</Button>
+                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7" onClick={onSubmitWithReCAPTCHA}>TẠO TÀI KHOẢN MỚI</Button>
                 <div className="mb-7 text-center w-full"><i>Đã có tài khoản hoặc gmail?</i> <i className="text-coolchat underline">Đăng nhập</i></div>
             </div>
             <div className="w-full flex flex-col items-center mb-[20px]">
                 <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
                 <div className="w-[500px] text-center">Trang web được bảo vệ bởi reCAPTCHA và <a href="https://policies.google.com/privacy" className="underline">Chính sách quyền riêng tư</a> và <a href="https://policies.google.com/terms" className="underline">Điều khoản dịch vụ</a> của Google được áp dụng.</div>
             </div>
-            <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}>
-                <GoogleReCaptcha
-                    className="google-recaptcha-custom-class"
-                    onVerify={setTokenFunc}
-                    refreshReCaptcha={refreshReCaptcha}
-                />
-            </GoogleReCaptchaProvider>
+            <ReCAPTCHA
+                ref={recaptchaRef}
+                size="invisible"
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+            />
+
         </div>
     );
 }
