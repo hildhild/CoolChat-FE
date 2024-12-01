@@ -66,7 +66,7 @@ const Header = () => {
             {t('login')}
           </a>
           <a
-            href="https://agridential-dashboard.australiablockchain.au/register"
+            href="/sign-up"
             className="bg-[#4880FF] text-white py-2 px-5 font-semibold rounded-lg hover:-translate-y-1 transition duration-300 whitespace-nowrap"
           >
             {t('signup')}
@@ -127,7 +127,7 @@ const Header = () => {
               {t('login')}
             </a>
             <a
-              href="https://agridential-dashboard.australiablockchain.au/register"
+              href="/sign-up"
               className="block text-lg text-white font-semibold bg-[#4880FF] hover:-translate-y-1 transition duration-300 py-3 rounded mt-4 mx-auto w-full text-center"
             >
               {t('signup')}

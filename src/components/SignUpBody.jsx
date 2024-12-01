@@ -1,85 +1,68 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import Logo from "@/assets/CoolChat Logo/2.png"
+import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import GoogleRecaptcha from "@/assets/googleRecaptcha.png"
+import { GoogleReCaptchaProvider, GoogleReCaptcha } from "react-google-recaptcha-v3";
 
 function SignUpBody() {
     const { t } = useTranslation();
-    const [email, setEmail] = useState(localStorage.getItem('email'));
-    const [ showmore, setShowmore ] = useState(false);
-
-    const handleChangeEmail = (e) => {
-        setEmail(e.target.value);
-    }
+    const [token, setToken] = useState("");
+    const [refreshReCaptcha, setRefreshReCaptcha] = useState(false);
+    
+    const setTokenFunc = (getToken) => {
+        setToken(getToken);
+    };
 
     return (
-        <div className="w-full h-full lg:px-[256px] py-[64px] px-[32px] md:px-[64px] bg-[url(/signupBackground.jpg)]  bg-no-repeat bg-cover">
-            <div className="mt-[0px] mx-[auto] h-full bg-white rounded-3xl">
-                <div className="p-[24px] md:p-[32px]">
-                    <div className="w-full flex justify-center mb-[20px]">
-                        <img src="/auschainLogo.png" className="w-[50%] sm:w-[30%]"></img>
-                    </div>
-                    <div className="text-[24px] md:text-[32px] font-semibold md:py-[16px]">{t('Sign up')}</div>
-                    <div className="pb-[16px]">{t('Blockchain based credential platform, designed to track and certify information in the agricultural value chain.')}</div>
-                    <form>
-                        <div>
-                            <div className='font-semibold mb-[10px] flex'>Role<div className='text-[red] ml-[5px]'>*</div></div>
-                            <select className='mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl outline-[#80AB3D]' name="email">
-                                <option value="someOption">Producer</option>
-                                <option value="otherOption">Collaborator</option>
-                            </select>
-                        </div>
-                        <div>
-                            <div className='font-semibold mb-[10px] flex'>Email<div className='text-[red] ml-[5px]'>*</div></div>
-                            <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="email" name="email" placeholder={t('Enter your email')} value={email} onChange={handleChangeEmail}/>
-                        </div>
-                        <div className="grid grid-cols-2">
-                            <div className="mr-[8px]">
-                                <div className='font-semibold mb-[10px] flex'>{t('First name')}<div className='text-[red] ml-[5px]'>*</div></div>
-                                <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="fname" placeholder={t("Enter your first name")}/>
-                            </div>
-                            <div>
-                                <div className='font-semibold mb-[10px] flex'>{t('Last name')}<div className='text-[red] ml-[5px]'>*</div></div>
-                                <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="lname" placeholder={t("Enter your last name")}/>
-                            </div>
-                        </div>
-                        <div>
-                            <div className='font-semibold mb-[10px] flex'>{t('Phone')}<div className='text-[red] ml-[5px]'>*</div></div>
-                            <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="phone" placeholder={t("Enter your phone")}/>
-                        </div>
-                        {
-                            showmore
-                            &&
-                            <div>
-                                <div>
-                                    <div className='font-semibold mb-[10px] flex'>{t('Date of birth')}</div>
-                                    <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="date" name="dateOfBirth" placeholder={t("Enter your date of birth")}/>
-                                </div>
-                                <div>
-                                    <div className='font-semibold mb-[10px] flex'>{t('Address')} 1</div>
-                                    <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="address1" placeholder={t("Enter your address")}/>
-                                </div>
-                                <div>
-                                    <div className='font-semibold mb-[10px] flex'>{t('Address')} 2</div>
-                                    <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="address2" placeholder={t("Enter your other address")}/>
-                                </div>
-                                <div>
-                                    <div className='font-semibold mb-[10px] flex'>{t('Province')}</div>
-                                    <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="province" placeholder={t("Enter your province")}/>
-                                </div>
-                                <div>
-                                    <div className='font-semibold mb-[10px] flex'>{t('City')}</div>
-                                    <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="city" placeholder={t("Enter your city")}/>
-                                </div>
-                                <div>
-                                    <div className='font-semibold mb-[10px] flex'>{t('Invitation code')}</div>
-                                    <input className='outline-[#80AB3D] mb-[20px] w-full border-[1px] border-solid px-[15px] py-[10px] rounded-xl' type="text" name="invitationCode" placeholder={t("Enter the invitation code")}/>
-                                </div>
-                            </div>
-                        }
-                        <button className="transition ease-in-out delay-100 duration-200 mb-[10px] text-[#80AB3D] font-semibold hover:text-[#65a30d]" onClick={(e) => {e.preventDefault(); setShowmore(showmore?false:true);}}>{showmore ? t('Show less...') : t("Show more...")}</button>
-                        <input type="submit" className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 bg-[#80AB3D] text-white w-full cursor-pointer py-[10px] rounded-xl md:my-[20px] hover:bg-[#65a30d] flex items-center justify-center" value={t('Send request')}/>
-                    </form>
-                </div>
+        <div className="w-full h-full lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
+            
+            <div className="w-full flex justify-center mb-[20px]">
+                <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
             </div>
+            <div className="text-center w-full text-md">Tạo chatbot cực dễ với CoolChat.vn</div>
+            <div className="text-center w-full text-md">- nền tảng mạnh mẽ tạo ra trải nghiệm đối thoại thông minh cho mọi doanh nghiệp.</div>
+            <div className="flex justify-center items-center py-8">
+                <div className="h-[1px] w-60 bg-slate-200"></div>
+                <div className="text-coolchat font-semibold text-lg mx-5">ĐĂNG KÝ</div>
+                <div className="h-[1px] w-60 bg-slate-200"></div>
+            </div>
+            <div className="px-40 mb-24">
+                <div className="grid grid-cols-2 gap-5">
+                    <div>
+                        <Input type="text" variant="bordered" label="Tên" placeholder="Nhập tên" className="mb-5"/>
+                        <Input type="email" variant="bordered" label="Email" placeholder="Nhập email công ty" className="mb-5"/>
+                        <Input type="password" variant="bordered" label="Mật khẩu" placeholder="Nhập mật khẩu" className="mb-5"/>
+                    </div>
+                    <div>
+                        <Input type="text" variant="bordered" label="Số điện thoại" placeholder="Nhập số điện thoại" className="mb-5"/>
+                        <Select 
+                            variant="bordered"
+                            label="Vai trò" 
+                            className="mb-5" 
+                            placeholder="Chọn vai trò"
+                        >
+                            <SelectItem key="admin">Quản trị viên</SelectItem>
+                            <SelectItem key="csr">Nhân viên chăm sóc khách hàng</SelectItem>
+                        </Select>
+                        <Input type="password" variant="bordered" label="Xác nhận mật khẩu" placeholder="Nhập lại mật khẩu" className="mb-7"/>
+                    </div>
+                </div>
+                <div className="text-[#676C70] mb-7 text-sm">Bằng cách đăng ký, bạn đồng ý với các <i className="text-coolchat underline">điều khoản dịch vụ</i> và <i className="text-coolchat underline">thông báo về quyền riêng tư</i> của chúng tôi.</div>
+                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7">TẠO TÀI KHOẢN MỚI</Button>
+                <div className="mb-7 text-center w-full"><i>Đã có tài khoản hoặc gmail?</i> <i className="text-coolchat underline">Đăng nhập</i></div>
+            </div>
+            <div className="w-full flex flex-col items-center mb-[20px]">
+                <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
+                <div className="w-[500px] text-center">Trang web được bảo vệ bởi reCAPTCHA và <a href="https://policies.google.com/privacy" className="underline">Chính sách quyền riêng tư</a> và <a href="https://policies.google.com/terms" className="underline">Điều khoản dịch vụ</a> của Google được áp dụng.</div>
+            </div>
+            <GoogleReCaptchaProvider reCaptchaKey="6LcLJI8qAAAAAPaiPsLhXcr_d3U8vSk_RmdPWk8w">
+                <GoogleReCaptcha
+                    className="google-recaptcha-custom-class"
+                    onVerify={setTokenFunc}
+                    refreshReCaptcha={refreshReCaptcha}
+                />
+            </GoogleReCaptchaProvider>
         </div>
     );
 }

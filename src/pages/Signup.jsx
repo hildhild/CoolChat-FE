@@ -1,9 +1,13 @@
-import { SignUpBody } from "../components";
+import { SignUpBody, HeaderAuthen, Footer } from "../components";
 
 function Signup() {
 
     return (
-        <SignUpBody/>
+        <>
+            <HeaderAuthen/>
+            <SignUpBody/>
+            <Footer/>
+        </>
     );
 }
 

@@ -1,0 +1,30 @@
+.hamburger-inner,
+.hamburger-inner::before,
+.hamburger-inner::after {
+    background-color: rgb(109, 106, 106) !important;
+    width: 25px;
+    height: 2.5px;
+}
+
+.hamburger-inner::before {
+    top: -8px;
+}
+
+.hamburger-inner::after {
+    bottom: -8px;
+}
+
+.hamburger:hover .hamburger-inner,
+.hamburger:hover .hamburger-inner::before,
+.hamburger:hover .hamburger-inner::after {
+    background-color: rgb(109, 106, 106)  !important;
+    opacity: 0.8;
+    width: 25px;
+    height: 2.5px;
+}
+  
+.hamburger-box {
+    width: 100%; /* Ensure full width */
+    height: 100%; /* Ensure full height */
+}
+  

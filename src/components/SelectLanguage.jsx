@@ -45,12 +45,12 @@ export default function SelectLanguage({
           <div className='h-7 w-10 rounded-[3px] bg-slate-400 animate-pulse' />
         )}
       </DropdownTrigger>
-      <DropdownMenu aria-label='countries' variant='flat' className='bg-white border-[1px] border-gray-200 rounded-lg'>
+      <DropdownMenu aria-label='countries' variant='flat'>
         {countries.map((country) => {
           return (
-            <DropdownItem key={country.id} textValue={country.name} className='hover:!rounded-md text-gray-800 duration-300 hover:bg-[#4880FF] hover:text-white'>
+            <DropdownItem key={country.id} textValue={country.name} className='!rounded-md text-gray-800 duration-300 hover:!bg-coolchat hover:!text-white'>
               <button
-                className='flex gap-2 items-center w-full hover:!rounded-md'
+                className='flex gap-2 items-center w-full'
                 onClick={() => handleChangeFlat(country)}
               >
                 <Avatar
