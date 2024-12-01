@@ -28,7 +28,15 @@ function SignUpSection() {
     }
 
     return (
-        <div id="sign-up" className={`px-[16px] bg-[url(${'@/assets/signupbg.jpg' || SignupBg})] bg-no-repeat bg-cover h-[281.6px] grid place-content-center`}>
+        <div 
+            id="sign-up" 
+            className={`px-[16px] h-[281.6px] grid place-content-center`}
+            style={{
+                backgroundImage: `url(${SignupBg})`,
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+            }}
+        >
             <div className="text-white font-semibold text-[24px] md:text-[32px] mb-[18px] text-center">{t('signup_free_trial_now')}</div>
             <form className="md:flex md:justify-center px-[16px] md:px-0" onSubmit={handleSubmitEmail}>
                 <input name='email' type="email" className="rounded-lg px-[12px] pt-[11.2px] pb-[12.8px] mr-[16px] outline-none border-none w-full md:w-[374px]" placeholder="Email" onChange={handleChangeEmail} value={email}/>
