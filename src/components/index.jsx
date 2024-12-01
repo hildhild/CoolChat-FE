@@ -4,5 +4,6 @@ import LandingContent from "./LandingContent";
 import Footer from "./Footer";
 import DefaultLayout from "./DefaultLayout";
 import SignUpBody from "./SignUpBody";
+import LoginBody from "./LoginBody";
 
-export {Header, HeaderAuthen, LandingContent, Footer, DefaultLayout, SignUpBody};
+export {Header, HeaderAuthen, LandingContent, Footer, DefaultLayout, SignUpBody, LoginBody};

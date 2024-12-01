@@ -6,7 +6,7 @@ const WelcomeSection = () => {
   const {t} = useTranslation();
   const handleFreeTrialClick = () => {
     window.location.href =
-      "https://agridential-dashboard.australiablockchain.au/register"; // Redirect to the specified URL
+      "/sign-up"; // Redirect to the specified URL
   };
 
   useEffect(() => {

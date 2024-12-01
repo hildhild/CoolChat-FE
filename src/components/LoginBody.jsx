@@ -4,15 +4,13 @@ import Logo from "@/assets/CoolChat Logo/2.png";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import GoogleRecaptcha from "@/assets/googleRecaptcha.png";
 import ReCAPTCHA from "react-google-recaptcha";
-import { useSelector } from "react-redux";
+import LogoOnly from "@/assets/CoolChat Logo/3.png"
+import GoogleLogo from "@/assets/googleLogo.png"
 
 
-function SignUpBody() {
+function LoginBody() {
     const { t } = useTranslation();
     const recaptchaRef = React.useRef();
-    const email = useSelector(state => state.signupData.signupData.email);
-
-
     const onSubmitWithReCAPTCHA = async () => {
         const token = await recaptchaRef.current.executeAsync();
     }
@@ -27,34 +25,41 @@ function SignUpBody() {
             <div className="text-center w-full text-md">- nền tảng mạnh mẽ tạo ra trải nghiệm đối thoại thông minh cho mọi doanh nghiệp.</div>
             <div className="flex justify-center items-center py-8">
                 <div className="h-[1px] w-60 bg-slate-200"></div>
-                <div className="text-coolchat font-semibold text-lg mx-5">ĐĂNG KÝ</div>
+                <div className="text-coolchat font-semibold text-lg mx-5">ĐĂNG NHẬP</div>
                 <div className="h-[1px] w-60 bg-slate-200"></div>
+            </div>
+            <div className="px-40">
+            <Button className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold mb-7" onClick={onSubmitWithReCAPTCHA}>
+                <img src={GoogleLogo} className="w-7 h-7"></img>
+                Tiếp tục với Google (Admin)
+            </Button>
+            <Button className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold" onClick={onSubmitWithReCAPTCHA}>
+                <img src={GoogleLogo} className="w-7 h-7"></img>
+                Tiếp tục với Google (Nhân viên CSKH)
+            </Button>
+            </div>
+            <div className="flex justify-center items-center pt-7">
+                <div className="h-[1px] w-60 bg-slate-200"></div>
+                <div className="text-lg mx-5">HOẶC</div>
+                <div className="h-[1px] w-60 bg-slate-200"></div>
+            </div>
+            <div className="flex w-full justify-center items-center py-5">
+                <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
+                <div className="font-semibold">Nhập tài khoản của bạn</div>
             </div>
             <div className="px-40 mb-24">
                 <div className="grid grid-cols-2 gap-5">
                     <div>
-                        <Input type="text" variant="bordered" label="Tên" placeholder="Nhập tên" className="mb-5"/>
-                        <Input type="email" variant="bordered" label="Email" placeholder="Nhập email công ty" className="mb-5" value={email}/>
-                        <Input type="password" variant="bordered" label="Mật khẩu" placeholder="Nhập mật khẩu" className="mb-5"/>
+                        <Input type="email" variant="bordered" label="Email" placeholder="Nhập email" className="mb-5"/>
                     </div>
                     <div>
-                        <Input type="text" variant="bordered" label="Số điện thoại" placeholder="Nhập số điện thoại" className="mb-5"/>
-                        <Select 
-                            variant="bordered"
-                            label="Vai trò" 
-                            className="mb-5" 
-                            placeholder="Chọn vai trò"
-                        >
-                            <SelectItem key="admin">Quản trị viên</SelectItem>
-                            <SelectItem key="csr">Nhân viên chăm sóc khách hàng</SelectItem>
-                        </Select>
-                        <Input type="password" variant="bordered" label="Xác nhận mật khẩu" placeholder="Nhập lại mật khẩu" className="mb-7"/>
+                        <Input type="password" variant="bordered" label="Xác nhận mật khẩu" placeholder="Nhập lại mật khẩu" className="mb-5"/>
                     </div>
                 </div>
-                <div className="text-[#676C70] mb-7 text-sm">Bằng cách đăng ký, bạn đồng ý với các <i className="text-coolchat underline">điều khoản dịch vụ</i> và <i className="text-coolchat underline">thông báo về quyền riêng tư</i> của chúng tôi.</div>
-                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7" onClick={onSubmitWithReCAPTCHA}>TẠO TÀI KHOẢN MỚI</Button>
+                <div className="text-[#676C70] mb-7 text-sm text-end w-full"><i className="text-coolchat underline">Quên mật khẩu?</i> </div>
+                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7" onClick={onSubmitWithReCAPTCHA}>ĐĂNG NHẬP</Button>
                 <div className="flex w-full justify-center">
-                    <a href="/login" className="mb-7 text-center w-full"><i>Đã có tài khoản hoặc gmail?</i> <i className="text-coolchat underline">Đăng nhập</i></a>
+                    <a href="/sign-up" className="mb-7 text-center w-full"><i>Chưa có tài khoản hoặc gmail?</i> <i className="text-coolchat underline">Đăng ký</i></a>
                 </div>
             </div>
             <div className="w-full flex flex-col items-center mb-[20px]">
@@ -71,6 +76,6 @@ function SignUpBody() {
     );
 }
 
-export default SignUpBody;
+export default LoginBody;
 
 
