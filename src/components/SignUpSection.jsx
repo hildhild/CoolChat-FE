@@ -20,6 +20,7 @@ function SignUpSection() {
         e.preventDefault();
         dispatch(changeSignupEmail(email));
         navigate('/sign-up');
+        window.scrollTo(0, 0);
     }
 
     return (

@@ -2,30 +2,30 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Logo from "../../assets/CoolChat Logo/2.png";
 import { useNavigate } from "react-router-dom";
-import "hamburgers/dist/hamburgers.css"; 
-import "./Header.css"; 
+import "hamburgers/dist/hamburgers.css";
+import "./Header.css";
 import SelectLanguage from "../SelectLanguage";
 
 const Header = () => {
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const [showMenu, setShowMenu] = useState('');
-  const [showMenu1, setShowMenu1] = useState('');
+  const [showMenu, setShowMenu] = useState("");
+  const [showMenu1, setShowMenu1] = useState("");
 
   const menuItems = [
-    { name: t('feature'), href: "feature-section" },
-    { name: t('price'), href: "pricing-section" },
-    { name: t('about_us'), href: "/" },
-    { name: t('guide'), href: "/" },
+    { name: t("feature"), href: "feature-section" },
+    { name: t("price"), href: "pricing-section" },
+    { name: t("about_us"), href: "/" },
+    { name: t("guide"), href: "/" },
   ];
 
   const handleSelectLangClick = () => {
-    setShowMenu('login')
-  }
+    setShowMenu("login");
+  };
   const handleSelectLangClick1 = () => {
-    setShowMenu1('login')
-  }
+    setShowMenu1("login");
+  };
 
   return (
     <header className="bg-white fixed top-0 w-full z-50 shadow-md font-nunito">
@@ -58,25 +58,33 @@ const Header = () => {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center space-x-8 ml-8">
-          <SelectLanguage handleClick={handleSelectLangClick} showMenu={showMenu} setShowMenu={setShowMenu} />
+          <SelectLanguage
+            handleClick={handleSelectLangClick}
+            showMenu={showMenu}
+            setShowMenu={setShowMenu}
+          />
           <a
-            href="https://agridential-dashboard.australiablockchain.au/login"
+            href="/login"
             className="text-base text-gray-700 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300 text-center"
           >
-            {t('login')}
+            {t("login")}
           </a>
           <a
             href="/sign-up"
             className="bg-[#4880FF] text-white py-2 px-5 font-semibold rounded-lg hover:-translate-y-1 transition duration-300 whitespace-nowrap"
           >
-            {t('signup')}
+            {t("signup")}
           </a>
         </div>
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center justify-center">
           <div className="mr-6">
-            <SelectLanguage handleClick={handleSelectLangClick1} showMenu={showMenu1} setShowMenu={setShowMenu1} />
+            <SelectLanguage
+              handleClick={handleSelectLangClick1}
+              showMenu={showMenu1}
+              setShowMenu={setShowMenu1}
+            />
           </div>
           <button
             className={`hamburger hamburger--spin ${
@@ -120,17 +128,17 @@ const Header = () => {
               </button>
             ))}
             <a
-              href="https://agridential-dashboard.australiablockchain.au/login"
+              href="/login"
               className="block text-lg text-gray-800 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {t('login')}
+              {t("login")}
             </a>
             <a
               href="/sign-up"
               className="block text-lg text-white font-semibold bg-[#4880FF] hover:-translate-y-1 transition duration-300 py-3 rounded mt-4 mx-auto w-full text-center"
             >
-              {t('signup')}
+              {t("signup")}
             </a>
           </nav>
         </div>
