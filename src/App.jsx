@@ -14,7 +14,7 @@ function App() {
         <Route path="/chatbot-editting" element={<ChatbotEditting/>}/>
         <Route path="/chat" element={<Chat/>}/>
         <Route path="/report" element={<Report/>}/>
-        <Route path="/subcription" element={<Subscription/>}/>
+        <Route path="/subscription" element={<Subscription/>}/>
         <Route path="/setting" element={<Setting/>}/>
 
       </Routes>

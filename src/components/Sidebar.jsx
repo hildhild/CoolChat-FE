@@ -44,7 +44,7 @@ export const Sidebar = ({isExpanded}) => {
                     </div>
                 </Button>
             </Link>
-            <Link to="/subcription">
+            <Link to="/subscription">
                 <Button className="flex w-full bg-white px-5 h-14">
                     <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
                         <FaRegMoneyBillAlt size={20}/>
@@ -102,7 +102,7 @@ export const Sidebar = ({isExpanded}) => {
                     </div>
                 </Button>
             </Link>
-            <Link to="/subcription">
+            <Link to="/subscription">
                 <Button className="w-full !min-w-0 bg-white h-14 px-2">
                     <div className="flex w-full h-full justify-center items-center !rounded-md">
                         <FaRegMoneyBillAlt size={20}/>
