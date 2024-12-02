@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Logo from "../../assets/CoolChat Logo/2.png";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "hamburgers/dist/hamburgers.css";
 import "./Header.css";
 import SelectLanguage from "../SelectLanguage";
@@ -63,18 +63,18 @@ const Header = () => {
             showMenu={showMenu}
             setShowMenu={setShowMenu}
           />
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="text-base text-gray-700 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300 text-center"
           >
             {t("login")}
-          </a>
-          <a
-            href="/sign-up"
+          </Link>
+          <Link
+            to="/sign-up"
             className="bg-[#4880FF] text-white py-2 px-5 font-semibold rounded-lg hover:-translate-y-1 transition duration-300 whitespace-nowrap"
           >
             {t("signup")}
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -127,19 +127,19 @@ const Header = () => {
                 {item.name}
               </button>
             ))}
-            <a
-              href="/login"
+            <Link
+              to="/login"
               className="block text-lg text-gray-800 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t("login")}
-            </a>
-            <a
-              href="/sign-up"
+            </Link>
+            <Link
+              to="/sign-up"
               className="block text-lg text-white font-semibold bg-[#4880FF] hover:-translate-y-1 transition duration-300 py-3 rounded mt-4 mx-auto w-full text-center"
             >
               {t("signup")}
-            </a>
+            </Link>
           </nav>
         </div>
       )}

@@ -6,6 +6,7 @@ import GoogleRecaptcha from "@/assets/googleRecaptcha.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import LogoOnly from "@/assets/CoolChat Logo/3.png"
 import GoogleLogo from "@/assets/googleLogo.png"
+import { Link } from "react-router-dom";
 
 
 function LoginBody() {
@@ -21,50 +22,52 @@ function LoginBody() {
             <div className="w-full flex justify-center mb-[20px]">
                 <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
             </div>
-            <div className="text-center w-full text-md">Tạo chatbot cực dễ với CoolChat.vn</div>
-            <div className="text-center w-full text-md">- nền tảng mạnh mẽ tạo ra trải nghiệm đối thoại thông minh cho mọi doanh nghiệp.</div>
+            <div className="text-center w-full text-md">{t('authen_text1')}</div>
+            <div className="text-center w-full text-md">- {t('authen_text2')}</div>
             <div className="flex justify-center items-center py-8">
                 <div className="h-[1px] w-60 bg-slate-200"></div>
-                <div className="text-coolchat font-semibold text-lg mx-5">ĐĂNG NHẬP</div>
+                <div className="text-coolchat font-semibold text-lg mx-5 uppercase">{t('login')}</div>
                 <div className="h-[1px] w-60 bg-slate-200"></div>
             </div>
             <div className="px-40">
             <Button className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold mb-7" onClick={onSubmitWithReCAPTCHA}>
                 <img src={GoogleLogo} className="w-7 h-7"></img>
-                Tiếp tục với Google (Admin)
+                {t('continue_with_google_admin')}
             </Button>
             <Button className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold" onClick={onSubmitWithReCAPTCHA}>
                 <img src={GoogleLogo} className="w-7 h-7"></img>
-                Tiếp tục với Google (Nhân viên CSKH)
+                {t('continue_with_google_csr')}
             </Button>
             </div>
             <div className="flex justify-center items-center pt-7">
                 <div className="h-[1px] w-60 bg-slate-200"></div>
-                <div className="text-lg mx-5">HOẶC</div>
+                <div className="text-lg mx-5 uppercase">{t('or')}</div>
                 <div className="h-[1px] w-60 bg-slate-200"></div>
             </div>
             <div className="flex w-full justify-center items-center py-5">
                 <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
-                <div className="font-semibold">Nhập tài khoản của bạn</div>
+                <div className="font-semibold">{t('enter_your_account')}</div>
             </div>
             <div className="px-40 mb-24">
                 <div className="grid grid-cols-2 gap-5">
                     <div>
-                        <Input type="email" variant="bordered" label="Email" placeholder="Nhập email" className="mb-5"/>
+                        <Input type="email" variant="bordered" label="Email" placeholder={t('enter_your_email')} className="mb-5"/>
                     </div>
                     <div>
-                        <Input type="password" variant="bordered" label="Xác nhận mật khẩu" placeholder="Nhập lại mật khẩu" className="mb-5"/>
+                        <Input type="password" variant="bordered" label={t('password')} placeholder={t('enter_your_password')} className="mb-5"/>
                     </div>
                 </div>
-                <div className="text-[#676C70] mb-7 text-sm text-end w-full"><i className="text-coolchat underline">Quên mật khẩu?</i> </div>
-                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7" onClick={onSubmitWithReCAPTCHA}>ĐĂNG NHẬP</Button>
+                <div className="w-full flex justify-end">
+                    <Link to="/forgot-password" className="text-[#676C70] mb-7 text-sm"><i className="text-coolchat underline">{t('forgot_password')}?</i> </Link>
+                </div>
+                <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7 uppercase" onClick={onSubmitWithReCAPTCHA}>{t('login')}</Button>
                 <div className="flex w-full justify-center">
-                    <a href="/sign-up" className="mb-7 text-center w-full"><i>Chưa có tài khoản hoặc gmail?</i> <i className="text-coolchat underline">Đăng ký</i></a>
+                    <Link to="/sign-up" className="mb-7 text-center w-full"><i>{t('no_account')}</i> <i className="text-coolchat underline">{t('signup')}</i></Link>
                 </div>
             </div>
             <div className="w-full flex flex-col items-center mb-[20px]">
                 <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
-                <div className="w-[500px] text-center">Trang web được bảo vệ bởi reCAPTCHA và <a href="https://policies.google.com/privacy" className="underline">Chính sách quyền riêng tư</a> và <a href="https://policies.google.com/terms" className="underline">Điều khoản dịch vụ</a> của Google được áp dụng.</div>
+                <div className="w-[500px] text-center">{t('recaptcha_des1')} <a href="https://policies.google.com/privacy" className="underline">{t('privacy_policy')}</a> {t('and')} <a href="https://policies.google.com/terms" className="underline">{t('terms_of_service')}</a> {t('recaptcha_des2')}</div>
             </div>
             <ReCAPTCHA
                 ref={recaptchaRef}
