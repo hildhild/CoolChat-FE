@@ -1,4 +1,5 @@
-import { DefaultLayout, LandingContent } from "../components";
+import { LandingContent } from "../components";
+import { DefaultLayout } from "../layouts";
 
 function Landing() {
 
