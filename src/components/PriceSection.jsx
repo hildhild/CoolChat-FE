@@ -55,7 +55,12 @@ function PriceSection() {
             {packages.map((onePackage, index) => (
               <div
                 key={index}
-                className={`p-[16px] rounded-xl col-span-1 bg-[url(${PriceBg})] shadow-lg`}
+                className={`p-[16px] rounded-xl col-span-1 shadow-lg`}
+                style={{
+                  backgroundImage: `url(${PriceBg})`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "cover",
+                }}
               >
                 <div
                   className={`w-full px-[16px] pt-[24px] font-semibol
