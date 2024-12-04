@@ -6,14 +6,16 @@ import GoogleRecaptcha from "@/assets/googleRecaptcha.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import LogoOnly from "@/assets/CoolChat Logo/3.png"
 import GoogleLogo from "@/assets/googleLogo.png"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 function LoginBody() {
     const { t } = useTranslation();
     const recaptchaRef = React.useRef();
+    const navigate = useNavigate();
     const onSubmitWithReCAPTCHA = async () => {
         const token = await recaptchaRef.current.executeAsync();
+        navigate('../chatbot-training');
     }
 
     return (
