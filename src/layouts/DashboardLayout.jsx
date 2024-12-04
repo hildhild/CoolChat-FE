@@ -9,7 +9,7 @@ function DashboardLayout({ children, page }) {
   return (
     <div className="flex">
       <Sidebar isExpanded={isExpanded} page={page}/>
-      <div className="flex-grow relative">
+      <div className="flex-grow relative h-[100vh] overflow-y-scroll">
         <DashboardHeader isExpanded={isExpanded} setIsExpanded={setIsExpanded}/>
         {children}
         <DashboardFooter />
