@@ -5,7 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import "hamburgers/dist/hamburgers.css";
 import "./DashboardHeader.css";
 import SelectLanguage from "../SelectLanguage";
-import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/react";
+import { Avatar, Badge, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from "@nextui-org/react";
+import { FaBell } from "react-icons/fa";
+
 const DashboardHeader = ({isExpanded, setIsExpanded}) => {
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -51,21 +53,35 @@ const DashboardHeader = ({isExpanded, setIsExpanded}) => {
         </button>
 
         {/* Actions */}
-        <div className="flex gap-5 justify-end items-center">
+        <div className="flex gap-7 justify-end items-center">
           <SelectLanguage
             handleClick={handleSelectLangClick}
             showMenu={showMenu}
             setShowMenu={setShowMenu}
           />
+          <Badge content="99+" shape="circle" color="danger">
+            <Button
+              radius="full"
+              isIconOnly
+              aria-label="more than 99 notifications"
+              variant="light"
+            >
+              <FaBell size={24} className="text-coolchat"/>
+            </Button>
+          </Badge>
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                name="Jason Hughes"
-                size="sm"
-                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              <User   
+                className="cursor-pointer"
+                name="Junior Garcia"
+                description={(
+                  <div href="https://twitter.com/jrgarciadev" size="sm" isExternal className="text-coolchat">
+                    @jrgarciadev
+                  </div>
+                )}
+                avatarProps={{
+                  src: "https://avatars.githubusercontent.com/u/30373425?v=4"
+                }}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
