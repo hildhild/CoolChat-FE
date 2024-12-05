@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export const Sidebar = ({isExpanded, page}) => {
     if (isExpanded) {
         return <div className="w-[270px]">
-            <div className="w-full flex justify-center p-4 mb-7">
+            <div className="w-[270px] flex justify-center p-4 mb-7">
                 <img src={Logo} className="h-10"></img>
             </div>
             <Link to="/chatbot-training">
@@ -143,7 +143,7 @@ export const Sidebar = ({isExpanded, page}) => {
     }
     else {
         return <div className="w-[60px]">
-            <div className="w-full flex justify-center py-4 mb-7">
+            <div className="w-[60px] flex justify-center py-4 mb-7">
                 <img src={LogoOnly} className="h-10"></img>
             </div>
             <Link to="/chatbot-training">
