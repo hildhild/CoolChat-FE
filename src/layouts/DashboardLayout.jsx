@@ -4,16 +4,11 @@ import { Sidebar } from "../components/Sidebar";
 import { useState } from "react";
 
 function DashboardLayout({ children, page }) {
-  const [isExpanded, setIsExpanded] = useState(true);
-
   return (
     <div className="flex">
-      <Sidebar isExpanded={isExpanded} page={page} />
+      <Sidebar page={page} />
       <div className="flex-grow relative h-[100vh] overflow-y-scroll">
-        <DashboardHeader
-          isExpanded={isExpanded}
-          setIsExpanded={setIsExpanded}
-        />
+        <DashboardHeader/>
         {children}
         <DashboardFooter />
       </div>

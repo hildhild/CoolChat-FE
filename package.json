@@ -24,6 +24,8 @@
     "i18next": "^23.16.5",
     "react": "^18.3.1",
     "react-apexcharts": "^1.7.0",
+    "react-code-blocks": "^0.1.6",
+    "react-color": "^2.19.3",
     "react-dom": "^18.3.1",
     "react-google-recaptcha": "^3.1.0",
     "react-google-recaptcha-v3": "^1.10.1",

@@ -7,13 +7,17 @@ import "./DashboardHeader.css";
 import SelectLanguage from "../SelectLanguage";
 import { Avatar, Badge, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from "@nextui-org/react";
 import { FaBell } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleIsExpanded } from "../../store/slices/SidebarSlice";
 
-const DashboardHeader = ({isExpanded, setIsExpanded}) => {
+const DashboardHeader = () => {
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState("");
   const [showMenu1, setShowMenu1] = useState("");
+  const isExpanded = useSelector(state => state.sidebar.isExpanded);
+  const dispatch = useDispatch();
 
   const menuItems = [
     { name: t("feature"), href: "feature-section" },
@@ -37,7 +41,7 @@ const DashboardHeader = ({isExpanded, setIsExpanded}) => {
             isExpanded ? "is-active" : ""
           }`}
           type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={() => dispatch(toggleIsExpanded())}
           style={{
             width: "25px",
             height: "25px",
@@ -86,17 +90,12 @@ const DashboardHeader = ({isExpanded, setIsExpanded}) => {
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem key="profile" className="h-14 gap-2">
-                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">Đăng nhập với:</p>
                 <p className="font-semibold">zoey@example.com</p>
               </DropdownItem>
-              <DropdownItem key="settings">My Settings</DropdownItem>
-              <DropdownItem key="team_settings">Team Settings</DropdownItem>
-              <DropdownItem key="analytics">Analytics</DropdownItem>
-              <DropdownItem key="system">System</DropdownItem>
-              <DropdownItem key="configurations">Configurations</DropdownItem>
-              <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+              <DropdownItem key="settings">Cài đặt</DropdownItem>
               <DropdownItem key="logout" color="danger">
-                Log Out
+                Đăng xuất
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

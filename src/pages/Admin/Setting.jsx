@@ -33,7 +33,10 @@ function Setting() {
           isAccountSetting
           &&
           <div className="bg-white px-5 py-8 rounded-xl mb-8">
-            <Tabs variant="underlined" aria-label="Tabs variants" className="mb-4">
+            <Tabs variant="underlined" aria-label="Tabs variants" className="mb-4" classNames={{
+                cursor: "w-full bg-coolchat",
+                tabContent: "group-data-[selected=true]:text-coolchat"
+              }}>
               <Tab key="profile" title="Cá nhân">
                 <div className="w-full flex justify-center items-center mb-5">
                   <div className="flex flex-col items-center">
@@ -101,7 +104,10 @@ function Setting() {
           isNotificationSetting
           &&
           <div className="bg-white px-5 py-8 rounded-xl">
-            <Tabs variant="underlined" aria-label="Tabs variants" className="mb-4">
+            <Tabs variant="underlined" aria-label="Tabs variants" className="mb-4" classNames={{
+                cursor: "w-full bg-coolchat",
+                tabContent: "group-data-[selected=true]:text-coolchat"
+              }}>
               <Tab key="general" title="Chung">
                 <div className="w-full mb-5 text-sm">
                   Bật nhận thông báo/ cảnh báo qua:

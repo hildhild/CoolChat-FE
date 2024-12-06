@@ -3,8 +3,11 @@ import LogoOnly from "@/assets/CoolChat Logo/3.png"
 import { MdDataUsage, MdOutlineChat, MdLogout  } from "react-icons/md"
 import { FaEdit, FaChartBar, FaRegMoneyBillAlt, FaCog   } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-export const Sidebar = ({isExpanded, page}) => {
+export const Sidebar = ({page}) => {
+    const isExpanded = useSelector(state => state.sidebar.isExpanded);
+
     if (isExpanded) {
         return <div className="w-[270px]">
             <div className="w-[270px] flex justify-center p-4 mb-7">
@@ -147,53 +150,116 @@ export const Sidebar = ({isExpanded, page}) => {
                 <img src={LogoOnly} className="h-10"></img>
             </div>
             <Link to="/chatbot-training">
-                <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
-                    <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                        <MdDataUsage size={20}/>
+                {
+                    page === "chatbot-training"
+                    ?
+                    <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                            <MdDataUsage size={20}/>
+                        </div>
                     </div>
-                </div>
+                    :
+                    <div className="w-full !min-w-0 bg-white h-14 px-2">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md">
+                            <MdDataUsage size={20}/>
+                        </div>
+                    </div>
+                }
+                
             </Link>
             <Link to="/chatbot-editting">
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                    <div className="flex w-full h-full justify-center items-center !rounded-md">
-                        <FaEdit size={20}/>
+                {
+                    page === "chatbot-editting"
+                    ?
+                    <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                            <FaEdit size={20}/>
+                        </div>
                     </div>
-                </div>
+                    :
+                    <div className="w-full !min-w-0 bg-white h-14 px-2">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md">
+                            <FaEdit size={20}/>
+                        </div>
+                    </div>
+                }
             </Link>
             <Link to="/chat">
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                    <div className="flex w-full h-full justify-center items-center !rounded-md">
-                        <MdOutlineChat size={20}/>
+                {
+                    page === "chat"
+                    ?
+                    <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                            <MdOutlineChat size={20}/>
+                        </div>
                     </div>
-                </div>
+                    :
+                    <div className="w-full !min-w-0 bg-white h-14 px-2">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md">
+                            <MdOutlineChat size={20}/>
+                        </div>
+                    </div>
+                }
             </Link>
             <Link to="/report">
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                    <div className="flex w-full h-full justify-center items-center !rounded-md">
-                        <FaChartBar size={20}/>
+                {
+                    page === "report"
+                    ?
+                    <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                            <FaChartBar size={20}/>
+                        </div>
                     </div>
-                </div>
+                    :
+                    <div className="w-full !min-w-0 bg-white h-14 px-2">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md">
+                            <FaChartBar size={20}/>
+                        </div>
+                    </div>
+                }
             </Link>
             <Link to="/subscription">
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                    <div className="flex w-full h-full justify-center items-center !rounded-md">
-                        <FaRegMoneyBillAlt size={20}/>
+            {
+                    page === "subscription"
+                    ?
+                    <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                            <FaRegMoneyBillAlt size={20}/>
+                        </div>
                     </div>
-                </div>
+                    :
+                    <div className="w-full !min-w-0 bg-white h-14 px-2">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md">
+                            <FaRegMoneyBillAlt size={20}/>
+                        </div>
+                    </div>
+                }
             </Link>
             <hr className="w-full my-4"></hr>
             <Link to="/setting">
+                {
+                    page === "setting"
+                    ?
+                    <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                            <FaCog size={20}/>
+                        </div>
+                    </div>
+                    :
+                    <div className="w-full !min-w-0 bg-white h-14 px-2">
+                        <div className="flex w-full h-full justify-center items-center !rounded-md">
+                            <FaCog size={20}/>
+                        </div>
+                    </div>
+                }
+            </Link>
+            <Link to="/">
                 <div className="w-full !min-w-0 bg-white h-14 px-2">
                     <div className="flex w-full h-full justify-center items-center !rounded-md">
-                        <FaCog size={20}/>
+                        <MdLogout size={20}/>
                     </div>
                 </div>
             </Link>
-            <div className="w-full !min-w-0 bg-white h-14 px-2">
-                <div className="flex w-full h-full justify-center items-center !rounded-md">
-                    <MdLogout size={20}/>
-                </div>
-            </div>
         </div>
     }
     
