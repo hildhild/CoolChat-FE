@@ -17,13 +17,33 @@ import {
   Tabs,
   Pagination,
   Chip,
+  Textarea,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
-import { FaUserCircle, FaBook } from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaBook,
+  FaFacebookSquare,
+  FaCode,
+  FaFile,
+  FaEdit,
+  FaFileUpload,
+  FaTrash,
+} from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import { MdOutlineAddPhotoAlternate, MdLabel, MdSearch } from "react-icons/md";
+import {
+  MdOutlineAddPhotoAlternate,
+  MdLabel,
+  MdSearch,
+  MdOutlineCancel,
+  MdOutlineTextSnippet,
+} from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { GiNightSleep } from "react-icons/gi";
+import { CiEdit } from "react-icons/ci";
+import { TbWorld } from "react-icons/tb";
+import { FaFilePdf } from "react-icons/fa6";
 
 function ChatbotTraining() {
   const { t } = useTranslation();
@@ -324,85 +344,192 @@ function ChatbotTraining() {
         {isUpdate && (
           <div className="bg-white px-5 py-8 rounded-xl">
             <Tabs
-              variant="underlined"
-              aria-label="Tabs variants"
+              size="lg"
+              aria-label="integrate"
               className="mb-4"
               classNames={{
                 cursor: "w-full bg-coolchat",
-                tabContent: "group-data-[selected=true]:text-coolchat",
+                tabContent: "group-data-[selected=true]:text-white",
               }}
             >
-              <Tab key="general" title="Chung">
-                <div className="w-full mb-5 text-sm">
-                  Bật nhận thông báo/ cảnh báo qua:
+              <Tab
+                key="file"
+                title={
+                  <div className="flex gap-3 items-center px-5">
+                    <FaFile size={20} />
+                    Tải lên phương tiện
+                  </div>
+                }
+              >
+                <div className="mb-5">Thêm tài liệu của bạn ở đây</div>
+                <div className="flex flex-col justify-center items-center border-2 border-dashed border-coolchat rounded-2xl p-6 mb-5">
+                  <FaFileUpload size={50} className="text-coolchat mb-3" />
+                  <div>Kéo thả các tệp để bắt đầu tải lên</div>
+                  <div className="flex justify-center items-center py-4">
+                    <div className="h-[1px] w-12 bg-slate-200"></div>
+                    <div className="mx-3 uppercase">{t("or")}</div>
+                    <div className="h-[1px] w-12 bg-slate-200"></div>
+                  </div>
+                  <Button variant="bordered" color="primary">
+                    Chọn từ máy tính
+                  </Button>
                 </div>
-                <div className="grid grid-cols-3 mb-8">
+                <div className="text-sm text-neutral-600 mb-5">
+                  Chỉ hỗ trợ .pdf, .doc, .docx và .txt
+                </div>
+                <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <Checkbox defaultSelected radius="sm">
-                      Email
-                    </Checkbox>
+                    <div className="mb-4">Các file vừa upload</div>
+                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                      <div className="flex items-center justify-between gap-5">
+                        <FaFilePdf className="text-[#F15B48]" size={25} />
+                        <div>
+                          <div className="text-sm font-semibold">
+                            document.pdf
+                          </div>
+                          <div className="text-sm text-gray-400">5.3MB</div>
+                        </div>
+                      </div>
+                      <MdOutlineCancel className="text-red-500" size={20} />
+                    </div>
+                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                      <div className="flex items-center justify-between gap-5">
+                        <FaFilePdf className="text-[#F15B48]" size={25} />
+                        <div>
+                          <div className="text-sm font-semibold">
+                            document.pdf
+                          </div>
+                          <div className="text-sm text-gray-400">5.3MB</div>
+                        </div>
+                      </div>
+                      <MdOutlineCancel className="text-red-500" size={20} />
+                    </div>
                   </div>
                   <div>
-                    <Checkbox defaultSelected radius="sm">
-                      Ứng dụng
-                    </Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox defaultSelected radius="sm">
-                      SMS
-                    </Checkbox>
+                    <div className="mb-4">Các file hiện có</div>
+                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                      <div className="flex items-center justify-between gap-5">
+                        <FaFilePdf className="text-[#F15B48]" size={25} />
+                        <div>
+                          <div className="text-sm font-semibold">
+                            document.pdf
+                          </div>
+                          <div className="text-sm text-gray-400">5.3MB</div>
+                        </div>
+                      </div>
+                      <MdOutlineCancel className="text-red-500" size={20} />
+                    </div>
+                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                      <div className="flex items-center justify-between gap-5">
+                        <FaFilePdf className="text-[#F15B48]" size={25} />
+                        <div>
+                          <div className="text-sm font-semibold">
+                            document.pdf
+                          </div>
+                          <div className="text-sm text-gray-400">5.3MB</div>
+                        </div>
+                      </div>
+                      <MdOutlineCancel className="text-red-500" size={20} />
+                    </div>
                   </div>
                 </div>
-                <div className="flex gap-5">
-                  <Button color="danger">HỦY BỎ</Button>
-                  <Button color="success">LƯU</Button>
+                <div className="flex justify-end gap-5 mt-3">
+                  <Button color="default">Hủy</Button>
+                  <Button color="primary">Lưu</Button>
                 </div>
               </Tab>
-              <Tab key="threshold" title="Thiết lập ngưỡng">
-                <div className="grid grid-cols-2 gap-5 mb-3">
-                  <div className="flex justify-center items-center gap-3 mb-5">
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      label="Ngưỡng cảnh báo sử dụng token"
-                      placeholder="Nhập ngưỡng cảnh báo sử dụng token"
-                    />
-                    <Switch
-                      defaultSelected
-                      aria-label="Automatic updates"
-                      size="sm"
-                    />
+              <Tab
+                key="text"
+                title={
+                  <div className="flex gap-3 items-center px-5">
+                    <FaEdit size={20} />
+                    Nhập tri thức
                   </div>
-                  <div className="flex justify-center items-center gap-3 mb-5">
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      label="Ngưỡng bộ nhớ đã dùng"
-                      placeholder="Nhập ngưỡng bộ nhớ đã dùng"
-                    />
-                    <Switch
-                      defaultSelected
-                      aria-label="Automatic updates"
-                      size="sm"
-                    />
+                }
+              >
+                <div className="mb-5">Nhập hướng dẫn cho AI dưới dạng viết tay</div>
+                <Textarea
+                  variant="bordered"
+                  disableAnimation
+                  disableAutosize
+                  className="w-full bg-white rounded-xl mb-4"
+                  classNames={{
+                    input: "resize-y min-h-[120px]",
+                  }}
+                />
+                <div className="mb-3">Các hướng dẫn hiện có (double-tap để đổi tên)</div>
+                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                  <div className="flex items-center justify-between gap-5">
+                    <MdOutlineTextSnippet className="text-yellow-500" size={30} />
+                    <div>
+                      <div className="text-sm font-semibold">
+                        note1
+                      </div>
+                      <div className="text-sm text-gray-400">2590 từ</div>
+                    </div>
                   </div>
-                  <div className="flex justify-center items-center gap-3 mb-5">
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      label="Ngưỡng cảnh báo  lưu lượng truy cập"
-                      placeholder="Nhập ngưỡng cảnh báo  lưu lượng truy cập"
-                    />
-                    <Switch
-                      defaultSelected
-                      aria-label="Automatic updates"
-                      size="sm"
-                    />
+                  <div className="flex gap-3">
+                    <FaEdit size={20}/>
+                    <MdOutlineCancel className="text-red-500" size={20} />
                   </div>
                 </div>
-                <div className="flex gap-5">
-                  <Button color="danger">HỦY BỎ</Button>
-                  <Button color="success">LƯU</Button>
+                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                  <div className="flex items-center justify-between gap-5">
+                    <MdOutlineTextSnippet className="text-yellow-500" size={30} />
+                    <div>
+                      <div className="text-sm font-semibold">
+                        note2
+                      </div>
+                      <div className="text-sm text-gray-400">1097 từ</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <FaEdit size={20}/>
+                    <MdOutlineCancel className="text-red-500" size={20} />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-5 mt-5">
+                  <Button color="default">Hủy</Button>
+                  <Button color="primary">Lưu</Button>
+                </div>
+              </Tab>
+              <Tab
+                key="web"
+                title={
+                  <div className="flex gap-3 items-center px-5">
+                    <TbWorld size={20} />
+                    Nhập tri thức web
+                  </div>
+                }
+              >
+                <div className="mb-5">Nhập các website để AI crawl</div>
+                <div className="grid grid-cols-12 gap-4 mb-10">
+                  <Input type="text" variant="bordered" placeholder="Nhập đường dẫn đến website"className="col-span-10"/>
+                  <Button color="primary" className="col-span-2">Thêm</Button>
+                </div>
+                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                  <div className="flex items-center justify-between gap-5">
+                    <TbWorld className="text-coolchat" size={30} />
+                    <div className="text-sm font-semibold">
+                      coolchat.software
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <FaEdit size={20}/>
+                    <FaTrash className="text-red-500" size={20} />
+                  </div>
+                </div>
+                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
+                  <div className="flex items-center justify-between gap-5">
+                    <TbWorld className="text-coolchat" size={30} />
+                    <div className="text-sm font-semibold">
+                      coolchat.com
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <FaEdit size={20}/>
+                    <FaTrash className="text-red-500" size={20} />
+                  </div>
                 </div>
               </Tab>
             </Tabs>
