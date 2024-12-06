@@ -79,7 +79,7 @@ const DashboardHeader = () => {
                 className="cursor-pointer"
                 name="Junior Garcia"
                 description={(
-                  <div href="https://twitter.com/jrgarciadev" size="sm" isExternal className="text-coolchat">
+                  <div href="https://twitter.com/jrgarciadev" size="sm" className="text-coolchat">
                     @jrgarciadev
                   </div>
                 )}
