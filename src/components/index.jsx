@@ -5,6 +5,7 @@ import Footer from "./Footer";
 import SignUpBody from "./SignUpBody";
 import LoginBody from "./LoginBody";
 import ForgotPasswordBody from "./ForgorPasswordBody";
+import VerifyEmailBody from "./VerifyEmailBody";
 
 export {
   Header,
@@ -14,4 +15,5 @@ export {
   SignUpBody,
   LoginBody,
   ForgotPasswordBody,
+  VerifyEmailBody
 };

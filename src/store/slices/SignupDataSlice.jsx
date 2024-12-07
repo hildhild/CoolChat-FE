@@ -4,12 +4,10 @@ export const SignupDataSlice = createSlice({
     name: "signupData",
     initialState: {
         signupData: {
-            firstName: "",
-            lastName: "",
+            name: "",
             email: "",
-            phoneNumber: "",
-            invitationCode: "",
-            description: "",
+            password: "",
+            password2: "",
         }
     },
     reducers: {

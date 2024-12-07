@@ -9,6 +9,7 @@ import {
   Report,
   Subscription,
   Setting,
+  VerifyEmail
 } from "./pages";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/report" element={<Report />} />
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/setting" element={<Setting />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );

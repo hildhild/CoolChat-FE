@@ -16,7 +16,7 @@ instance.interceptors.request.use(function (config) {
 });
 
 instance.interceptors.response.use(function (response) { //Máy chặn yêu cầu hoặc phản hồi trước khi nó được xử lý => Đây là chặn response
-    return response.data; //trả về response.data
+    return response; //trả về response.data
   }, function (error) {
     let res = {}
     if (error.response){
