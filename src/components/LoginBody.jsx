@@ -34,6 +34,7 @@ function LoginBody() {
             navigate("../chatbot-training");
             toast.success("Đăng nhập thành công");
             dispatch(setToken(res.data.access));
+            localStorage.setItem("token", res.data.access);
           } else {
             console.log(res);
             if (res.data?.email) {

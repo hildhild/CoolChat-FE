@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 
 const instance = axios.create({ //Tạo 1 instance cua axios để có thể tùy chỉnh như timeout, headers,...
     baseURL: import.meta.env.VITE_API_CORE_ENDPOINT
@@ -7,7 +6,7 @@ const instance = axios.create({ //Tạo 1 instance cua axios để có thể tù
 });
 
 instance.interceptors.request.use(function (config) {
-    const token = useSelector((state) => state.user.accessToken);
+    const token = localStorage.token;
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

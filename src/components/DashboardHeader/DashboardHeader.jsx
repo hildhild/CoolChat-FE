@@ -9,6 +9,8 @@ import { Avatar, Badge, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTr
 import { FaBell } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleIsExpanded } from "../../store/slices/SidebarSlice";
+import { toast } from "react-toastify";
+import { setToken } from "../../store/slices/UserSlice";
 
 const DashboardHeader = () => {
   const { t } = useTranslation();
@@ -18,6 +20,13 @@ const DashboardHeader = () => {
   const [showMenu1, setShowMenu1] = useState("");
   const isExpanded = useSelector(state => state.sidebar.isExpanded);
   const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(setToken(""));
+    localStorage.setItem("token", "");
+    navigate("/");
+    toast.success("Đăng xuất thành công");
+  }
 
   const menuItems = [
     { name: t("feature"), href: "feature-section" },
@@ -93,8 +102,8 @@ const DashboardHeader = () => {
                 <p className="font-semibold">Đăng nhập với:</p>
                 <p className="font-semibold">zoey@example.com</p>
               </DropdownItem>
-              <DropdownItem key="settings">Cài đặt</DropdownItem>
-              <DropdownItem key="logout" color="danger">
+              <DropdownItem key="settings" onClick={() => navigate("/setting")}>Cài đặt</DropdownItem>
+              <DropdownItem key="logout" color="danger" onClick={handleLogout}>
                 Đăng xuất
               </DropdownItem>
             </DropdownMenu>

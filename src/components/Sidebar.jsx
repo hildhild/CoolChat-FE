@@ -15,6 +15,7 @@ export const Sidebar = ({page}) => {
 
     const handleLogout = () => {
         dispatch(setToken(""));
+        localStorage.setItem("token", "");
         navigate("/");
         toast.success("Đăng xuất thành công");
     }

@@ -17,10 +17,12 @@ function ForgotPasswordBody() {
 
     const onSubmitWithReCAPTCHA = async () => {
         const token = await recaptchaRef.current.executeAsync();
+        console.log(1, token);
         if (token) {
+            console.log(2, token);
             forgotPasswordApi(email)
               .then((res) => {
-                console.log(res);
+                console.log(5, res);
                 if (res.status === 200) {
                   toast.success("Tài khoản tồn tại, vui lòng kiểm tra hòm thư của bạn để đặt lại mật khẩu.");
                 } else {
