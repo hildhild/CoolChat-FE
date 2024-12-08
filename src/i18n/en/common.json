@@ -51,7 +51,7 @@
     "find_your_account": "Find your account",
     "enter_your_account": "Enter your account",
     "enter_your_email": "Enter your email",
-    "forgot_password_des1": "After you press search, we will verify if the account exists, and if so, a recovery code will be sent to this email.",
+    "forgot_password_des1": "After you press search, we will verify if the account exists, and if so, you will receive an email to reset your account password.",
     "search": "Search",
     "recaptcha_des1": "The site is protected by reCAPTCHA and the Google",
     "recaptcha_des2": "apply.",

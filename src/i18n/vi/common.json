@@ -51,7 +51,7 @@
     "find_your_account": "Tìm tài khoản của bạn",
     "enter_your_account": "Nhập tài khoản của bạn",
     "enter_your_email": "Nhập email của bạn",
-    "forgot_password_des1": "Sau khi bạn nhấn tìm kiếm, chúng tôi sẽ xác minh liệu tài khoản có tồn tại, và nếu có, mã khôi phục sẽ được gửi đến email này.",
+    "forgot_password_des1": "Sau khi bạn nhấn tìm kiếm, chúng tôi sẽ xác minh liệu tài khoản có tồn tại, và nếu có, bạn sẽ nhận được một email để đặt lại mật khẩu cho tài khoản.",
     "search": "Tìm kiếm",
     "recaptcha_des1": "Trang web được bảo vệ bởi reCAPTCHA và",
     "recaptcha_des2": "của Google được áp dụng.",
