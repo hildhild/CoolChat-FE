@@ -4,8 +4,9 @@ import LandingContent from "./LandingContent";
 import Footer from "./Footer";
 import SignUpBody from "./SignUpBody";
 import LoginBody from "./LoginBody";
-import ForgotPasswordBody from "./ForgorPasswordBody";
+import ForgotPasswordBody from "./ForgotPasswordBody";
 import VerifyEmailBody from "./VerifyEmailBody";
+import ResetPasswordBody from "./ResetPasswordBody";
 
 export {
   Header,
@@ -15,5 +16,6 @@ export {
   SignUpBody,
   LoginBody,
   ForgotPasswordBody,
-  VerifyEmailBody
+  VerifyEmailBody,
+  ResetPasswordBody
 };

@@ -5,17 +5,37 @@ import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import GoogleRecaptcha from "@/assets/googleRecaptcha.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useSelector } from "react-redux";
-import LogoOnly from "@/assets/CoolChat Logo/3.png"
+import LogoOnly from "@/assets/CoolChat Logo/3.png";
+import { forgotPasswordApi } from "../services/authApi";
+import { toast } from "react-toastify";
 
 
 function ForgotPasswordBody() {
     const { t } = useTranslation();
     const recaptchaRef = React.useRef();
-    const email = useSelector(state => state.signupData.signupData.email);
-
+    const [email, setEmail] = useState("");
 
     const onSubmitWithReCAPTCHA = async () => {
         const token = await recaptchaRef.current.executeAsync();
+        if (token) {
+            forgotPasswordApi(email)
+              .then((res) => {
+                console.log(res);
+                if (res.status === 200) {
+                  toast.success("Tài khoản tồn tại, vui lòng kiểm tra hòm thư của bạn để đặt lại mật khẩu.");
+                } else {
+                  console.log(res);
+                  if (res.data?.email) {
+                    toast.error("Email: " + res.data.email[0]);
+                  }
+                }
+              })
+              .catch((err) => {
+                console.log(2, err);
+              });
+        } else {
+            toast.error("Lỗi recaptcha");
+        }
     }
 
     return (
@@ -36,7 +56,7 @@ function ForgotPasswordBody() {
                 <div className="font-semibold">{t('find_your_account')}</div>
             </div>
             <div className="px-40 mb-24">
-                <Input type="email" variant="bordered" label="Email" placeholder={t('enter_your_email')} className="mb-5" value={email}/>
+                <Input type="email" variant="bordered" label="Email" placeholder={t('enter_your_email')} className="mb-5" value={email} onChange={(e) => setEmail(e.target.value)}/>
                 <div className="text-[#676C70] mb-7 text-sm">{t('forgot_password_des1')}</div>
                 <Button className="bg-coolchat w-full rounded-full text-white font-semibold mb-7 uppercase" onClick={onSubmitWithReCAPTCHA}>{t('search')}</Button>
             </div>

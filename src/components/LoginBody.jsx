@@ -10,6 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginApi } from "../services/authApi";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setToken } from "../store/slices/UserSlice";
 
 function LoginBody() {
   const { t } = useTranslation();
@@ -20,6 +22,7 @@ function LoginBody() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
 
   const onSubmitWithReCAPTCHA = async () => {
     const token = await recaptchaRef.current.executeAsync();
@@ -31,6 +34,7 @@ function LoginBody() {
             navigate("../chatbot-training");
             toast.success("Đăng nhập thành công");
             localStorage.setItem("token", res.data.access);
+            dispatch(setToken(res.data.access));
           } else {
             console.log(res);
             if (res.data?.email) {

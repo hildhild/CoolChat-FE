@@ -12,6 +12,14 @@ const verifyEmailApi = (token) => {
     return axios.post(`/auth/verify-email/`, {"token": token});
 }
 
-export {signupApi, verifyEmailApi, loginApi}
+const forgotPasswordApi = (email) => {
+    return axios.post(`/auth/password/reset/`, {"email": email});
+}
+
+const resetPasswordApi = (token, new_password, new_password2) => {
+    return axios.post(`/auth/password/reset/confirm/`, {"token": token, "new_password": new_password, "new_password2": new_password2});
+}
+
+export {signupApi, verifyEmailApi, loginApi, forgotPasswordApi, resetPasswordApi}
 
 

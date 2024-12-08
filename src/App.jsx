@@ -9,7 +9,8 @@ import {
   Report,
   Subscription,
   Setting,
-  VerifyEmail
+  VerifyEmail,
+  ResetPassword
 } from "./pages";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/subscription" element={<Subscription />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

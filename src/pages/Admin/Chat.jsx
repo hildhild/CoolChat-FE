@@ -1,8 +1,20 @@
 import { Chip, Input, Pagination, Select, SelectItem, Tab, Tabs } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
 import { MdOutlineChat, MdOutlineSupportAgent, MdSearch  } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Chat() {
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const navigate = useNavigate();
+
+  useEffect(()=> {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, []);
+
   return (
     <DashboardLayout page="chat">
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">

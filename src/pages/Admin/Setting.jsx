@@ -4,12 +4,22 @@ import { FaUserCircle, FaBell } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function Setting() {
   const { t } = useTranslation();
   const [isAccountSetting, setIsAccountSetting] = useState(true);
   const [isNotificationSetting, setIsNotificationSetting] = useState(false);
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const navigate = useNavigate();
+
+  useEffect(()=> {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, []);
 
 
   return (

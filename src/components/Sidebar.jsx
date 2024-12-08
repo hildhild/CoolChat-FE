@@ -2,11 +2,22 @@ import Logo from "@/assets/CoolChat Logo/2.png"
 import LogoOnly from "@/assets/CoolChat Logo/3.png"
 import { MdDataUsage, MdOutlineChat, MdLogout  } from "react-icons/md"
 import { FaEdit, FaChartBar, FaRegMoneyBillAlt, FaCog   } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Button } from "@nextui-org/react";
+import { setToken } from "../store/slices/UserSlice";
+import { toast } from "react-toastify";
 
 export const Sidebar = ({page}) => {
     const isExpanded = useSelector(state => state.sidebar.isExpanded);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        dispatch(setToken(""));
+        navigate("/");
+        toast.success("Đăng xuất thành công");
+    }
 
     if (isExpanded) {
         return <div className="w-[270px]">
@@ -134,14 +145,12 @@ export const Sidebar = ({page}) => {
                     </div>
                 }
             </Link>
-            <Link to="/">
-                <div className="flex w-full bg-white px-5 h-14">
-                    <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
-                        <MdLogout size={20}/>
-                        <div className="ml-4 flex items-center font-semibold">Đăng xuất</div>
-                    </div>
+            <button className="flex w-full bg-white px-5 h-14" onClick={handleLogout}>
+                <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+                    <MdLogout size={20}/>
+                    <div className="ml-4 flex items-center font-semibold">Đăng xuất</div>
                 </div>
-            </Link>
+            </button>
         </div>
     }
     else {
@@ -253,13 +262,11 @@ export const Sidebar = ({page}) => {
                     </div>
                 }
             </Link>
-            <Link to="/">
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                    <div className="flex w-full h-full justify-center items-center !rounded-md">
-                        <MdLogout size={20}/>
-                    </div>
+            <button className="w-full !min-w-0 bg-white h-14 px-2" onClick={handleLogout}>
+                <div className="flex w-full h-full justify-center items-center !rounded-md">
+                    <MdLogout size={20}/>
                 </div>
-            </Link>
+            </button>
         </div>
     }
     

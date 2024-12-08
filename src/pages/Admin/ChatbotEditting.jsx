@@ -11,7 +11,7 @@ import { DashboardLayout } from "../../layouts";
 import { FaCode } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RiComputerLine } from "react-icons/ri";
 import { MdOutlineAddPhotoAlternate, MdWavingHand } from "react-icons/md";
 import { BiBorderRadius } from "react-icons/bi";
@@ -21,11 +21,21 @@ import { FaHandshakeSimple } from "react-icons/fa6";
 import { GrIntegration } from "react-icons/gr";
 import { GiNightSleep } from "react-icons/gi";
 import { CopyBlock, dracula } from "react-code-blocks";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function ChatbotEditting() {
   const { t } = useTranslation();
   const [isChatbotConfig, setIsChatbotConfig] = useState(true);
   const [isIntegrate, setIsIntegrate] = useState(false);
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const navigate = useNavigate();
+
+  useEffect(()=> {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, []);
 
   const embedCode = `
 <script src="https://coolchat.vn/js/chatbox.js"></script>
@@ -34,6 +44,7 @@ function ChatbotEditting() {
   coolchat_box.initial();
 </script>
 `;
+
 
   return (
     <DashboardLayout page="chatbot-editting">

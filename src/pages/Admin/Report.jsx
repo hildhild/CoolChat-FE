@@ -17,8 +17,20 @@ import {
   TableCell,
   getKeyValue,
 } from "@nextui-org/react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Report() {
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const navigate = useNavigate();
+
+  useEffect(()=> {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, []);
+
   const options = {
     chart: {
       id: "basic-bar",
