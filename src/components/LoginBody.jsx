@@ -33,7 +33,6 @@ function LoginBody() {
           if (res.status === 200) {
             navigate("../chatbot-training");
             toast.success("Đăng nhập thành công");
-            localStorage.setItem("token", res.data.access);
             dispatch(setToken(res.data.access));
           } else {
             console.log(res);
