@@ -1,12 +1,14 @@
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer";
+import ChatBox from "../components/ChatBox";
 
 function DefaultLayout({ children }) {
   return (
-    <div className="h-[100vh]">
+    <div className="h-[100vh] relative">
       <Header />
       {children}
       <Footer />
+      <ChatBox/>
     </div>
   );
 }

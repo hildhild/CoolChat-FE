@@ -23,6 +23,7 @@ import { GiNightSleep } from "react-icons/gi";
 import { CopyBlock, dracula } from "react-code-blocks";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ChatBox from "../../components/ChatBox";
 
 function ChatbotEditting() {
   const { t } = useTranslation();
@@ -48,6 +49,7 @@ function ChatbotEditting() {
 
   return (
     <DashboardLayout page="chatbot-editting">
+      <ChatBox/>
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
         <Button
