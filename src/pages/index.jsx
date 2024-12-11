@@ -11,6 +11,8 @@ import {
   Report,
   Subscription,
   Setting,
+  ChatbotComparison,
+  ChatDetail
 } from "./Admin";
 
 export {
@@ -25,5 +27,7 @@ export {
   Subscription,
   Setting,
   VerifyEmail,
-  ResetPassword
+  ResetPassword,
+  ChatbotComparison,
+  ChatDetail
 };

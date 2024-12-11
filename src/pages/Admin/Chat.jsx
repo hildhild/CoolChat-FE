@@ -33,12 +33,12 @@ function Chat() {
             </div>
           }>
             <div className="bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-3">
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9">Our Bachelor of Commerce program is ACBSP-accredited.</div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>
@@ -46,12 +46,12 @@ function Chat() {
                 </div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9">Our Bachelor of Commerce program is ACBSP-accredited.</div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>
@@ -59,12 +59,12 @@ function Chat() {
                 </div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9">Our Bachelor of Commerce program is ACBSP-accredited.</div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>
@@ -72,12 +72,12 @@ function Chat() {
                 </div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9">Our Bachelor of Commerce program is ACBSP-accredited.</div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9">Our Bachelor of Commerce program is ACBSP-accredited.</div>
                 <div className="col-span-1">8:38 AM</div>
@@ -110,7 +110,7 @@ function Chat() {
             </div>
           }>
             <div className="bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-3">
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>
@@ -118,7 +118,7 @@ function Chat() {
                 </div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>
@@ -126,7 +126,7 @@ function Chat() {
                 </div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 border-b-[1px] border-gray-200 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>
@@ -134,7 +134,7 @@ function Chat() {
                 </div>
                 <div className="col-span-1">8:38 AM</div>
               </div>
-              <div className="w-full grid grid-cols-12 p-5">
+              <div onClick={()=> navigate("/chat/1")} className="cursor-pointer w-full grid grid-cols-12 p-5">
                 <div className="col-span-2 font-semibold">Jullu Jalal</div>
                 <div className="col-span-9 flex gap-5">
                   <Chip color="warning">Cần hỗ trợ</Chip>

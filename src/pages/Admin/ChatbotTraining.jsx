@@ -272,7 +272,7 @@ function ChatbotTraining() {
               </div>
             </div>
             <div className="flex gap-5 justify-end mb-5">
-              <Button color="primary">SO SÁNH CHATBOT</Button>
+              <Button color="primary" onClick={()=> navigate("comparison")}>SO SÁNH CHATBOT</Button>
               <Button color="success">LƯU VÀ ĐÀO TẠO</Button>
             </div>
             <div className="font-semibold text-lg">Chú thích</div>
