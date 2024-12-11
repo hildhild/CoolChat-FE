@@ -57,6 +57,7 @@
     "recaptcha_des2": "của Google được áp dụng.",
     "and": "và",
     "or": "hoặc",
+    "continue_with_google_owner": "Tiếp tục với Google (Chủ doanh nghiệp)",
     "continue_with_google_admin": "Tiếp tục với Google (Quản trị viên doanh nghiệp)",
     "continue_with_google_csr": "Tiếp tục với Google (Nhân viên CSKH)",
     "password": "Mật khẩu",
@@ -76,5 +77,18 @@
     "signup_text1": "Bằng cách đăng ký, bạn đồng ý với các",
     "signup_text2": "của chúng tôi.",
     "have_account": "Đã có tài khoản hoặc gmail?",
-    "create_new_account": "Tạo tài khoản mới"
+    "create_new_account": "Tạo tài khoản mới",
+    "create_org": "Tạo doanh nghiệp mới",
+    "join_org": "Tham gia doanh nghiệp",
+    "back": "Quay lại",
+    "org_name": "Tên doanh nghiệp",
+    "enter_org_name": "Nhập tên doanh nghiệp",
+    "des": "Mô tả",
+    "enter_des": "Nhập mô tả",
+    "contact_email": "Email liên hệ",
+    "enter_contact_email": "Nhập email liên hệ",
+    "contact_phone": "Số điện thoại liên hệ",
+    "enter_contact_phone": "Nhập số điện thoại liên hệ",
+    "invitation_code": "Mã giới thiệu",
+    "enter_invitation_code": "Nhập mã giới thiệu"
 }

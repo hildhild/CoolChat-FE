@@ -90,6 +90,13 @@ function LoginBody() {
           onClick={onSubmitWithReCAPTCHA}
         >
           <img src={GoogleLogo} className="w-7 h-7"></img>
+          {t("continue_with_google_owner")}
+        </Button>
+        <Button
+          className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold mb-7"
+          onClick={onSubmitWithReCAPTCHA}
+        >
+          <img src={GoogleLogo} className="w-7 h-7"></img>
           {t("continue_with_google_admin")}
         </Button>
         <Button

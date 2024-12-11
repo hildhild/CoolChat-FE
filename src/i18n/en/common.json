@@ -57,6 +57,7 @@
     "recaptcha_des2": "apply.",
     "and": "and",
     "or": "or",
+    "continue_with_google_owner": "Continue with Google (Enterprise owner)",
     "continue_with_google_admin": "Continue with Google (Enterprise admin)",
     "continue_with_google_csr": "Continue with Google (CSR)",
     "password": "Password",
@@ -76,5 +77,18 @@
     "signup_text1": "By registering, you agree to the",
     "signup_text2": "of us.",
     "have_account": "Already have an account or gmail?",
-    "create_new_account": "Create new account"
+    "create_new_account": "Create new account",
+    "create_org": "Create new enterprise",
+    "join_org": "Join a enterprise",
+    "back": "Back",
+    "org_name": "Enterprise name",
+    "enter_org_name": "Enter enterprise name",
+    "des": "Description",
+    "enter_des": "Enter description",
+    "contact_email": "Contact email",
+    "enter_contact_email": "Enter contact email",
+    "contact_phone": "Contact phone number",
+    "enter_contact_phone": "Nhập contact phone number",
+    "invitation_code": "Invitation code",
+    "enter_invitation_code": "Enter invitation code"
 }
