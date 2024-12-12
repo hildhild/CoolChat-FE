@@ -70,11 +70,16 @@ function Organization() {
     email: "",
     role: "",
   });
+  const userRole = useSelector(state => state.user.role);
 
 
   useEffect(()=> {
     if (!accessToken) {
       navigate("/login");
+    }
+    console.log(userRole);
+    if (userRole !== "OWNER") {
+      navigate("/chatbot-training");
     }
     getMembersApi().then((res)=>{
       if (res.status === 200) {
