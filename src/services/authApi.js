@@ -22,7 +22,6 @@ export const signupApi = (step, signupData) => {
         return axios.post(`/auth/register/`, {
             "organization_action": step,
             "invitation_token": signupData.invitation_token,
-            "email": signupData.email,
             "password": signupData.password,
             "password2": signupData.password2,
             "user_name": signupData.user_name,

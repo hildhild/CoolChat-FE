@@ -328,19 +328,29 @@ function SignUpBody() {
             <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
             <div className="font-semibold">{t("join_org")}</div>
           </div>
+          <Input
+            onChange={handleChangeValue}
+            name="invitation_token"
+            type="text"
+            variant="bordered"
+            label={t("invitation_code")}
+            placeholder={t("enter_invitation_code")}
+            className="mb-5"
+            value={signupData.invitation_token}
+          />
           <div className="grid grid-cols-2 gap-5">
             <div>
               <Input
                 onChange={handleChangeValue}
-                name="invitation_token"
+                name="user_name"
                 type="text"
                 variant="bordered"
-                label={t("invitation_code")}
-                placeholder={t("enter_invitation_code")}
+                label={t("name")}
+                placeholder={t("enter_your_name")}
                 className="mb-5"
-                value={signupData.invitation_token}
+                value={signupData.user_name}
               />
-              <Input
+              {/* <Input
                 onChange={handleChangeValue}
                 name="email"
                 type="email"
@@ -349,7 +359,7 @@ function SignUpBody() {
                 placeholder={t("enter_your_email")}
                 className="mb-5"
                 value={signupData.email}
-              />
+              /> */}
               <Input
                 onChange={handleChangeValue}
                 name="password"
@@ -376,16 +386,7 @@ function SignUpBody() {
               />
             </div>
             <div>
-              <Input
-                onChange={handleChangeValue}
-                name="user_name"
-                type="text"
-                variant="bordered"
-                label={t("name")}
-                placeholder={t("enter_your_name")}
-                className="mb-5"
-                value={signupData.user_name}
-              />
+              
               <Input
                 onChange={handleChangeValue}
                 name="user_phone"
