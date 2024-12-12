@@ -32,7 +32,7 @@ function SignUpBody() {
           if (res.status === 201) {
             if (step === "create"){
               toast.success(
-                "Đăng ký doanh nghiệp thành công, vui lòng xác minh tài khoản trong thư được gửi qua địa chỉ email của bạn."
+                "Đăng ký tổ chức thành công, vui lòng xác minh tài khoản trong thư được gửi qua địa chỉ email của bạn."
               );
             } else if (step === "join"){
               toast.success(
@@ -49,7 +49,7 @@ function SignUpBody() {
             } else if (res.data?.password2) {
               toast.error("Xác nhận mật khẩu: " + res.data.password2[0]);
             } else if (res.data?.name) {
-              toast.error("Tên doanh nghiệp: " + res.data.name[0]);
+              toast.error("Tên tổ chức: " + res.data.name[0]);
             } else if (res.data?.invitation_token) {
               toast.error("Mã giới thiệu: " + res.data.invitation_token[0]);
             } else if (res.data?.description) {
