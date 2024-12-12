@@ -179,8 +179,7 @@ function Organization() {
         </button>
       );
     } else if (columnKey === "joined_at") {
-      const timestamp = "2024-12-12T01:39:49.137694+07:00";
-      const date = new Date(timestamp);
+      const date = new Date(cellValue);
       return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
     } else {
       return cellValue;

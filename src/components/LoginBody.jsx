@@ -59,6 +59,8 @@ function LoginBody() {
               toast.error("Email: " + res.data.email[0]);
             } else if (res.data?.password) {
               toast.error("Mật khẩu: " + res.data.password[0]);
+            } else if (res.data?.detail) {
+              toast.error(res.data.detail);
             }
           }
         })

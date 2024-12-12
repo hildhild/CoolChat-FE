@@ -33,7 +33,7 @@ const HeaderAuthen = () => {
         {/* Logo */}
         <button
           className="flex-shrink-0"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => navigate("/")}
         >
           <img src={Logo} alt="Logo" className="h-10 w-auto" />
         </button>
