@@ -11,7 +11,8 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginApi } from "../services/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setToken } from "../store/slices/UserSlice";
+import { setToken, setUserData } from "../store/slices/UserSlice";
+import { getUserInfoApi } from "../services/userApi";
 
 function LoginBody() {
   const { t } = useTranslation();
@@ -29,12 +30,16 @@ function LoginBody() {
     if (token) {
       loginApi(loginData.email, loginData.password)
         .then((res) => {
-          console.log(res);
           if (res.status === 200) {
             navigate("../chatbot-training");
             toast.success("Đăng nhập thành công");
             dispatch(setToken(res.data.access));
             localStorage.setItem("token", res.data.access);
+            getUserInfoApi().then((res)=>{
+              if (res.status === 200) {
+                dispatch(setUserData(res.data));
+              }
+            })
           } else {
             console.log(res);
             if (res.data?.email) {

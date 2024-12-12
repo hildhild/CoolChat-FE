@@ -70,6 +70,7 @@
     "enter_your_phone": "Enter your phone number",
     "role": "Role",
     "select_role": "Select role",
+    "enterprise_owner": "Enterprise owner",
     "enterprise_admin": "Enterprise admin",
     "csr": "Customer service representative",
     "confirm_password": "Confirm password",

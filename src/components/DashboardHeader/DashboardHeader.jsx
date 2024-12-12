@@ -20,6 +20,8 @@ const DashboardHeader = () => {
   const [showMenu1, setShowMenu1] = useState("");
   const isExpanded = useSelector(state => state.sidebar.isExpanded);
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.user);
+
 
   const handleLogout = () => {
     dispatch(setToken(""));
@@ -86,21 +88,21 @@ const DashboardHeader = () => {
             <DropdownTrigger>
               <User   
                 className="cursor-pointer"
-                name="Junior Garcia"
+                name={userInfo.name}
                 description={(
                   <div href="https://twitter.com/jrgarciadev" size="sm" className="text-coolchat">
-                    @jrgarciadev
+                    {userInfo.email}
                   </div>
                 )}
                 avatarProps={{
-                  src: "https://avatars.githubusercontent.com/u/30373425?v=4"
+                  src: (userInfo.avatar) ? userInfo.avatar : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"
                 }}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
               <DropdownItem key="profile" className="h-14 gap-2">
                 <p className="font-semibold">Đăng nhập với:</p>
-                <p className="font-semibold">zoey@example.com</p>
+                <p className="font-semibold">{userInfo.email}</p>
               </DropdownItem>
               <DropdownItem key="settings" onClick={() => navigate("/setting")}>Cài đặt</DropdownItem>
               <DropdownItem key="logout" color="danger" onClick={handleLogout}>

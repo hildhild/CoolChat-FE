@@ -1,12 +1,15 @@
-import { Avatar, Button, Checkbox, Input, Select, SelectItem, Switch, Tab, Tabs } from "@nextui-org/react";
+import { avatar, Avatar, Button, Checkbox, Input, Select, SelectItem, Switch, Tab, Tabs } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
 import { FaUserCircle, FaBell } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { editUserInfoApi } from "../../services/userApi";
+import { setUserData } from "../../store/slices/UserSlice";
+import { toast } from "react-toastify";
 
 function Setting() {
   const { t } = useTranslation();
@@ -14,12 +17,65 @@ function Setting() {
   const [isNotificationSetting, setIsNotificationSetting] = useState(false);
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
+  const userInfo = useSelector((state) => state.user);
+  const [isEditProfile, setIsEditProfile] = useState(false);
+  const [userInfoData, setUserInfoData] = useState(userInfo);
+  const dispatch = useDispatch();
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUserInfoData({ ...userInfoData, avatar: URL.createObjectURL(file) });
+    }
+  };
 
   useEffect(()=> {
     if (!accessToken) {
       navigate("/login");
     }
   }, []);
+
+  const handleChangeValue = (e) => {
+    const fieldName = e.target.name;
+    switch (fieldName) {
+      case "name":
+        setUserInfoData({ ...userInfoData, name: e.target.value });
+        break;
+      case "email":
+        setUserInfoData({ ...userInfoData, email: e.target.value });
+        break;
+      case "phoneNumber":
+        setUserInfoData({ ...userInfoData, phoneNumber: e.target.value });
+        break;
+      case "avatar":
+        setUserInfoData({ ...userInfoData, avatar: e.target.value });
+        break;
+      default:
+        return;
+    }
+  };
+
+  const handleChangeProfile = () => {
+    editUserInfoApi(userInfoData.name, userInfoData.avatar)
+        .then((res) => {
+          console.log(123, res);
+          if (res.status === 200) {
+            dispatch(setUserData(userInfoData));
+            toast.success("Thay đổi thông tin thành công.")
+            setIsEditProfile(false);
+          } else {
+            console.log(res);
+            if (res.data?.name) {
+              toast.error("Tên: " + res.data.name[0]);
+            } else if (res.data?.avatar) {
+              toast.error("Ảnh đại diện: " + res.data.avatar[0]);
+            } 
+          }
+        })
+        .catch((err) => {
+          console.log(2, err);
+        });
+  };
 
 
   return (
@@ -51,33 +107,58 @@ function Setting() {
                 <div className="w-full flex justify-center items-center mb-5">
                   <div className="flex flex-col items-center">
                     <div className="flex justify-center items-center text-neutral-600 mb-2">
-                      <div className="text-sm mr-2">Ảnh đại diện</div>
-                      <MdOutlineAddPhotoAlternate />
+                      <div className="text-sm">Ảnh đại diện</div>
+                      {/* <MdOutlineAddPhotoAlternate /> */}
                     </div>
-                    <Avatar className="w-20 h-20" isBordered radius="sm" src="https://i.pravatar.cc/150?u=a04258a2462d826712d" />
+                    <Avatar className="w-20 h-20" isBordered radius="sm" src={userInfoData.avatar ? userInfoData.avatar : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"} />
+                    {
+                      isEditProfile
+                      &&
+                      <input
+                        id="avatar-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="mt-3"
+                      />
+                    }
+                    
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-5 mb-3">
                   <div>
-                      <Input type="text" variant="bordered" label={t('name')} placeholder={t('enter_your_name')} className="mb-5"/>
-                      <Input type="email" variant="bordered" label="Email" placeholder={t('enter_company_email')} className="mb-5"/>
+                      <Input name="name" onChange={handleChangeValue} disabled={!isEditProfile} type="text" variant="bordered" label={t('name')} placeholder={t('enter_your_name')} className="mb-5" value={userInfoData.name}/>
+                      <Input name="email" disabled type="email" variant="bordered" label="Email" placeholder={t('enter_your_email')} className="mb-5" value={userInfoData.email}/>
                   </div>
                   <div>
-                      <Input type="text" variant="bordered" label={t('phone')} placeholder={t('enter_your_phone')} className="mb-5"/>
+                      <Input name="phoneNumber" disabled type="text" variant="bordered" label={t('phone')} placeholder={t('enter_your_phone')} className="mb-5" value={userInfoData.phoneNumber}/>
                       <Select 
                         variant="bordered"
                         label={t('role')}
                         className="mb-5" 
                         placeholder={t('select_role')}
+                        selectedKeys={["owner"]}
+                        disabled={!isEditProfile}
                       >
+                        <SelectItem key="owner">{t('enterprise_owner')}</SelectItem>
                         <SelectItem key="admin">{t('enterprise_admin')}</SelectItem>
                         <SelectItem key="csr">{t('csr')}</SelectItem>
                       </Select>
                   </div>
                 </div>
-                <div className="flex gap-5">
-                  <Button color="danger">HỦY BỎ</Button>
-                  <Button color="success">LƯU</Button>
+                <div className="flex gap-5 justify-end">
+                  {
+                    isEditProfile 
+                    ?
+                    <>
+                      <Button color="danger" onClick={()=>{ setIsEditProfile(false); setUserInfoData(userInfo);}}>HỦY BỎ</Button>
+                      <Button color="success" onClick={handleChangeProfile}>LƯU</Button>
+                    </>
+                    :
+                    <Button color="primary" onClick={()=>setIsEditProfile(true)}>CHỈNH SỬA</Button>
+
+                  }
+                  
                 </div>
               </Tab>
               <Tab key="password" title="Mật khẩu">
@@ -88,7 +169,7 @@ function Setting() {
                     <Input type="password" variant="bordered" label="Mật khẩu mới" placeholder="Nhập mật khẩu mới" className="mb-5"/>
                     <Input type="password" variant="bordered" label="Xác nhận mật khẩu" placeholder="Nhập lại mật khẩu mới" className="mb-5"/>
                 </div>
-                <div className="flex gap-5">
+                <div className="flex gap-5 justify-end">
                   <Button color="danger">HỦY BỎ</Button>
                   <Button color="success">LƯU</Button>
                 </div>
@@ -133,7 +214,7 @@ function Setting() {
                     <Checkbox defaultSelected radius="sm">SMS</Checkbox>
                   </div>
                 </div>
-                <div className="flex gap-5">
+                <div className="flex gap-5 justify-end">
                   <Button color="danger">HỦY BỎ</Button>
                   <Button color="success">LƯU</Button>
                 </div>
@@ -153,7 +234,7 @@ function Setting() {
                     <Switch defaultSelected aria-label="Automatic updates" size="sm"/>
                   </div>
                 </div>
-                <div className="flex gap-5">
+                <div className="flex gap-5 justify-end">
                   <Button color="danger">HỦY BỎ</Button>
                   <Button color="success">LƯU</Button>
                 </div>
