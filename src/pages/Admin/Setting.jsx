@@ -110,7 +110,7 @@ function Setting() {
                       <div className="text-sm">Ảnh đại diện</div>
                       {/* <MdOutlineAddPhotoAlternate /> */}
                     </div>
-                    <Avatar className="w-20 h-20" isBordered radius="sm" src={userInfoData.avatar ? userInfoData.avatar : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"} />
+                    <Avatar className="w-20 h-20 bg-white" isBordered radius="sm" src={userInfoData.avatar ? userInfoData.avatar : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"} />
                     {
                       isEditProfile
                       &&
@@ -127,22 +127,22 @@ function Setting() {
                 </div>
                 <div className="grid grid-cols-2 gap-5 mb-3">
                   <div>
-                      <Input name="name" onChange={handleChangeValue} disabled={!isEditProfile} type="text" variant="bordered" label={t('name')} placeholder={t('enter_your_name')} className="mb-5" value={userInfoData.name}/>
-                      <Input name="email" disabled type="email" variant="bordered" label="Email" placeholder={t('enter_your_email')} className="mb-5" value={userInfoData.email}/>
+                      <Input name="name" onChange={handleChangeValue} isDisabled={!isEditProfile} type="text" variant="bordered" label={t('name')} placeholder={t('enter_your_name')} className="mb-5" value={userInfoData.name}/>
+                      <Input name="email" isDisabled type="email" variant="bordered" label="Email" placeholder={t('enter_your_email')} className="mb-5" value={userInfoData.email}/>
                   </div>
                   <div>
-                      <Input name="phoneNumber" disabled type="text" variant="bordered" label={t('phone')} placeholder={t('enter_your_phone')} className="mb-5" value={userInfoData.phoneNumber}/>
+                      <Input name="phoneNumber" isDisabled type="text" variant="bordered" label={t('phone')} placeholder={t('enter_your_phone')} className="mb-5" value={userInfoData.phoneNumber}/>
                       <Select 
                         variant="bordered"
                         label={t('role')}
                         className="mb-5" 
                         placeholder={t('select_role')}
-                        selectedKeys={["owner"]}
-                        disabled={!isEditProfile}
+                        selectedKeys={[userInfoData.role]}
+                        isDisabled
                       >
-                        <SelectItem key="owner">{t('enterprise_owner')}</SelectItem>
-                        <SelectItem key="admin">{t('enterprise_admin')}</SelectItem>
-                        <SelectItem key="csr">{t('csr')}</SelectItem>
+                        <SelectItem key="OWNER">{t('enterprise_owner')}</SelectItem>
+                        <SelectItem key="ADMIN">{t('enterprise_admin')}</SelectItem>
+                        <SelectItem key="AGENT">{t('csr')}</SelectItem>
                       </Select>
                   </div>
                 </div>

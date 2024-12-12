@@ -91,11 +91,12 @@ const DashboardHeader = () => {
                 name={userInfo.name}
                 description={(
                   <div href="https://twitter.com/jrgarciadev" size="sm" className="text-coolchat">
-                    {userInfo.email}
+                    {userInfo.companyName}
                   </div>
                 )}
                 avatarProps={{
-                  src: (userInfo.avatar) ? userInfo.avatar : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"
+                  src: (userInfo.avatar) ? userInfo.avatar : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png",
+                  className: "bg-white"
                 }}
               />
             </DropdownTrigger>

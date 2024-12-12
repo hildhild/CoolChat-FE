@@ -8,6 +8,8 @@ export const UserSlice = createSlice({
         name: "",
         phoneNumber: "",
         avatar: null,
+        role: "",
+        companyName: "",
     },
     reducers: {
         setToken: (state, action) => {
@@ -18,10 +20,16 @@ export const UserSlice = createSlice({
             state.name = action.payload.name;
             state.phoneNumber = action.payload.phone_number;
             state.avatar = action.payload.avatar;
+        },
+        setUserRole: (state, action) => {
+            state.role = action.payload;
+        },
+        setCompanyName: (state, action) => {
+            state.companyName = action.payload;
         }
     }
 });
 
-export const { setToken, setUserData } = UserSlice.actions
+export const { setToken, setUserData, setUserRole, setCompanyName } = UserSlice.actions
 
 export default UserSlice.reducer;

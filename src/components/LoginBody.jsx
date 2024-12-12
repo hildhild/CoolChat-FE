@@ -11,8 +11,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { loginApi } from "../services/authApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { setToken, setUserData } from "../store/slices/UserSlice";
+import { setCompanyName, setToken, setUserData, setUserRole } from "../store/slices/UserSlice";
 import { getUserInfoApi } from "../services/userApi";
+import { jwtDecode } from "jwt-decode";
+import { getOrgInfoApi } from "../services/orgApi";
+import { setOrganizationData } from "../store/slices/OrganizationSlice";
 
 function LoginBody() {
   const { t } = useTranslation();
@@ -35,18 +38,28 @@ function LoginBody() {
             toast.success("Đăng nhập thành công");
             dispatch(setToken(res.data.access));
             localStorage.setItem("token", res.data.access);
-            getUserInfoApi().then((res)=>{
+            getUserInfoApi().then((res) => {
               if (res.status === 200) {
                 dispatch(setUserData(res.data));
               }
-            })
+            });
+            const decoded = jwtDecode(res.data.access);
+            dispatch(setUserRole(decoded.organization.role));
+            dispatch(setCompanyName(decoded.organization.name));
+            if (decoded.organization.role === "OWNER"){
+              getOrgInfoApi().then((res) => {
+                if (res.status === 200) {
+                  dispatch(setOrganizationData(res.data));
+                }
+              });
+            }
           } else {
             console.log(res);
             if (res.data?.email) {
               toast.error("Email: " + res.data.email[0]);
             } else if (res.data?.password) {
               toast.error("Mật khẩu: " + res.data.password[0]);
-            } 
+            }
           }
         })
         .catch((err) => {

@@ -12,7 +12,8 @@ import {
   VerifyEmail,
   ResetPassword,
   ChatbotComparison,
-  ChatDetail
+  ChatDetail,
+  Organization
 } from "./pages";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/setting" element={<Setting />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/organization" element={<Organization />} />
       </Routes>
     </Router>
   );

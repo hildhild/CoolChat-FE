@@ -13,18 +13,20 @@ import {
 import SignupDataReducer from './slices/SignupDataSlice';
 import SidebarReducer from './slices/SidebarSlice';
 import UserReducer from './slices/UserSlice';
+import OrganizationReducer from './slices/OrganizationSlice';
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['sidebar', 'user'],
+    whitelist: ['sidebar', 'user', 'organization'],
 }
 
 
 const rootReducer = combineReducers({ 
     signupData: SignupDataReducer,
     sidebar: SidebarReducer,
-    user: UserReducer
+    user: UserReducer,
+    organization: OrganizationReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

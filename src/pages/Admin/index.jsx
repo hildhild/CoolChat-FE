@@ -6,5 +6,6 @@ import Subscription from "./Subscription";
 import Setting from "./Setting";
 import ChatbotComparison from "./ChatbotComparison";
 import ChatDetail from "./ChatDetail";
+import Organization from "./Organization";
 
-export {ChatbotTraining, ChatbotEditting, Chat, Report, Subscription, Setting, ChatbotComparison, ChatDetail};
+export {ChatbotTraining, ChatbotEditting, Chat, Report, Subscription, Setting, ChatbotComparison, ChatDetail, Organization};

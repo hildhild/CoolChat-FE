@@ -1,7 +1,7 @@
 import Logo from "@/assets/CoolChat Logo/2.png"
 import LogoOnly from "@/assets/CoolChat Logo/3.png"
-import { MdDataUsage, MdOutlineChat, MdLogout  } from "react-icons/md"
-import { FaEdit, FaChartBar, FaRegMoneyBillAlt, FaCog   } from "react-icons/fa";
+import { MdDataUsage, MdOutlineChat, MdLogout, MdOutlineGroups } from "react-icons/md"
+import { FaEdit, FaChartBar, FaRegMoneyBillAlt, FaCog } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@nextui-org/react";
@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 
 export const Sidebar = ({page}) => {
     const isExpanded = useSelector(state => state.sidebar.isExpanded);
+    const userRole = useSelector(state => state.user.role);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -125,6 +126,30 @@ export const Sidebar = ({page}) => {
                     </div>
                 }
             </Link>
+            {
+                userRole === "OWNER"
+                &&
+                <Link to="/organization">
+                    {
+                        page === "organization"
+                        ?
+                        <div className="flex w-full bg-white px-5 h-14 relative" radius="none">
+                            <div className="absolute left-0 w-1 h-full bg-coolchat z-10 rounded-r-lg"></div>
+                            <div className="flex w-full h-full justify-start items-center !rounded-md p-4 bg-coolchat text-white">
+                                <MdOutlineGroups  size={20}/>
+                                <div className="ml-4 flex items-center font-semibold">Tổ chức</div>
+                            </div>
+                        </div>
+                        :
+                        <div className="flex w-full bg-white px-5 h-14">
+                            <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+                                <MdOutlineGroups  size={20}/>
+                                <div className="ml-4 flex items-center font-semibold">Tổ chức</div>
+                            </div>
+                        </div>
+                    }
+                </Link>
+            }
             <hr className="w-full my-4"></hr>
             <Link to="/setting">
                 {
@@ -245,6 +270,27 @@ export const Sidebar = ({page}) => {
                     </div>
                 }
             </Link>
+            {
+                userRole === "OWNER"
+                &&
+                <Link to="/organization">
+                    {
+                        page === "organization"
+                        ?
+                        <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                            <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                                <MdOutlineGroups  size={20}/>
+                            </div>
+                        </div>
+                        :
+                        <div className="w-full !min-w-0 bg-white h-14 px-2">
+                            <div className="flex w-full h-full justify-center items-center !rounded-md">
+                                <MdOutlineGroups  size={20}/>
+                            </div>
+                        </div>
+                    }
+                </Link>
+            }
             <hr className="w-full my-4"></hr>
             <Link to="/setting">
                 {
