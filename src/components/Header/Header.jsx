@@ -45,7 +45,7 @@ const Header = () => {
               key={item.name}
               onClick={() =>
                 window.scrollTo({
-                  top: document.getElementById(item.href).offsetTop,
+                  top: item.href === "/" ? 0 : document.getElementById(item.href).offsetTop,
                   behavior: "smooth",
                 })
               }

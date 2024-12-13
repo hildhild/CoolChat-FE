@@ -4,7 +4,7 @@ import ChatBox from "../components/ChatBox";
 
 function DefaultLayout({ children }) {
   return (
-    <div className="h-[100vh] relative overflow-x-hidden">
+    <div className="h-[100vh] relative">
       <Header />
       {children}
       <Footer />
