@@ -220,6 +220,15 @@ function Organization() {
     } else if (columnKey === "joined_at") {
       const date = new Date(cellValue);
       return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+    } else if (columnKey === "role") {
+      if (cellValue === "OWNER"){
+        return t("enterprise_owner")
+      } else if (cellValue === "ADMIN"){
+        return t("enterprise_admin")
+      } else if (cellValue === "AGENT") {
+        return t("csr")
+      }
+      
     } else {
       return cellValue;
     }
