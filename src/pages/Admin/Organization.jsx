@@ -18,6 +18,7 @@ import {
   Pagination,
   Chip,
   Textarea,
+  useDisclosure,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
 import {
@@ -38,7 +39,7 @@ import {
   MdSearch,
   MdOutlineCancel,
   MdOutlineTextSnippet,
-  MdOutlineGroups 
+  MdOutlineGroups,
 } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -49,11 +50,17 @@ import { FaFilePdf } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
-import { editOrgInfoApi, getMembersApi, inviteMemberApi } from "../../services/orgApi";
+import {
+  editOrgInfoApi,
+  getMembersApi,
+  inviteMemberApi,
+  removeMemberApi,
+} from "../../services/orgApi";
 import { editUserInfoApi } from "../../services/userApi";
 import { toast } from "react-toastify";
 import { setOrganizationData } from "../../store/slices/OrganizationSlice";
 import { setCompanyName } from "../../store/slices/UserSlice";
+import { ConfirmModal } from "../../components";
 
 function Organization() {
   const { t } = useTranslation();
@@ -70,10 +77,11 @@ function Organization() {
     email: "",
     role: "",
   });
-  const userRole = useSelector(state => state.user.role);
+  const userRole = useSelector((state) => state.user.role);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [memberId, setMemberId] = useState(null);
 
-
-  useEffect(()=> {
+  useEffect(() => {
     if (!accessToken) {
       navigate("/login");
     }
@@ -81,11 +89,11 @@ function Organization() {
     if (userRole !== "OWNER") {
       navigate("/chatbot-training");
     }
-    getMembersApi().then((res)=>{
+    getMembersApi().then((res) => {
       if (res.status === 200) {
         setMemberList(res.data);
       }
-    })
+    });
   }, []);
 
   const handleChangeValue = (e) => {
@@ -119,38 +127,59 @@ function Organization() {
   };
 
   const handleChangeInfo = () => {
-      editOrgInfoApi(orgInfoData.name, orgInfoData.description, orgInfoData.contact_email, orgInfoData.contact_phone, orgInfoData.address)
-          .then((res) => {
-            console.log(123, res);
-            if (res.status === 200) {
-              dispatch(setOrganizationData(orgInfoData));
-              dispatch(setCompanyName(orgInfoData.name))
-              toast.success("Thay đổi thông tin thành công.")
-              setIsEditInfo(false);
-            } else {
-              console.log(res);
-              if (res.data?.name) {
-                toast.error("Tên: " + res.data.name[0]);
-              } else if (res.data?.description) {
-                toast.error("Mô tả: " + res.data.description[0]);
-              } else if (res.data?.contact_email) {
-                toast.error("Email liên hệ: " + res.data.contact_email[0]);
-              } else if (res.data?.contact_phone) {
-                toast.error("Số điện thoại liên hệ: " + res.data.contact_phone[0]);
-              } else if (res.data?.address) {
-                toast.error("Dịa chỉ: " + res.data.address[0]);
-              } 
-            }
-          })
-          .catch((err) => {
-            console.log(2, err);
-          });
-    };
-   
+    editOrgInfoApi(
+      orgInfoData.name,
+      orgInfoData.description,
+      orgInfoData.contact_email,
+      orgInfoData.contact_phone,
+      orgInfoData.address
+    )
+      .then((res) => {
+        console.log(123, res);
+        if (res.status === 200) {
+          dispatch(setOrganizationData(orgInfoData));
+          dispatch(setCompanyName(orgInfoData.name));
+          toast.success("Thay đổi thông tin thành công.");
+          setIsEditInfo(false);
+        } else {
+          console.log(res);
+          if (res.data?.name) {
+            toast.error("Tên: " + res.data.name[0]);
+          } else if (res.data?.description) {
+            toast.error("Mô tả: " + res.data.description[0]);
+          } else if (res.data?.contact_email) {
+            toast.error("Email liên hệ: " + res.data.contact_email[0]);
+          } else if (res.data?.contact_phone) {
+            toast.error("Số điện thoại liên hệ: " + res.data.contact_phone[0]);
+          } else if (res.data?.address) {
+            toast.error("Dịa chỉ: " + res.data.address[0]);
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+  };
+
   const handleDeleteMember = (id) => {
-    console.log(id)
-  }
-  
+    removeMemberApi(id).then((res) => {
+      console.log(4, res);
+      if (res.status === 204) {
+        toast.success("Xóa thành viên thành công");
+        getMembersApi().then((res) => {
+          if (res.status === 200) {
+            setMemberList(res.data);
+          }
+        });
+        onClose();
+      } else {
+        if (res?.data.detail) {
+          toast.error(res?.data.detail);
+        }
+      }
+    });
+  };
+
   const columns = [
     {
       key: "user_email",
@@ -173,14 +202,19 @@ function Organization() {
       label: "Thao tác",
     },
   ];
-  
 
   const renderCell = (item, columnKey) => {
     const cellValue = item[columnKey];
     if (columnKey === "id") {
       return (
-        <button className="text-red-500" onClick={handleDeleteMember(cellValue)}>
-          <FaTrash/>
+        <button
+          className="text-red-500"
+          onClick={() => {
+            onOpen();
+            setMemberId(cellValue);
+          }}
+        >
+          <FaTrash />
         </button>
       );
     } else if (columnKey === "joined_at") {
@@ -192,13 +226,15 @@ function Organization() {
   };
 
   const handleInviteMember = () => {
-    inviteMemberApi(inviteForm.email, inviteForm.role).then((res)=>{
+    inviteMemberApi(inviteForm.email, inviteForm.role).then((res) => {
       if (res.status === 201) {
-        toast.success("Mời thành công, lời mời sẽ được gửi đến email của người nhận.");
+        toast.success(
+          "Mời thành công, lời mời sẽ được gửi đến email của người nhận."
+        );
         setInviteForm({
           email: "",
-          role: ""
-        })
+          role: "",
+        });
       } else {
         if (res?.data.email) {
           toast.error("Email: " + res.data.email[0]);
@@ -207,10 +243,17 @@ function Organization() {
         }
       }
     });
-  }
+  };
 
   return (
     <DashboardLayout page="organization">
+      <ConfirmModal
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={() => handleDeleteMember(memberId)}
+        title="Xóa thành viên"
+        description="Bạn có muốn xóa thành viên này không?"
+      />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TỔ CHỨC</div>
         <Button
@@ -223,9 +266,13 @@ function Organization() {
             <FaInfoCircle size={30} />
             <div>Thông tin tổ chức</div>
           </div>
-          {isOrganizationInfo ? <CiSquareMinus size={20} /> : <CiSquarePlus size={20} />}
+          {isOrganizationInfo ? (
+            <CiSquareMinus size={20} />
+          ) : (
+            <CiSquarePlus size={20} />
+          )}
         </Button>
-        {isOrganizationInfo && 
+        {isOrganizationInfo && (
           <div className="bg-white px-5 py-8 rounded-xl mb-8">
             <div className="w-full flex justify-center items-center mb-5">
               <div className="flex flex-col items-center">
@@ -233,10 +280,13 @@ function Organization() {
                   <div className="text-sm">Logo</div>
                   {/* <MdOutlineAddPhotoAlternate /> */}
                 </div>
-                <Avatar className="w-20 h-20 bg-white" isBordered radius="sm" src={orgInfoData.logo ? orgInfoData.logo : LogoOnly} />
-                {
-                  isEditInfo
-                  &&
+                <Avatar
+                  className="w-20 h-20 bg-white"
+                  isBordered
+                  radius="sm"
+                  src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
+                />
+                {isEditInfo && (
                   <input
                     id="avatar-input"
                     type="file"
@@ -244,38 +294,103 @@ function Organization() {
                     onChange={handleImageChange}
                     className="mt-3"
                   />
-                }
-                
+                )}
               </div>
             </div>
             <div className="grid grid-cols-2 gap-5 mb-3">
               <div>
-                  <Input name="name" onChange={handleChangeValue} isDisabled={!isEditInfo} type="text" variant="bordered" label={t('name')} placeholder={t('enter_your_name')} className="mb-5" value={orgInfoData.name}/>
-                  <Input name="contact_email" onChange={handleChangeValue} isDisabled={!isEditInfo} type="email" variant="bordered" label={t('contact_email')} placeholder={t('enter_contact_email')} className="mb-5" value={orgInfoData.contact_email}/>
-                  <Input name="address" onChange={handleChangeValue} isDisabled={!isEditInfo} type="text" variant="bordered" label={t('address')} placeholder={t('enter_address')} className="mb-5" value={orgInfoData.address}/>
+                <Input
+                  name="name"
+                  onChange={handleChangeValue}
+                  isDisabled={!isEditInfo}
+                  type="text"
+                  variant="bordered"
+                  label={t("name")}
+                  placeholder={t("enter_your_name")}
+                  className="mb-5"
+                  value={orgInfoData.name}
+                />
+                <Input
+                  name="contact_email"
+                  onChange={handleChangeValue}
+                  isDisabled={!isEditInfo}
+                  type="email"
+                  variant="bordered"
+                  label={t("contact_email")}
+                  placeholder={t("enter_contact_email")}
+                  className="mb-5"
+                  value={orgInfoData.contact_email}
+                />
+                <Input
+                  name="address"
+                  onChange={handleChangeValue}
+                  isDisabled={!isEditInfo}
+                  type="text"
+                  variant="bordered"
+                  label={t("address")}
+                  placeholder={t("enter_address")}
+                  className="mb-5"
+                  value={orgInfoData.address}
+                />
               </div>
               <div>
-                  <Input name="description" onChange={handleChangeValue} isDisabled={!isEditInfo} type="text" variant="bordered" label={t('des')} placeholder={t('enter_des')} className="mb-5" value={orgInfoData.description}/>
-                  <Input name="contact_phone" onChange={handleChangeValue} isDisabled={!isEditInfo} type="text" variant="bordered" label={t('contact_phone')} placeholder={t('enter_contact_phone')} className="mb-5" value={orgInfoData.contact_phone}/>
-                  <Input name="subscription_type" isDisabled type="text" variant="bordered" label="Gói đăng ký" className="mb-5" value={orgInfoData.subscription_type}/>
+                <Input
+                  name="description"
+                  onChange={handleChangeValue}
+                  isDisabled={!isEditInfo}
+                  type="text"
+                  variant="bordered"
+                  label={t("des")}
+                  placeholder={t("enter_des")}
+                  className="mb-5"
+                  value={orgInfoData.description}
+                />
+                <Input
+                  name="contact_phone"
+                  onChange={handleChangeValue}
+                  isDisabled={!isEditInfo}
+                  type="text"
+                  variant="bordered"
+                  label={t("contact_phone")}
+                  placeholder={t("enter_contact_phone")}
+                  className="mb-5"
+                  value={orgInfoData.contact_phone}
+                />
+                <Input
+                  name="subscription_type"
+                  isDisabled
+                  type="text"
+                  variant="bordered"
+                  label="Gói đăng ký"
+                  className="mb-5"
+                  value={orgInfoData.subscription_type}
+                />
               </div>
             </div>
             <div className="flex gap-5 justify-end">
-              {
-                isEditInfo 
-                ?
+              {isEditInfo ? (
                 <>
-                  <Button color="danger" onClick={()=>{ setIsEditInfo(false); setOrgInfoData(orgInfo);}}>HỦY BỎ</Button>
-                  <Button color="success" onClick={handleChangeInfo}>LƯU</Button>
+                  <Button
+                    color="danger"
+                    onClick={() => {
+                      setIsEditInfo(false);
+                      setOrgInfoData(orgInfo);
+                    }}
+                  >
+                    HỦY BỎ
+                  </Button>
+                  <Button color="success" onClick={handleChangeInfo}>
+                    LƯU
+                  </Button>
                 </>
-                :
-                <Button color="primary" onClick={()=>setIsEditInfo(true)}>CHỈNH SỬA</Button>
-
-              }
-              
+              ) : (
+                <Button color="primary" onClick={() => setIsEditInfo(true)}>
+                  CHỈNH SỬA
+                </Button>
+              )}
             </div>
           </div>
-        }
+        )}
         <Button
           className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
           onClick={() => {
@@ -290,10 +405,15 @@ function Organization() {
         </Button>
         {isMember && (
           <div className="bg-white px-5 py-8 rounded-xl">
-            <Tabs variant="underlined" aria-label="Tabs variants" className="mb-4" classNames={{
+            <Tabs
+              variant="underlined"
+              aria-label="Tabs variants"
+              className="mb-4"
+              classNames={{
                 cursor: "w-full bg-coolchat",
-                tabContent: "group-data-[selected=true]:text-coolchat"
-              }}>
+                tabContent: "group-data-[selected=true]:text-coolchat",
+              }}
+            >
               <Tab key="general" title="Danh sách thành viên">
                 <Table
                   removeWrapper
@@ -317,22 +437,37 @@ function Organization() {
               </Tab>
               <Tab key="threshold" title="Mời thêm thành viên">
                 <div className="grid grid-cols-2 gap-5 mb-3">
-                  <Input name="email" type="email" onChange={(e) => setInviteForm({...inviteForm, email: e.target.value})} variant="bordered" label="Email" placeholder="Nhập email" className="mb-5" value={inviteForm.email}/>
-                  <Select 
+                  <Input
+                    name="email"
+                    type="email"
+                    onChange={(e) =>
+                      setInviteForm({ ...inviteForm, email: e.target.value })
+                    }
                     variant="bordered"
-                    label={t('role')}
-                    className="mb-5" 
-                    placeholder={t('select_role')}
+                    label="Email"
+                    placeholder="Nhập email"
+                    className="mb-5"
+                    value={inviteForm.email}
+                  />
+                  <Select
+                    variant="bordered"
+                    label={t("role")}
+                    className="mb-5"
+                    placeholder={t("select_role")}
                     selectedKeys={[inviteForm.role]}
-                    onChange={(e)=> setInviteForm({...inviteForm, role: e.target.value})}
+                    onChange={(e) =>
+                      setInviteForm({ ...inviteForm, role: e.target.value })
+                    }
                   >
-                    <SelectItem key="OWNER">{t('enterprise_owner')}</SelectItem>
-                    <SelectItem key="ADMIN">{t('enterprise_admin')}</SelectItem>
-                    <SelectItem key="AGENT">{t('csr')}</SelectItem>
+                    <SelectItem key="OWNER">{t("enterprise_owner")}</SelectItem>
+                    <SelectItem key="ADMIN">{t("enterprise_admin")}</SelectItem>
+                    <SelectItem key="AGENT">{t("csr")}</SelectItem>
                   </Select>
                 </div>
                 <div className="flex gap-5 justify-end">
-                  <Button color="primary" onClick={handleInviteMember}>MỜI</Button>
+                  <Button color="primary" onClick={handleInviteMember}>
+                    MỜI
+                  </Button>
                 </div>
               </Tab>
             </Tabs>

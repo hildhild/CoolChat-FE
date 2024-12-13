@@ -6,7 +6,7 @@ import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import GoogleRecaptcha from "@/assets/googleRecaptcha.png";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { signupApi } from "../services/authApi";
 import { changeSignupData } from "../store/slices/SignupDataSlice";
@@ -19,27 +19,25 @@ function SignUpBody() {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState("choose");
+  const navigate = useNavigate();
 
   const onSubmitWithReCAPTCHA = async () => {
     const token = await recaptchaRef.current.executeAsync();
     if (token) {
-      signupApi(
-        step,
-        signupData
-      )
+      signupApi(step, signupData)
         .then((res) => {
           console.log(res);
           if (res.status === 201) {
-            if (step === "create"){
+            if (step === "create") {
               toast.success(
                 "Đăng ký tổ chức thành công, vui lòng xác minh tài khoản trong thư được gửi qua địa chỉ email của bạn."
               );
-            } else if (step === "join"){
+            } else if (step === "join") {
+              navigate("/login");
               toast.success(
-                "Đăng ký tài khoản thành công, vui lòng xác minh tài khoản trong thư được gửi qua địa chỉ email của bạn."
+                "Đăng ký tài khoản thành công, vui lòng đăng nhập với địa chỉ email được mời để sử dụng dịch vụ."
               );
             }
-            
           } else {
             console.log(res);
             if (res.data?.email) {
@@ -50,14 +48,16 @@ function SignUpBody() {
               toast.error("Xác nhận mật khẩu: " + res.data.password2[0]);
             } else if (res.data?.name) {
               toast.error("Tên tổ chức: " + res.data.name[0]);
-            } else if (res.data?.invitation_token) {
-              toast.error("Mã giới thiệu: " + res.data.invitation_token[0]);
+            } else if (res.data?.invite_code) {
+              toast.error("Mã giới thiệu: " + res.data.invite_code[0]);
             } else if (res.data?.description) {
               toast.error("Mô tả: " + res.data.description[0]);
             } else if (res.data?.contact_email) {
               toast.error("Email liên hệ: " + res.data.contact_email[0]);
             } else if (res.data?.contact_phone) {
-              toast.error("Số điện thoại liên hệ: " + res.data.contact_phone[0]);
+              toast.error(
+                "Số điện thoại liên hệ: " + res.data.contact_phone[0]
+              );
             } else if (res.data?.user_name) {
               toast.error("Tên: " + res.data.user_name[0]);
             } else if (res.data?.user_phone) {
@@ -76,26 +76,38 @@ function SignUpBody() {
   const handleChangeValue = (e) => {
     const fieldName = e.target.name;
     switch (fieldName) {
-      case "invitation_token":
-        dispatch(changeSignupData({ ...signupData, invitation_token: e.target.value }));
+      case "invite_code":
+        dispatch(
+          changeSignupData({ ...signupData, invite_code: e.target.value })
+        );
         break;
       case "name":
         dispatch(changeSignupData({ ...signupData, name: e.target.value }));
         break;
       case "description":
-        dispatch(changeSignupData({ ...signupData, description: e.target.value }));
+        dispatch(
+          changeSignupData({ ...signupData, description: e.target.value })
+        );
         break;
       case "contact_email":
-        dispatch(changeSignupData({ ...signupData, contact_email: e.target.value }));
+        dispatch(
+          changeSignupData({ ...signupData, contact_email: e.target.value })
+        );
         break;
       case "contact_phone":
-        dispatch(changeSignupData({ ...signupData, contact_phone: e.target.value }));
+        dispatch(
+          changeSignupData({ ...signupData, contact_phone: e.target.value })
+        );
         break;
       case "user_name":
-        dispatch(changeSignupData({ ...signupData, user_name: e.target.value }));
+        dispatch(
+          changeSignupData({ ...signupData, user_name: e.target.value })
+        );
         break;
       case "user_phone":
-        dispatch(changeSignupData({ ...signupData, user_phone: e.target.value }));
+        dispatch(
+          changeSignupData({ ...signupData, user_phone: e.target.value })
+        );
         break;
       case "email":
         dispatch(changeSignupData({ ...signupData, email: e.target.value }));
@@ -131,11 +143,12 @@ function SignUpBody() {
         </div>
         <div className="h-[1px] w-60 bg-slate-200"></div>
       </div>
-      {
-        step === "choose"
-        &&
+      {step === "choose" && (
         <div className="px-40 mb-24">
-          <button onClick={(() => setStep("create"))} className="flex w-full justify-center items-center py-5 border-2 border-coolchat rounded-full hover:text-coolchat">
+          <button
+            onClick={() => setStep("create")}
+            className="flex w-full justify-center items-center py-5 border-2 border-coolchat rounded-full hover:text-coolchat"
+          >
             <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
             <div className="font-semibold">{t("create_org")}</div>
           </button>
@@ -144,7 +157,10 @@ function SignUpBody() {
             <div className="text-lg mx-5 uppercase">{t("or")}</div>
             <div className="h-[1px] w-60 bg-slate-200"></div>
           </div>
-          <button onClick={(() => setStep("join"))} className="mb-7 flex w-full justify-center items-center py-5 border-2 border-coolchat rounded-full hover:text-coolchat">
+          <button
+            onClick={() => setStep("join")}
+            className="mb-7 flex w-full justify-center items-center py-5 border-2 border-coolchat rounded-full hover:text-coolchat"
+          >
             <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
             <div className="font-semibold">{t("join_org")}</div>
           </button>
@@ -155,12 +171,15 @@ function SignUpBody() {
             </Link>
           </div>
         </div>
-      }
-      {
-        step === "create"
-        &&
+      )}
+      {step === "create" && (
         <div className="px-40 mb-24">
-          <button className="text-sm text-[#676C70] hover:text-coolchat" onClick={()=>setStep("choose")}>{t('back')}</button>
+          <button
+            className="text-sm text-[#676C70] hover:text-coolchat"
+            onClick={() => setStep("choose")}
+          >
+            {t("back")}
+          </button>
           <div className="flex w-full justify-center items-center py-5">
             <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
             <div className="font-semibold">{t("create_org")}</div>
@@ -238,7 +257,7 @@ function SignUpBody() {
                 name="contact_email"
                 type="email"
                 variant="bordered"
-                label={t('contact_email')}
+                label={t("contact_email")}
                 placeholder={t("enter_contact_email")}
                 className="mb-5"
                 value={signupData.contact_email}
@@ -318,25 +337,28 @@ function SignUpBody() {
             </Link>
           </div>
         </div>
-      }
-      {
-        step === "join"
-        &&
+      )}
+      {step === "join" && (
         <div className="px-40 mb-24">
-          <button className="text-sm text-[#676C70] hover:text-coolchat" onClick={()=>setStep("choose")}>{t('back')}</button>
+          <button
+            className="text-sm text-[#676C70] hover:text-coolchat"
+            onClick={() => setStep("choose")}
+          >
+            {t("back")}
+          </button>
           <div className="flex w-full justify-center items-center py-5">
             <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
             <div className="font-semibold">{t("join_org")}</div>
           </div>
           <Input
             onChange={handleChangeValue}
-            name="invitation_token"
+            name="invite_code"
             type="text"
             variant="bordered"
             label={t("invitation_code")}
             placeholder={t("enter_invitation_code")}
             className="mb-5"
-            value={signupData.invitation_token}
+            value={signupData.invite_code}
           />
           <div className="grid grid-cols-2 gap-5">
             <div>
@@ -386,7 +408,6 @@ function SignUpBody() {
               />
             </div>
             <div>
-              
               <Input
                 onChange={handleChangeValue}
                 name="user_phone"
@@ -452,7 +473,7 @@ function SignUpBody() {
             </Link>
           </div>
         </div>
-      }
+      )}
       <div className="w-full flex flex-col items-center mb-[20px]">
         <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
         <div className="w-[500px] text-center">

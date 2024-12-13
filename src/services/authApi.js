@@ -21,7 +21,7 @@ export const signupApi = (step, signupData) => {
     } else if (step === "join") {
         return axios.post(`/auth/register/`, {
             "organization_action": step,
-            "invitation_token": signupData.invitation_token,
+            "invite_code": signupData.invite_code,
             "password": signupData.password,
             "password2": signupData.password2,
             "user_name": signupData.user_name,

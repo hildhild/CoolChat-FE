@@ -7,6 +7,7 @@ import LoginBody from "./LoginBody";
 import ForgotPasswordBody from "./ForgotPasswordBody";
 import VerifyEmailBody from "./VerifyEmailBody";
 import ResetPasswordBody from "./ResetPasswordBody";
+import { ConfirmModal } from "./ConfirmModal";
 
 export {
   Header,
@@ -17,5 +18,6 @@ export {
   LoginBody,
   ForgotPasswordBody,
   VerifyEmailBody,
-  ResetPasswordBody
+  ResetPasswordBody,
+  ConfirmModal
 };

@@ -24,3 +24,7 @@ export const inviteMemberApi = (email, role) => {
         role: role
     });
 }
+
+export const removeMemberApi = (id) => {
+    return axios.post(`/organization/remove-member/${id}/`);
+}
