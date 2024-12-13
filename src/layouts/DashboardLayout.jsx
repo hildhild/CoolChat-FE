@@ -5,7 +5,7 @@ import { useState } from "react";
 
 function DashboardLayout({ children, page }) {
   return (
-    <div className="flex">
+    <div className="flex overflow-x-hidden">
       <Sidebar page={page} />
       <div className="flex-grow relative h-[100vh] overflow-y-scroll">
         <DashboardHeader/>

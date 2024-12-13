@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
-import { ForgotPasswordBody, HeaderAuthen, Footer } from "../components";
+import { ForgotPasswordBody } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { AuthenLayout } from "../layouts";
 
 function ForgotPassword() {
     const accessToken = useSelector((state) => state.user.accessToken);
@@ -14,11 +15,9 @@ function ForgotPassword() {
     }, []);
 
     return (
-        <>
-            <HeaderAuthen/>
+        <AuthenLayout>
             <ForgotPasswordBody/>
-            <Footer/>
-        </>
+        </AuthenLayout>
     );
 }
 

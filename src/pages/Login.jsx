@@ -1,7 +1,8 @@
 import { useSelector } from "react-redux";
-import { LoginBody, HeaderAuthen, Footer } from "../components";
+import { LoginBody } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { AuthenLayout } from "../layouts";
 
 function Login() {
     const accessToken = useSelector((state) => state.user.accessToken);
@@ -14,11 +15,9 @@ function Login() {
     }, []);
 
     return (
-        <>
-            <HeaderAuthen/>
+        <AuthenLayout>
             <LoginBody/>
-            <Footer/>
-        </>
+        </AuthenLayout>
     );
 }
 

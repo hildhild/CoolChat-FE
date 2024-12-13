@@ -91,7 +91,7 @@ function LoginBody() {
   };
 
   return (
-    <div className="w-full h-full lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
+    <div className="lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
       <div className="w-full flex justify-center mb-[20px]">
         <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
       </div>

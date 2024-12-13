@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import { VerifyEmailBody, HeaderAuthen, Footer } from "../components";
+import { VerifyEmailBody } from "../components";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import { AuthenLayout } from "../layouts";
 
 function VerifyEmail() {
     const accessToken = useSelector((state) => state.user.accessToken);
@@ -14,11 +15,9 @@ function VerifyEmail() {
     }, []);
 
     return (
-        <>
-            <HeaderAuthen/>
+        <AuthenLayout>
             <VerifyEmailBody/>
-            <Footer/>
-        </>
+        </AuthenLayout>
     );
 }
 
