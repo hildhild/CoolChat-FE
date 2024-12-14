@@ -247,7 +247,7 @@ function ChatbotTraining() {
               </div>
               <Table
                 removeWrapper
-                aria-label="Example table with dynamic content"
+                aria-label="chatbot-training"
               >
                 <TableHeader columns={columns}>
                   {(column) => (

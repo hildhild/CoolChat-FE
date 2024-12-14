@@ -40,27 +40,31 @@ import {
   MdOutlineCancel,
   MdOutlineTextSnippet,
   MdOutlineGroups,
+  MdCancel,
 } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { GiNightSleep } from "react-icons/gi";
 import { CiEdit } from "react-icons/ci";
 import { TbWorld } from "react-icons/tb";
-import { FaFilePdf } from "react-icons/fa6";
+import { FaFilePdf, FaXmark } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import {
   editOrgInfoApi,
+  getInvitesApi,
   getMembersApi,
   inviteMemberApi,
   removeMemberApi,
+  revokeInviteApi,
 } from "../../services/orgApi";
 import { editUserInfoApi } from "../../services/userApi";
 import { toast } from "react-toastify";
 import { setOrganizationData } from "../../store/slices/OrganizationSlice";
 import { setCompanyName } from "../../store/slices/UserSlice";
 import { ConfirmModal } from "../../components";
+import { useQuery } from "@tanstack/react-query";
 
 function Organization() {
   const { t } = useTranslation();
@@ -72,14 +76,26 @@ function Organization() {
   const [orgInfoData, setOrgInfoData] = useState(orgInfo);
   const [isEditInfo, setIsEditInfo] = useState(false);
   const dispatch = useDispatch();
-  const [memberList, setMemberList] = useState([]);
   const [inviteForm, setInviteForm] = useState({
     email: "",
     role: "",
   });
   const userRole = useSelector((state) => state.user.role);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   const [memberId, setMemberId] = useState(null);
+  const [memberPage, setMemberPage] = useState(1);
+  const [totalMembers, setTotalMembers] = useState(0);
+  const [memberPages, setMemberPages] = useState(0);
+  const [memberOfPage, setMemberOfPage] = useState(0);
+
+  const [invitationId, setInvitationId] = useState(null);
+  const [invitationPage, setInvitationPage] = useState(1);
+  const [totalInvites, setTotalInvites] = useState(0);
+  const [invitationPages, setInvitationPages] = useState(0);
+  const [inviteStatus, setInviteStatus] = useState("");
+  const [inviteOfPage, setInviteOfPage] = useState(0);
+
 
   useEffect(() => {
     if (!accessToken) {
@@ -89,12 +105,29 @@ function Organization() {
     if (userRole !== "OWNER") {
       navigate("/chatbot-training");
     }
-    getMembersApi().then((res) => {
-      if (res.status === 200) {
-        setMemberList(res.data);
-      }
-    });
   }, []);
+
+  const { data: memberList, refetch: refetchMember } = useQuery({
+    queryKey: ['member', memberPage],
+    queryFn: async () => {
+        const res = await getMembersApi(memberPage);
+        setTotalMembers(res.data.count);
+        setMemberOfPage(res.data.results.length);
+        setMemberPages(Math.ceil(res.data.count / 50));
+        return res.data.results;
+    },
+  });
+
+  const { data: invitationList, refetch: refetchInvitation } = useQuery({
+    queryKey: ['invitation', invitationPage, inviteStatus],
+    queryFn: async () => {
+        const res = await getInvitesApi(invitationPage, inviteStatus);
+        setTotalInvites(res.data.count);
+        setInviteOfPage(res.data.results.length);
+        setInvitationPages(Math.ceil(res.data.count / 50));
+        return res.data.results;
+    },
+  });
 
   const handleChangeValue = (e) => {
     const fieldName = e.target.name;
@@ -164,13 +197,26 @@ function Organization() {
   const handleDeleteMember = (id) => {
     removeMemberApi(id).then((res) => {
       console.log(4, res);
-      if (res.status === 204) {
+      if (res.status === 200) {
         toast.success("Xóa thành viên thành công");
-        getMembersApi().then((res) => {
-          if (res.status === 200) {
-            setMemberList(res.data);
-          }
-        });
+        setMemberId(null);
+        refetchMember();
+        onClose();
+      } else {
+        if (res?.data.non_field_errors) {
+          toast.error(res?.data.non_field_errors[0]);
+        }
+      }
+    });
+  };
+
+  const handleRevokeInvitation = (id) => {
+    revokeInviteApi(id).then((res) => {
+      console.log(4, res);
+      if (res.status === 200) {
+        toast.success("Hủy lời mời thành công");
+        setInvitationId(null);
+        refetchInvitation();
         onClose();
       } else {
         if (res?.data.detail) {
@@ -180,7 +226,7 @@ function Organization() {
     });
   };
 
-  const columns = [
+  const memberColumns = [
     {
       key: "user_email",
       label: "Email",
@@ -203,7 +249,7 @@ function Organization() {
     },
   ];
 
-  const renderCell = (item, columnKey) => {
+  const renderMemberCell = (item, columnKey) => {
     const cellValue = item[columnKey];
     if (columnKey === "id") {
       return (
@@ -234,6 +280,76 @@ function Organization() {
     }
   };
 
+  const invitationColumns = [
+    {
+      key: "email",
+      label: "Email",
+    },
+    {
+      key: "role",
+      label: "Vai trò",
+    },
+    {
+      key: "created_at",
+      label: "Thời gian gửi",
+    },
+    {
+      key: "expires_at",
+      label: "Thời gian hết hạn",
+    },
+    {
+      key: "status",
+      label: "Trạng thái",
+    },
+    {
+      key: "id",
+      label: "Thao tác",
+    },
+  ];
+
+  const renderInvitationCell = (item, columnKey) => {
+    const cellValue = item[columnKey];
+    if (columnKey === "id") {
+      if (item["status"] === "active"){
+        return (
+          <button
+            className="text-red-500"
+            onClick={() => {
+              onOpen();
+              setInvitationId(cellValue);
+            }}
+          >
+            <FaXmark />
+          </button>
+        );
+      } else {
+        return <></>
+      }
+      
+    } else if (columnKey === "created_at" || columnKey === "expires_at") {
+      const date = new Date(cellValue);
+      return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+    } else if (columnKey === "role") {
+      if (cellValue === "ADMIN"){
+        return t("enterprise_admin")
+      } else if (cellValue === "AGENT") {
+        return t("csr")
+      }
+    } else if (columnKey === "status") {
+      if (cellValue === "active"){
+        return <Chip color="primary" variant="bordered" className="capitalize" size="sm">Đang chờ</Chip>
+      } else if (cellValue === "expired"){
+        return <Chip color="warning" variant="bordered" className="capitalize" size="sm">Quá hạn</Chip>
+      } else if (cellValue === "revoked") {
+        return <Chip color="danger" variant="bordered" className="capitalize" size="sm">Đã hủy</Chip>
+      } else if (cellValue === "used") {
+        return <Chip color="success" variant="bordered" className="capitalize" size="sm">Thành công</Chip>
+      }
+    } else {
+      return cellValue;
+    }
+  };
+
   const handleInviteMember = () => {
     inviteMemberApi(inviteForm.email, inviteForm.role).then((res) => {
       if (res.status === 201) {
@@ -254,14 +370,22 @@ function Organization() {
     });
   };
 
+  const handleConfirmModal = () => {
+    if (memberId) {
+      handleDeleteMember(memberId);
+    } else if (invitationId) {
+      handleRevokeInvitation(invitationId);
+    }
+  }
+
   return (
     <DashboardLayout page="organization">
       <ConfirmModal
         isOpen={isOpen}
-        onClose={onClose}
-        onConfirm={() => handleDeleteMember(memberId)}
-        title="Xóa thành viên"
-        description="Bạn có muốn xóa thành viên này không?"
+        onClose={() => {onClose(); setMemberId(null); setInvitationId(null);}}
+        onConfirm={handleConfirmModal}
+        title={memberId ? "Xóa thành viên" : "Hủy lời mời"}
+        description={memberId ? "Bạn có muốn xóa thành viên này không?" : "Bạn có muốn hủy lời mời này không?"}
       />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TỔ CHỨC</div>
@@ -423,28 +547,110 @@ function Organization() {
                 tabContent: "group-data-[selected=true]:text-coolchat",
               }}
             >
-              <Tab key="general" title="Danh sách thành viên">
+              <Tab key="memberList" title="Thành viên">
                 <Table
                   removeWrapper
-                  aria-label="Example table with dynamic content"
+                  aria-label="member"
+                  bottomContent={
+                    <div className="flex justify-between items-center mt-4">
+                      <div className="text-sm text-neutral-500">
+                        {
+                          memberOfPage === 0
+                          ?
+                          "Không có dữ liệu"
+                          :
+                          `Hiển thị ${(memberPage-1)*50 + 1} đến ${(memberPage-1)*50 + memberOfPage} trong ${totalMembers} dữ liệu`
+                        }
+                      </div>
+                      <Pagination
+                        isCompact
+                        showControls
+                        showShadow
+                        color="primary"
+                        page={memberPage}
+                        total={memberPages}
+                        onChange={(page) => setMemberPage(page)}
+                      />
+                    </div>
+                  }
                 >
-                  <TableHeader columns={columns}>
+                  <TableHeader columns={memberColumns}>
                     {(column) => (
                       <TableColumn key={column.key}>{column.label}</TableColumn>
                     )}
                   </TableHeader>
-                  <TableBody items={memberList}>
+                  <TableBody items={memberList ? memberList : []}>
                     {(item) => (
                       <TableRow key={item.key}>
                         {(columnKey) => (
-                          <TableCell>{renderCell(item, columnKey)}</TableCell>
+                          <TableCell>{renderMemberCell(item, columnKey)}</TableCell>
                         )}
                       </TableRow>
                     )}
                   </TableBody>
                 </Table>
               </Tab>
-              <Tab key="threshold" title="Mời thêm thành viên">
+              <Tab key="invitationList" title="Lời mời đã gửi">
+                <div className="flex justify-end mb-5">
+                  <Select
+                    variant="bordered"
+                    label="Trạng thái"
+                    defaultSelectedKeys={[inviteStatus]}
+                    size="sm"
+                    labelPlacement="outside"
+                    className="w-32"
+                    onChange={(e) => setInviteStatus(e.target.value)}
+                  >
+                    <SelectItem key="">Tất cả</SelectItem>
+                    <SelectItem key="active">Đang chờ</SelectItem>
+                    <SelectItem key="expired">Quá hạn</SelectItem>
+                    <SelectItem key="revoked">Đã hủy</SelectItem>
+                    <SelectItem key="used">Thành công</SelectItem>
+                  </Select>
+                </div>
+                <Table
+                  removeWrapper
+                  aria-label="invitation"
+                  bottomContent={
+                    <div className="flex justify-between items-center mt-4">
+                      <div className="text-sm text-neutral-500">
+                        {
+                          inviteOfPage === 0
+                          ?
+                          "Không có dữ liệu"
+                          :
+                          `Hiển thị ${(invitationPage-1)*50 + 1} đến ${(invitationPage-1)*50 + inviteOfPage} trong ${totalInvites} dữ liệu`
+                        }
+                      </div>
+                      <Pagination
+                        isCompact
+                        showControls
+                        showShadow
+                        color="primary"
+                        page={invitationPage}
+                        total={invitationPages}
+                        onChange={(page) => setInvitationPage(page)}
+                      />
+                    </div>
+                  }
+                >
+                  <TableHeader columns={invitationColumns}>
+                    {(column) => (
+                      <TableColumn key={column.key}>{column.label}</TableColumn>
+                    )}
+                  </TableHeader>
+                  <TableBody items={invitationList ? invitationList : []}>
+                    {(item) => (
+                      <TableRow key={item.key}>
+                        {(columnKey) => (
+                          <TableCell>{renderInvitationCell(item, columnKey)}</TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </Tab>
+              <Tab key="inviteMember" title="Mời thêm thành viên">
                 <div className="grid grid-cols-2 gap-5 mb-3">
                   <Input
                     name="email"
@@ -468,7 +674,7 @@ function Organization() {
                       setInviteForm({ ...inviteForm, role: e.target.value })
                     }
                   >
-                    <SelectItem key="OWNER">{t("enterprise_owner")}</SelectItem>
+                    {/* <SelectItem key="OWNER">{t("enterprise_owner")}</SelectItem> */}
                     <SelectItem key="ADMIN">{t("enterprise_admin")}</SelectItem>
                     <SelectItem key="AGENT">{t("csr")}</SelectItem>
                   </Select>
