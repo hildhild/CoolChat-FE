@@ -1,11 +1,9 @@
 import {
   Avatar,
   Button,
-  Checkbox,
   Input,
   Select,
   SelectItem,
-  Switch,
   Tab,
   Table,
   TableHeader,
@@ -13,41 +11,23 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  getKeyValue,
   Tabs,
   Pagination,
   Chip,
-  Textarea,
   useDisclosure,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
 import {
-  FaUserCircle,
-  FaBook,
-  FaFacebookSquare,
-  FaCode,
-  FaFile,
-  FaEdit,
-  FaFileUpload,
   FaTrash,
   FaInfoCircle,
 } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import {
-  MdOutlineAddPhotoAlternate,
-  MdLabel,
-  MdSearch,
-  MdOutlineCancel,
-  MdOutlineTextSnippet,
   MdOutlineGroups,
-  MdCancel,
 } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { GiNightSleep } from "react-icons/gi";
-import { CiEdit } from "react-icons/ci";
-import { TbWorld } from "react-icons/tb";
-import { FaFilePdf, FaXmark } from "react-icons/fa6";
+import { FaXmark } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
@@ -59,7 +39,6 @@ import {
   removeMemberApi,
   revokeInviteApi,
 } from "../../services/orgApi";
-import { editUserInfoApi } from "../../services/userApi";
 import { toast } from "react-toastify";
 import { setOrganizationData } from "../../store/slices/OrganizationSlice";
 import { setCompanyName } from "../../store/slices/UserSlice";
@@ -360,6 +339,7 @@ function Organization() {
           email: "",
           role: "",
         });
+        refetchInvitation();
       } else {
         if (res?.data.email) {
           toast.error("Email: " + res.data.email[0]);
