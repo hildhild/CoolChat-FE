@@ -42,7 +42,7 @@ import {
 import { toast } from "react-toastify";
 import { setOrganizationData } from "../../store/slices/OrganizationSlice";
 import { setCompanyName } from "../../store/slices/UserSlice";
-import { ConfirmModal } from "../../components";
+import { ConfirmModal, LoadingProcess } from "../../components";
 import { useQuery } from "@tanstack/react-query";
 
 function Organization() {
@@ -74,6 +74,7 @@ function Organization() {
   const [invitationPages, setInvitationPages] = useState(0);
   const [inviteStatus, setInviteStatus] = useState("");
   const [inviteOfPage, setInviteOfPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
@@ -86,7 +87,7 @@ function Organization() {
     }
   }, []);
 
-  const { data: memberList, refetch: refetchMember } = useQuery({
+  const { data: memberList, refetch: refetchMember, isLoading: isLoadingMember } = useQuery({
     queryKey: ['member', memberPage],
     queryFn: async () => {
         const res = await getMembersApi(memberPage);
@@ -97,7 +98,7 @@ function Organization() {
     },
   });
 
-  const { data: invitationList, refetch: refetchInvitation } = useQuery({
+  const { data: invitationList, refetch: refetchInvitation, isLoading: isLoadingInvite } = useQuery({
     queryKey: ['invitation', invitationPage, inviteStatus],
     queryFn: async () => {
         const res = await getInvitesApi(invitationPage, inviteStatus);
@@ -138,8 +139,9 @@ function Organization() {
     }
   };
 
-  const handleChangeInfo = () => {
-    editOrgInfoApi(
+  const handleChangeInfo = async () => {
+    setIsLoading(true);
+    await editOrgInfoApi(
       orgInfoData.name,
       orgInfoData.description,
       orgInfoData.contact_email,
@@ -171,11 +173,12 @@ function Organization() {
       .catch((err) => {
         console.log(2, err);
       });
+      setIsLoading(false);
   };
 
-  const handleDeleteMember = (id) => {
-    removeMemberApi(id).then((res) => {
-      console.log(4, res);
+  const handleDeleteMember = async (id) => {
+    setIsLoading(true);
+    await removeMemberApi(id).then((res) => {
       if (res.status === 200) {
         toast.success("Xóa thành viên thành công");
         setMemberId(null);
@@ -187,10 +190,12 @@ function Organization() {
         }
       }
     });
+    setIsLoading(false);
   };
 
-  const handleRevokeInvitation = (id) => {
-    revokeInviteApi(id).then((res) => {
+  const handleRevokeInvitation = async (id) => {
+    setIsLoading(true);
+    await revokeInviteApi(id).then((res) => {
       console.log(4, res);
       if (res.status === 200) {
         toast.success("Hủy lời mời thành công");
@@ -203,6 +208,7 @@ function Organization() {
         }
       }
     });
+    setIsLoading(false);
   };
 
   const memberColumns = [
@@ -329,8 +335,9 @@ function Organization() {
     }
   };
 
-  const handleInviteMember = () => {
-    inviteMemberApi(inviteForm.email, inviteForm.role).then((res) => {
+  const handleInviteMember = async () => {
+    setIsLoading(true);
+    await inviteMemberApi(inviteForm.email, inviteForm.role).then((res) => {
       if (res.status === 201) {
         toast.success(
           "Mời thành công, lời mời sẽ được gửi đến email của người nhận."
@@ -348,6 +355,7 @@ function Organization() {
         }
       }
     });
+    setIsLoading(false);
   };
 
   const handleConfirmModal = () => {
@@ -360,6 +368,7 @@ function Organization() {
 
   return (
     <DashboardLayout page="organization">
+      <LoadingProcess isLoading={isLoading || isLoadingInvite || isLoadingMember}/>
       <ConfirmModal
         isOpen={isOpen}
         onClose={() => {onClose(); setMemberId(null); setInvitationId(null);}}

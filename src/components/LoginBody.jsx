@@ -16,6 +16,7 @@ import { getUserInfoApi } from "../services/userApi";
 import { jwtDecode } from "jwt-decode";
 import { getOrgInfoApi } from "../services/orgApi";
 import { setOrganizationData } from "../store/slices/OrganizationSlice";
+import LoadingProcess from "./LoadingProcess";
 
 function LoginBody() {
   const { t } = useTranslation();
@@ -27,11 +28,13 @@ function LoginBody() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitWithReCAPTCHA = async () => {
+    setIsLoading(true);
     const token = await recaptchaRef.current.executeAsync();
     if (token) {
-      loginApi(loginData.email, loginData.password)
+      await loginApi(loginData.email, loginData.password)
         .then((res) => {
           if (res.status === 200) {
             navigate("../chatbot-training");
@@ -70,6 +73,7 @@ function LoginBody() {
     } else {
       toast.error("Lỗi recaptcha");
     }
+    setIsLoading(false);
   };
 
   const toggleShowPassword = () => {
@@ -92,6 +96,7 @@ function LoginBody() {
 
   return (
     <div className="lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full flex justify-center mb-[20px]">
         <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
       </div>

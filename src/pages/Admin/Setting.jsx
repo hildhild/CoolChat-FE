@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { changePasswordApi, editUserInfoApi } from "../../services/userApi";
 import { setToken, setUserData } from "../../store/slices/UserSlice";
 import { toast } from "react-toastify";
+import { LoadingProcess } from "../../components";
 
 function Setting() {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ function Setting() {
     new_password2: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -90,8 +92,9 @@ function Setting() {
     }
   };
 
-  const handleChangeProfile = () => {
-    editUserInfoApi(userInfoData.name, userInfoData.avatar)
+  const handleChangeProfile = async () => {
+    setIsLoading(true);
+    await editUserInfoApi(userInfoData.name, userInfoData.avatar)
       .then((res) => {
         console.log(123, res);
         if (res.status === 200) {
@@ -110,14 +113,16 @@ function Setting() {
       .catch((err) => {
         console.log(2, err);
       });
+      setIsLoading(false);
   };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleChangePassword = () => {
-    changePasswordApi(changePasswordForm.current_password, changePasswordForm.new_password, changePasswordForm.new_password2)
+  const handleChangePassword = async () => {
+    setIsLoading(true);
+    await changePasswordApi(changePasswordForm.current_password, changePasswordForm.new_password, changePasswordForm.new_password2)
     .then(res => {
       console.log(res)
       if (res.status === 200){
@@ -135,10 +140,12 @@ function Setting() {
         }
       }
     })
+    setIsLoading(false);
   }
 
   return (
     <DashboardLayout page="setting">
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">CÀI ĐẶT</div>
         <Button

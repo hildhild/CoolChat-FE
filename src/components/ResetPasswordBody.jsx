@@ -20,8 +20,10 @@ function ResetPasswordBody() {
   const url = new URL(window.location.href);
   const tokenEmail = url.searchParams.get("token");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitWithReCAPTCHA = async () => {
+    setIsLoading(true);
     const token = await recaptchaRef.current.executeAsync();
     if (token) {
         await resetPasswordApi(tokenEmail, newPassword, rePassword)
@@ -47,6 +49,7 @@ function ResetPasswordBody() {
       } else {
         toast.error("Lỗi recaptcha");
     }
+    setIsLoading(false);
   };
 
   const toggleShowPassword = () => {

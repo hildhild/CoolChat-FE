@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { signupApi } from "../services/authApi";
 import { changeSignupData } from "../store/slices/SignupDataSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import LoadingProcess from "./LoadingProcess";
 
 function SignUpBody() {
   const { t } = useTranslation();
@@ -20,11 +21,13 @@ function SignUpBody() {
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState("choose");
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitWithReCAPTCHA = async () => {
+    setIsLoading(true);
     const token = await recaptchaRef.current.executeAsync();
     if (token) {
-      signupApi(step, signupData)
+      await signupApi(step, signupData)
         .then((res) => {
           console.log(res);
           if (res.status === 201) {
@@ -71,6 +74,7 @@ function SignUpBody() {
     } else {
       toast.error("Lỗi recaptcha");
     }
+    setIsLoading(false);
   };
 
   const handleChangeValue = (e) => {
@@ -131,6 +135,7 @@ function SignUpBody() {
 
   return (
     <div className="w-full h-full lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
+      <LoadingProcess isLoading={isLoading}/>
       <div className="w-full flex justify-center mb-[20px]">
         <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
       </div>

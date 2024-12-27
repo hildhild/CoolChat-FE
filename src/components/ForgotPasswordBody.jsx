@@ -8,25 +8,24 @@ import { useSelector } from "react-redux";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import { forgotPasswordApi } from "../services/authApi";
 import { toast } from "react-toastify";
+import LoadingProcess from "./LoadingProcess";
 
 
 function ForgotPasswordBody() {
     const { t } = useTranslation();
     const recaptchaRef = React.useRef();
     const [email, setEmail] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const onSubmitWithReCAPTCHA = async () => {
+        setIsLoading(true);
         const token = await recaptchaRef.current.executeAsync();
-        console.log(1, token);
         if (token) {
-            console.log(2, token);
-            forgotPasswordApi(email)
+            await forgotPasswordApi(email)
               .then((res) => {
-                console.log(5, res);
                 if (res.status === 200) {
                   toast.success("Tài khoản tồn tại, vui lòng kiểm tra hòm thư của bạn để đặt lại mật khẩu.");
                 } else {
-                  console.log(res);
                   if (res.data?.email) {
                     toast.error("Email: " + res.data.email[0]);
                   }
@@ -38,11 +37,12 @@ function ForgotPasswordBody() {
         } else {
             toast.error("Lỗi recaptcha");
         }
+        setIsLoading(false);
     }
 
     return (
         <div className="w-full h-full lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
-            
+            <LoadingProcess isLoading={isLoading}/>
             <div className="w-full flex justify-center mb-[20px]">
                 <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
             </div>
