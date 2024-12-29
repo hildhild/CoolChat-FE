@@ -17,20 +17,31 @@ import { jwtDecode } from "jwt-decode";
 import { getOrgInfoApi } from "../services/orgApi";
 import { setOrganizationData } from "../store/slices/OrganizationSlice";
 import LoadingProcess from "./LoadingProcess";
+import { Controller, useForm } from "react-hook-form";
+import { EMAIL_PATTERN, PASSWORD_PATTERN } from "../constants/patterns";
+import { AuthenTop } from "./AuthenTop";
+import { AuthenBottom } from "./AuthenBottom";
 
 function LoginBody() {
   const { t } = useTranslation();
   const recaptchaRef = React.useRef();
   const navigate = useNavigate();
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      email: "", 
+      password: "",
+    },
+  });
 
-  const onSubmitWithReCAPTCHA = async () => {
+  const onSubmitWithReCAPTCHA = async (loginData) => {
     setIsLoading(true);
     const token = await recaptchaRef.current.executeAsync();
     if (token) {
@@ -38,7 +49,7 @@ function LoginBody() {
         .then((res) => {
           if (res.status === 200) {
             navigate("../chatbot-training");
-            toast.success("Đăng nhập thành công");
+            toast.success(t('login_success'));
             dispatch(setToken(res.data.access));
             localStorage.setItem("token", res.data.access);
             getUserInfoApi().then((res) => {
@@ -61,7 +72,7 @@ function LoginBody() {
             if (res.data?.email) {
               toast.error("Email: " + res.data.email[0]);
             } else if (res.data?.password) {
-              toast.error("Mật khẩu: " + res.data.password[0]);
+              toast.error(t("password") + " : " + res.data.password[0]);
             } else if (res.data?.detail) {
               toast.error(res.data.detail);
             }
@@ -71,7 +82,7 @@ function LoginBody() {
           console.log(2, err);
         });
     } else {
-      toast.error("Lỗi recaptcha");
+      toast.error(t('captcha_error'));
     }
     setIsLoading(false);
   };
@@ -80,36 +91,18 @@ function LoginBody() {
     setShowPassword(!showPassword);
   };
 
-  const handleChangeValue = (e) => {
-    const fieldName = e.target.name;
-    switch (fieldName) {
-      case "email":
-        setLoginData({ ...loginData, email: e.target.value });
-        break;
-      case "password":
-        setLoginData({ ...loginData, password: e.target.value });
-        break;
-      default:
-        return;
-    }
-  };
-
   return (
-    <div className="lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
+    <div className="xl:px-[400px] lg:px-[200px] md:px-[100px] px-8 pt-[128px] pb-[64px]  ">
       <LoadingProcess isLoading={isLoading} />
-      <div className="w-full flex justify-center mb-[20px]">
-        <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
-      </div>
-      <div className="text-center w-full text-md">{t("authen_text1")}</div>
-      <div className="text-center w-full text-md">- {t("authen_text2")}</div>
-      <div className="flex justify-center items-center py-8">
-        <div className="h-[1px] w-60 bg-slate-200"></div>
+      <AuthenTop/>
+      <div className="flex justify-center items-center py-8 w-full">
+        <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
         <div className="text-coolchat font-semibold text-lg mx-5 uppercase">
           {t("login")}
         </div>
-        <div className="h-[1px] w-60 bg-slate-200"></div>
+        <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
       </div>
-      <div className="px-40">
+      <div className="w-full">
         <Button
           className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold mb-7"
           onClick={onSubmitWithReCAPTCHA}
@@ -132,54 +125,90 @@ function LoginBody() {
           {t("continue_with_google_csr")}
         </Button>
       </div>
-      <div className="flex justify-center items-center pt-7">
-        <div className="h-[1px] w-60 bg-slate-200"></div>
+      <div className="flex justify-center items-center pt-7 w-full">
+        <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
         <div className="text-lg mx-5 uppercase">{t("or")}</div>
-        <div className="h-[1px] w-60 bg-slate-200"></div>
+        <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
       </div>
       <div className="flex w-full justify-center items-center py-5">
         <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
         <div className="font-semibold">{t("enter_your_account")}</div>
       </div>
-      <div className="px-40 mb-24">
+      <div className="mb-24">
         <div className="grid grid-cols-2 gap-5">
-          <div>
-            <Input
+          <div className="mb-5">
+            <Controller
+              control={control}
               name="email"
-              type="email"
-              variant="bordered"
-              label="Email"
-              placeholder={t("enter_your_email")}
-              className="mb-5"
-              value={loginData.email}
-              onChange={handleChangeValue}
+              rules={{
+                required: t('required'),
+                pattern: {
+                  value: EMAIL_PATTERN,
+                  message: t('invalid'),
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  name="email"
+                  label="Email"
+                  placeholder={t("enter_your_email")}
+                  type="email"
+                  variant="bordered"
+                  value={value}
+                  onChange={onChange}
+                  isRequired
+                />
+              )}
             />
+            {errors.email && (
+              <div className="text-red-500 text-xs mt-2">{errors.email.message}</div>
+            )}
           </div>
-          <div>
-            <Input
+          <div className="mb-5">
+            <Controller
+              control={control}
               name="password"
-              type={showPassword ? "text" : "password"}
-              variant="bordered"
-              label={t("password")}
-              placeholder={t("enter_your_password")}
-              className="mb-5"
-              value={loginData.password}
-              endContent={
-                <button
-                  aria-label="toggle password visibility"
-                  className="focus:outline-none"
-                  type="button"
-                  onClick={toggleShowPassword}
-                >
-                  {!showPassword ? (
-                    <FaEyeSlash className="text-default-400 pointer-events-none" />
-                  ) : (
-                    <FaEye className="text-default-400 pointer-events-none" />
-                  )}
-                </button>
-              }
-              onChange={handleChangeValue}
+              rules={{
+                required: t('required'),
+                pattern: {
+                  value: PASSWORD_PATTERN,
+                  message: t('password_inclusion_rule'),
+                },
+                minLength: {
+                  value: 8,
+                  message: t('password_length_rule'),
+                },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  variant="bordered"
+                  label={t("password")}
+                  placeholder={t("enter_your_password")}
+                  value={value}
+                  endContent={
+                    <button
+                      aria-label="toggle password visibility"
+                      className="focus:outline-none"
+                      type="button"
+                      onClick={toggleShowPassword}
+                    >
+                      {!showPassword ? (
+                        <FaEyeSlash className="text-default-400 pointer-events-none" />
+                      ) : (
+                        <FaEye className="text-default-400 pointer-events-none" />
+                      )}
+                    </button>
+                  }
+                  onChange={onChange}
+                  isRequired
+                />
+              )}
             />
+            {errors.password && (
+              <div className="text-red-500 text-xs mt-2">{errors.password.message}</div>
+            )}
           </div>
         </div>
         <div className="w-full flex justify-end">
@@ -189,7 +218,7 @@ function LoginBody() {
         </div>
         <Button
           className="bg-coolchat w-full rounded-full text-white font-semibold mb-7 uppercase"
-          onClick={onSubmitWithReCAPTCHA}
+          onClick={handleSubmit(onSubmitWithReCAPTCHA)}
         >
           {t("login")}
         </Button>
@@ -200,20 +229,7 @@ function LoginBody() {
           </Link>
         </div>
       </div>
-      <div className="w-full flex flex-col items-center mb-[20px]">
-        <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
-        <div className="w-[500px] text-center">
-          {t("recaptcha_des1")}{" "}
-          <a href="https://policies.google.com/privacy" className="underline">
-            {t("privacy_policy")}
-          </a>{" "}
-          {t("and")}{" "}
-          <a href="https://policies.google.com/terms" className="underline">
-            {t("terms_of_service")}
-          </a>{" "}
-          {t("recaptcha_des2")}
-        </div>
-      </div>
+      <AuthenBottom/>
       <ReCAPTCHA
         ref={recaptchaRef}
         size="invisible"

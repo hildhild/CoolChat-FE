@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyEmailApi } from "../services/authApi";
+import { AuthenBottom } from "./AuthenBottom";
+import { AuthenTop } from "./AuthenTop";
 
 function VerifyEmailBody() {
   const { t } = useTranslation();
@@ -28,7 +30,7 @@ function VerifyEmailBody() {
         .then((res) => {
           console.log(res);
           if (res.status === 200) {
-            toast.success("Xác minh tài khoản thành công.");
+            toast.success(t('verify_email_success'));
             setIsSuccess(true);
           } else {
             console.log(res);
@@ -39,7 +41,7 @@ function VerifyEmailBody() {
           console.log(2, err);
         });
     } else {
-      toast.error("Lỗi recaptcha");
+      toast.error(t('captcha_error'));
     }
     setIsLoading(false);
   };
@@ -49,18 +51,14 @@ function VerifyEmailBody() {
   }, []);
 
   return (
-    <div className="w-full h-full lg:px-[256px] pt-[128px] pb-[64px] px-[32px] md:px-[64px]">
-      <div className="w-full flex justify-center mb-[20px]">
-        <img src={Logo} className="w-[50%] sm:w-[30%]"></img>
-      </div>
-      <div className="text-center w-full text-md">{t("authen_text1")}</div>
-      <div className="text-center w-full text-md">- {t("authen_text2")}</div>
+    <div className="w-full h-full xl:px-[400px] lg:px-[200px] md:px-[100px] px-8 pt-[128px] pb-[64px]">
+      <AuthenTop/>
       <div className="flex justify-center items-center py-8">
-        <div className="h-[1px] w-60 bg-slate-200"></div>
+        <div className="h-[1px] w-[10%] md:w-[30%] bg-slate-200"></div>
         <div className="text-coolchat font-semibold text-lg mx-5 uppercase">
-          Xác minh địa chỉ email
+          {t('verify_email')}
         </div>
-        <div className="h-[1px] w-60 bg-slate-200"></div>
+        <div className="h-[1px] w-[10%] md:w-[30%] bg-slate-200"></div>
       </div>
       <div className="w-full flex justify-center py-12">
         {isLoading ? (
@@ -68,33 +66,20 @@ function VerifyEmailBody() {
         ) : isSuccess ? (
           <div className="flex w-full justify-center">
             <Link to="/login" className="mb-7 text-center w-full">
-              <i>Đăng nhập ngay</i>{" "}
+              <i>{t('login_now')}</i>{" "}
               <i className="text-coolchat underline">{t("login")}</i>
             </Link>
           </div>
         ) : (
           <div className="flex w-full justify-center">
             <Link to="/sign-up" className="mb-7 text-center w-full">
-              <i>Vui lòng đăng ký lại tài khoản khác</i>{" "}
+              <i>{t('pls_register_other_account')}</i>{" "}
               <i className="text-coolchat underline">{t("signup")}</i>
             </Link>
           </div>
         )}
       </div>
-      <div className="w-full flex flex-col items-center mb-[20px]">
-        <img src={GoogleRecaptcha} className="w-[50%] sm:w-[30%]"></img>
-        <div className="w-[500px] text-center">
-          {t("recaptcha_des1")}{" "}
-          <a href="https://policies.google.com/privacy" className="underline">
-            {t("privacy_policy")}
-          </a>{" "}
-          {t("and")}{" "}
-          <a href="https://policies.google.com/terms" className="underline">
-            {t("terms_of_service")}
-          </a>{" "}
-          {t("recaptcha_des2")}
-        </div>
-      </div>
+      <AuthenBottom/>
       <ReCAPTCHA
         ref={recaptchaRef}
         size="invisible"
