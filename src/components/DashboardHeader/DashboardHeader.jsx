@@ -68,7 +68,7 @@ const DashboardHeader = () => {
         </button>
 
         {/* Actions */}
-        <div className="flex gap-7 justify-end items-center">
+        <div className="md:flex gap-7 justify-end items-center hidden">
           <SelectLanguage
             handleClick={handleSelectLangClick}
             showMenu={showMenu}

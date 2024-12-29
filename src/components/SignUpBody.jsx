@@ -71,14 +71,10 @@ function SignUpBody() {
           console.log(res);
           if (res.status === 201) {
             if (step === "create") {
-              toast.success(
-                t('create_org_success')
-              );
+              toast.success(t('create_org_success'));
             } else if (step === "join") {
               navigate("/login");
-              toast.success(
-                t('join_org_success')
-              );
+              toast.success(t('join_org_success'));
             }
           } else {
             console.log(res);
@@ -114,58 +110,6 @@ function SignUpBody() {
       toast.error(t("captcha_error"));
     }
     setIsLoading(false);
-  };
-
-  const handleChangeValue = (e) => {
-    const fieldName = e.target.name;
-    switch (fieldName) {
-      case "invite_code":
-        dispatch(
-          changeSignupData({ ...signupData, invite_code: e.target.value })
-        );
-        break;
-      case "name":
-        dispatch(changeSignupData({ ...signupData, name: e.target.value }));
-        break;
-      case "description":
-        dispatch(
-          changeSignupData({ ...signupData, description: e.target.value })
-        );
-        break;
-      case "contact_email":
-        dispatch(
-          changeSignupData({ ...signupData, contact_email: e.target.value })
-        );
-        break;
-      case "contact_phone":
-        dispatch(
-          changeSignupData({ ...signupData, contact_phone: e.target.value })
-        );
-        break;
-      case "user_name":
-        dispatch(
-          changeSignupData({ ...signupData, user_name: e.target.value })
-        );
-        break;
-      case "user_phone":
-        dispatch(
-          changeSignupData({ ...signupData, user_phone: e.target.value })
-        );
-        break;
-      case "email":
-        dispatch(changeSignupData({ ...signupData, email: e.target.value }));
-        break;
-      case "password":
-        dispatch(changeSignupData({ ...signupData, password: e.target.value }));
-        break;
-      case "password2":
-        dispatch(
-          changeSignupData({ ...signupData, password2: e.target.value })
-        );
-        break;
-      default:
-        return;
-    }
   };
 
   const toggleShowPassword = () => {
@@ -252,15 +196,28 @@ function SignUpBody() {
             )}
           </div>
           <div className="grid grid-cols-2 gap-2 md:gap-5 mb-5">
-            <Input
-              onChange={handleChangeValue}
-              name="description"
-              type="text"
-              variant="bordered"
-              label={t("des")}
-              placeholder={t("enter_des")}
-              value={signupData.description}
-            />
+            <div>
+              <Controller
+                control={createControl}
+                name="description"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    name="description"
+                    label={t("des")}
+                    placeholder={t("enter_des")}
+                    type="text"
+                    variant="bordered"
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              {createErrors.description && (
+                <div className="text-red-500 text-xs mt-2">
+                  {createErrors.description.message}
+                </div>
+              )}
+            </div>
             <div>
               <Controller
                 control={createControl}
@@ -291,15 +248,28 @@ function SignUpBody() {
                 </div>
               )}
             </div>
-            <Input
-              name="contact_phone"
-              onChange={handleChangeValue}
-              type="text"
-              variant="bordered"
-              label={t("contact_phone")}
-              placeholder={t("enter_contact_phone")}
-              value={signupData.contact_phone}
-            />
+            <div>
+              <Controller
+                control={createControl}
+                name="contact_phone"
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    name="contact_phone"
+                    label={t("contact_phone")}
+                    placeholder={t("enter_contact_phone")}
+                    type="text"
+                    variant="bordered"
+                    value={value}
+                    onChange={onChange}
+                  />
+                )}
+              />
+              {createErrors.contact_phone && (
+                <div className="text-red-500 text-xs mt-2">
+                  {createErrors.contact_phone.message}
+                </div>
+              )}
+            </div>
             <div>
               <Controller
                 control={createControl}

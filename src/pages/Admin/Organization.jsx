@@ -17,14 +17,9 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
-import {
-  FaTrash,
-  FaInfoCircle,
-} from "react-icons/fa";
+import { FaTrash, FaInfoCircle } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import {
-  MdOutlineGroups,
-} from "react-icons/md";
+import { MdOutlineGroups } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
@@ -44,6 +39,8 @@ import { setOrganizationData } from "../../store/slices/OrganizationSlice";
 import { setCompanyName } from "../../store/slices/UserSlice";
 import { ConfirmModal, LoadingProcess } from "../../components";
 import { useQuery } from "@tanstack/react-query";
+import { Controller, useForm } from "react-hook-form";
+import { EMAIL_PATTERN } from "../../constants/patterns";
 
 function Organization() {
   const { t } = useTranslation();
@@ -55,10 +52,6 @@ function Organization() {
   const [orgInfoData, setOrgInfoData] = useState(orgInfo);
   const [isEditInfo, setIsEditInfo] = useState(false);
   const dispatch = useDispatch();
-  const [inviteForm, setInviteForm] = useState({
-    email: "",
-    role: "",
-  });
   const userRole = useSelector((state) => state.user.role);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -75,7 +68,27 @@ function Organization() {
   const [inviteStatus, setInviteStatus] = useState("");
   const [inviteOfPage, setInviteOfPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    control: editControl,
+    handleSubmit: editHandleSubmit,
+    formState: { errors: editErrors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: orgInfo,
+  });
 
+  const {
+    control: inviteControl,
+    handleSubmit: inviteHandleSubmit,
+    formState: { errors: inviteErrors },
+    reset
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      email: "",
+      role: "",
+    },
+  });
 
   useEffect(() => {
     if (!accessToken) {
@@ -87,50 +100,35 @@ function Organization() {
     }
   }, []);
 
-  const { data: memberList, refetch: refetchMember, isLoading: isLoadingMember } = useQuery({
-    queryKey: ['member', memberPage],
+  const {
+    data: memberList,
+    refetch: refetchMember,
+    isLoading: isLoadingMember,
+  } = useQuery({
+    queryKey: ["member", memberPage],
     queryFn: async () => {
-        const res = await getMembersApi(memberPage);
-        setTotalMembers(res.data.count);
-        setMemberOfPage(res.data.results.length);
-        setMemberPages(Math.ceil(res.data.count / 50));
-        return res.data.results;
+      const res = await getMembersApi(memberPage);
+      setTotalMembers(res.data.count);
+      setMemberOfPage(res.data.results.length);
+      setMemberPages(Math.ceil(res.data.count / 50));
+      return res.data.results;
     },
   });
 
-  const { data: invitationList, refetch: refetchInvitation, isLoading: isLoadingInvite } = useQuery({
-    queryKey: ['invitation', invitationPage, inviteStatus],
+  const {
+    data: invitationList,
+    refetch: refetchInvitation,
+    isLoading: isLoadingInvite,
+  } = useQuery({
+    queryKey: ["invitation", invitationPage, inviteStatus],
     queryFn: async () => {
-        const res = await getInvitesApi(invitationPage, inviteStatus);
-        setTotalInvites(res.data.count);
-        setInviteOfPage(res.data.results.length);
-        setInvitationPages(Math.ceil(res.data.count / 50));
-        return res.data.results;
+      const res = await getInvitesApi(invitationPage, inviteStatus);
+      setTotalInvites(res.data.count);
+      setInviteOfPage(res.data.results.length);
+      setInvitationPages(Math.ceil(res.data.count / 50));
+      return res.data.results;
     },
   });
-
-  const handleChangeValue = (e) => {
-    const fieldName = e.target.name;
-    switch (fieldName) {
-      case "name":
-        setOrgInfoData({ ...orgInfoData, name: e.target.value });
-        break;
-      case "contact_email":
-        setOrgInfoData({ ...orgInfoData, contact_email: e.target.value });
-        break;
-      case "contact_phone":
-        setOrgInfoData({ ...orgInfoData, contact_phone: e.target.value });
-        break;
-      case "description":
-        setOrgInfoData({ ...orgInfoData, description: e.target.value });
-        break;
-      case "address":
-        setOrgInfoData({ ...orgInfoData, address: e.target.value });
-        break;
-      default:
-        return;
-    }
-  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -139,20 +137,20 @@ function Organization() {
     }
   };
 
-  const handleChangeInfo = async () => {
+  const handleChangeInfo = async (data) => {
     setIsLoading(true);
     await editOrgInfoApi(
-      orgInfoData.name,
-      orgInfoData.description,
-      orgInfoData.contact_email,
-      orgInfoData.contact_phone,
-      orgInfoData.address
+      data.name,
+      data.description,
+      data.contact_email,
+      data.contact_phone,
+      data.address
     )
       .then((res) => {
         console.log(123, res);
         if (res.status === 200) {
-          dispatch(setOrganizationData(orgInfoData));
-          dispatch(setCompanyName(orgInfoData.name));
+          dispatch(setOrganizationData(data));
+          dispatch(setCompanyName(data.name));
           toast.success("Thay đổi thông tin thành công.");
           setIsEditInfo(false);
         } else {
@@ -173,7 +171,7 @@ function Organization() {
       .catch((err) => {
         console.log(2, err);
       });
-      setIsLoading(false);
+    setIsLoading(false);
   };
 
   const handleDeleteMember = async (id) => {
@@ -252,14 +250,13 @@ function Organization() {
       const date = new Date(cellValue);
       return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
     } else if (columnKey === "role") {
-      if (cellValue === "OWNER"){
-        return t("enterprise_owner")
-      } else if (cellValue === "ADMIN"){
-        return t("enterprise_admin")
+      if (cellValue === "OWNER") {
+        return t("enterprise_owner");
+      } else if (cellValue === "ADMIN") {
+        return t("enterprise_admin");
       } else if (cellValue === "AGENT") {
-        return t("csr")
+        return t("csr");
       }
-      
     } else {
       return cellValue;
     }
@@ -295,7 +292,7 @@ function Organization() {
   const renderInvitationCell = (item, columnKey) => {
     const cellValue = item[columnKey];
     if (columnKey === "id") {
-      if (item["status"] === "active"){
+      if (item["status"] === "active") {
         return (
           <button
             className="text-red-500"
@@ -308,44 +305,76 @@ function Organization() {
           </button>
         );
       } else {
-        return <></>
+        return <></>;
       }
-      
     } else if (columnKey === "created_at" || columnKey === "expires_at") {
       const date = new Date(cellValue);
       return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
     } else if (columnKey === "role") {
-      if (cellValue === "ADMIN"){
-        return t("enterprise_admin")
+      if (cellValue === "ADMIN") {
+        return t("enterprise_admin");
       } else if (cellValue === "AGENT") {
-        return t("csr")
+        return t("csr");
       }
     } else if (columnKey === "status") {
-      if (cellValue === "active"){
-        return <Chip color="primary" variant="bordered" className="capitalize" size="sm">Đang chờ</Chip>
-      } else if (cellValue === "expired"){
-        return <Chip color="warning" variant="bordered" className="capitalize" size="sm">Quá hạn</Chip>
+      if (cellValue === "active") {
+        return (
+          <Chip
+            color="primary"
+            variant="bordered"
+            className="capitalize"
+            size="sm"
+          >
+            Đang chờ
+          </Chip>
+        );
+      } else if (cellValue === "expired") {
+        return (
+          <Chip
+            color="warning"
+            variant="bordered"
+            className="capitalize"
+            size="sm"
+          >
+            Quá hạn
+          </Chip>
+        );
       } else if (cellValue === "revoked") {
-        return <Chip color="danger" variant="bordered" className="capitalize" size="sm">Đã hủy</Chip>
+        return (
+          <Chip
+            color="danger"
+            variant="bordered"
+            className="capitalize"
+            size="sm"
+          >
+            Đã hủy
+          </Chip>
+        );
       } else if (cellValue === "used") {
-        return <Chip color="success" variant="bordered" className="capitalize" size="sm">Thành công</Chip>
+        return (
+          <Chip
+            color="success"
+            variant="bordered"
+            className="capitalize"
+            size="sm"
+          >
+            Thành công
+          </Chip>
+        );
       }
     } else {
       return cellValue;
     }
   };
 
-  const handleInviteMember = async () => {
+  const handleInviteMember = async (data) => {
     setIsLoading(true);
-    await inviteMemberApi(inviteForm.email, inviteForm.role).then((res) => {
+    await inviteMemberApi(data.email, data.role).then((res) => {
       if (res.status === 201) {
         toast.success(
           "Mời thành công, lời mời sẽ được gửi đến email của người nhận."
         );
-        setInviteForm({
-          email: "",
-          role: "",
-        });
+        reset();
         refetchInvitation();
       } else {
         if (res?.data.email) {
@@ -364,17 +393,27 @@ function Organization() {
     } else if (invitationId) {
       handleRevokeInvitation(invitationId);
     }
-  }
+  };
 
   return (
     <DashboardLayout page="organization">
-      <LoadingProcess isLoading={isLoading || isLoadingInvite || isLoadingMember}/>
+      <LoadingProcess
+        isLoading={isLoading || isLoadingInvite || isLoadingMember}
+      />
       <ConfirmModal
         isOpen={isOpen}
-        onClose={() => {onClose(); setMemberId(null); setInvitationId(null);}}
+        onClose={() => {
+          onClose();
+          setMemberId(null);
+          setInvitationId(null);
+        }}
         onConfirm={handleConfirmModal}
         title={memberId ? "Xóa thành viên" : "Hủy lời mời"}
-        description={memberId ? "Bạn có muốn xóa thành viên này không?" : "Bạn có muốn hủy lời mời này không?"}
+        description={
+          memberId
+            ? "Bạn có muốn xóa thành viên này không?"
+            : "Bạn có muốn hủy lời mời này không?"
+        }
       />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TỔ CHỨC</div>
@@ -419,74 +458,155 @@ function Organization() {
                 )}
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-5 mb-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-3">
               <div>
-                <Input
+                <Controller
+                  control={editControl}
                   name="name"
-                  onChange={handleChangeValue}
-                  isDisabled={!isEditInfo}
-                  type="text"
-                  variant="bordered"
-                  label={t("name")}
-                  placeholder={t("enter_your_name")}
-                  className="mb-5"
-                  value={orgInfoData.name}
+                  rules={{
+                    required: t("required"),
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      name="name"
+                      label={t("org_name")}
+                      placeholder={t("enter_org_name")}
+                      type="text"
+                      variant="bordered"
+                      value={value}
+                      onChange={onChange}
+                      isRequired
+                      isDisabled={!isEditInfo}
+                    />
+                  )}
                 />
-                <Input
-                  name="contact_email"
-                  onChange={handleChangeValue}
-                  isDisabled={!isEditInfo}
-                  type="email"
-                  variant="bordered"
-                  label={t("contact_email")}
-                  placeholder={t("enter_contact_email")}
-                  className="mb-5"
-                  value={orgInfoData.contact_email}
-                />
-                <Input
-                  name="address"
-                  onChange={handleChangeValue}
-                  isDisabled={!isEditInfo}
-                  type="text"
-                  variant="bordered"
-                  label={t("address")}
-                  placeholder={t("enter_address")}
-                  className="mb-5"
-                  value={orgInfoData.address}
-                />
+                {editErrors.name && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {editErrors.name.message}
+                  </div>
+                )}
               </div>
               <div>
-                <Input
+                <Controller
+                  control={editControl}
                   name="description"
-                  onChange={handleChangeValue}
-                  isDisabled={!isEditInfo}
-                  type="text"
-                  variant="bordered"
-                  label={t("des")}
-                  placeholder={t("enter_des")}
-                  className="mb-5"
-                  value={orgInfoData.description}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      name="description"
+                      label={t("des")}
+                      placeholder={t("enter_des")}
+                      type="text"
+                      variant="bordered"
+                      value={value}
+                      onChange={onChange}
+                      isDisabled={!isEditInfo}
+                    />
+                  )}
                 />
-                <Input
+                {editErrors.description && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {editErrors.description.message}
+                  </div>
+                )}
+              </div>
+              <div>
+                <Controller
+                  control={editControl}
+                  name="contact_email"
+                  rules={{
+                    required: t("required"),
+                    pattern: {
+                      value: EMAIL_PATTERN,
+                      message: t("invalid"),
+                    },
+                  }}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      name="contact_email"
+                      label={t("contact_email")}
+                      placeholder={t("enter_contact_email")}
+                      type="email"
+                      variant="bordered"
+                      value={value}
+                      onChange={onChange}
+                      isRequired
+                      isDisabled={!isEditInfo}
+                    />
+                  )}
+                />
+                {editErrors.contact_email && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {editErrors.contact_email.message}
+                  </div>
+                )}
+              </div>
+              <div>
+                <Controller
+                  control={editControl}
                   name="contact_phone"
-                  onChange={handleChangeValue}
-                  isDisabled={!isEditInfo}
-                  type="text"
-                  variant="bordered"
-                  label={t("contact_phone")}
-                  placeholder={t("enter_contact_phone")}
-                  className="mb-5"
-                  value={orgInfoData.contact_phone}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      name="contact_phone"
+                      label={t("contact_phone")}
+                      placeholder={t("enter_contact_phone")}
+                      type="text"
+                      variant="bordered"
+                      value={value}
+                      onChange={onChange}
+                      isDisabled={!isEditInfo}
+                    />
+                  )}
                 />
-                <Input
+                {editErrors.contact_phone && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {editErrors.contact_phone.message}
+                  </div>
+                )}
+              </div>
+              <div>
+                <Controller
+                  control={editControl}
+                  name="address"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      name="address"
+                      label={t("address")}
+                      placeholder={t("enter_address")}
+                      type="text"
+                      variant="bordered"
+                      value={value}
+                      onChange={onChange}
+                      isDisabled={!isEditInfo}
+                    />
+                  )}
+                />
+                {editErrors.address && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {editErrors.address.message}
+                  </div>
+                )}
+              </div>
+              <div>
+                <Controller
+                  control={editControl}
                   name="subscription_type"
-                  isDisabled
-                  type="text"
-                  variant="bordered"
-                  label="Gói đăng ký"
-                  className="mb-5"
-                  value={orgInfoData.subscription_type}
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      name="subscription_type"
+                      label="Gói đăng ký"
+                      type="text"
+                      variant="bordered"
+                      value={value}
+                      onChange={onChange}
+                      isDisabled
+                    />
+                  )}
                 />
+                {editErrors.subscription_type && (
+                  <div className="text-red-500 text-xs mt-2">
+                    {editErrors.subscription_type.message}
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex gap-5 justify-end">
@@ -501,7 +621,7 @@ function Organization() {
                   >
                     HỦY BỎ
                   </Button>
-                  <Button color="success" onClick={handleChangeInfo}>
+                  <Button color="success" onClick={editHandleSubmit(handleChangeInfo)}>
                     LƯU
                   </Button>
                 </>
@@ -543,13 +663,11 @@ function Organization() {
                   bottomContent={
                     <div className="flex justify-between items-center mt-4">
                       <div className="text-sm text-neutral-500">
-                        {
-                          memberOfPage === 0
-                          ?
-                          "Không có dữ liệu"
-                          :
-                          `Hiển thị ${(memberPage-1)*50 + 1} đến ${(memberPage-1)*50 + memberOfPage} trong ${totalMembers} dữ liệu`
-                        }
+                        {memberOfPage === 0
+                          ? "Không có dữ liệu"
+                          : `Hiển thị ${(memberPage - 1) * 50 + 1} đến ${
+                              (memberPage - 1) * 50 + memberOfPage
+                            } trong ${totalMembers} dữ liệu`}
                       </div>
                       <Pagination
                         isCompact
@@ -572,7 +690,9 @@ function Organization() {
                     {(item) => (
                       <TableRow key={item.key}>
                         {(columnKey) => (
-                          <TableCell>{renderMemberCell(item, columnKey)}</TableCell>
+                          <TableCell>
+                            {renderMemberCell(item, columnKey)}
+                          </TableCell>
                         )}
                       </TableRow>
                     )}
@@ -603,13 +723,11 @@ function Organization() {
                   bottomContent={
                     <div className="flex justify-between items-center mt-4">
                       <div className="text-sm text-neutral-500">
-                        {
-                          inviteOfPage === 0
-                          ?
-                          "Không có dữ liệu"
-                          :
-                          `Hiển thị ${(invitationPage-1)*50 + 1} đến ${(invitationPage-1)*50 + inviteOfPage} trong ${totalInvites} dữ liệu`
-                        }
+                        {inviteOfPage === 0
+                          ? "Không có dữ liệu"
+                          : `Hiển thị ${(invitationPage - 1) * 50 + 1} đến ${
+                              (invitationPage - 1) * 50 + inviteOfPage
+                            } trong ${totalInvites} dữ liệu`}
                       </div>
                       <Pagination
                         isCompact
@@ -632,7 +750,9 @@ function Organization() {
                     {(item) => (
                       <TableRow key={item.key}>
                         {(columnKey) => (
-                          <TableCell>{renderInvitationCell(item, columnKey)}</TableCell>
+                          <TableCell>
+                            {renderInvitationCell(item, columnKey)}
+                          </TableCell>
                         )}
                       </TableRow>
                     )}
@@ -640,36 +760,69 @@ function Organization() {
                 </Table>
               </Tab>
               <Tab key="inviteMember" title="Mời thêm thành viên">
-                <div className="grid grid-cols-2 gap-5 mb-3">
-                  <Input
-                    name="email"
-                    type="email"
-                    onChange={(e) =>
-                      setInviteForm({ ...inviteForm, email: e.target.value })
-                    }
-                    variant="bordered"
-                    label="Email"
-                    placeholder="Nhập email"
-                    className="mb-5"
-                    value={inviteForm.email}
-                  />
-                  <Select
-                    variant="bordered"
-                    label={t("role")}
-                    className="mb-5"
-                    placeholder={t("select_role")}
-                    selectedKeys={[inviteForm.role]}
-                    onChange={(e) =>
-                      setInviteForm({ ...inviteForm, role: e.target.value })
-                    }
-                  >
-                    {/* <SelectItem key="OWNER">{t("enterprise_owner")}</SelectItem> */}
-                    <SelectItem key="ADMIN">{t("enterprise_admin")}</SelectItem>
-                    <SelectItem key="AGENT">{t("csr")}</SelectItem>
-                  </Select>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3">
+                  <div>
+                    <Controller
+                      control={inviteControl}
+                      name="email"
+                      rules={{
+                        required: t("required"),
+                        pattern: {
+                          value: EMAIL_PATTERN,
+                          message: t("invalid"),
+                        },
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="email"
+                          label="Email"
+                          placeholder="Nhập email"
+                          type="email"
+                          variant="bordered"
+                          value={value}
+                          onChange={onChange}
+                          isRequired
+                        />
+                      )}
+                    />
+                    {inviteErrors.email && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {inviteErrors.email.message}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Controller
+                      control={inviteControl}
+                      name="role"
+                      rules={{
+                        required: t("required"),
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <Select
+                          variant="bordered"
+                          label={t("role")}
+                          placeholder={t("select_role")}
+                          selectedKeys={[value]}
+                          onChange={onChange}
+                          isRequired
+                        >
+                          {/* <SelectItem key="OWNER">{t("enterprise_owner")}</SelectItem> */}
+                          <SelectItem key="ADMIN">{t("enterprise_admin")}</SelectItem>
+                          <SelectItem key="AGENT">{t("csr")}</SelectItem>
+                        </Select>
+                      )}
+                    />
+                    {inviteErrors.role && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {inviteErrors.role.message}
+                      </div>
+                    )}
+                  </div>
+                  
                 </div>
                 <div className="flex gap-5 justify-end">
-                  <Button color="primary" onClick={handleInviteMember}>
+                  <Button color="primary" onClick={inviteHandleSubmit(handleInviteMember)}>
                     MỜI
                   </Button>
                 </div>

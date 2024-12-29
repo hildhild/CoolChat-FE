@@ -22,6 +22,8 @@ import { changePasswordApi, editUserInfoApi } from "../../services/userApi";
 import { setToken, setUserData } from "../../store/slices/UserSlice";
 import { toast } from "react-toastify";
 import { LoadingProcess } from "../../components";
+import { Controller, useForm } from "react-hook-form";
+import { PASSWORD_PATTERN } from "../../constants/patterns";
 
 function Setting() {
   const { t } = useTranslation();
@@ -40,6 +42,28 @@ function Setting() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    control: infoControl,
+    handleSubmit: infoHandleSubmit,
+    formState: { errors: infoErrors },
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: userInfo,
+  });
+
+  const {
+    control: passwordControl,
+    handleSubmit: passwordHandleSubmit,
+    formState: { errors: passwordErrors },
+    watch: passwordWatch,
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      current_password: "",
+      new_password: "",
+      new_password2: "",
+    },
+  });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -54,51 +78,13 @@ function Setting() {
     }
   }, []);
 
-  const handleChangeValue = (e) => {
-    const fieldName = e.target.name;
-    switch (fieldName) {
-      case "name":
-        setUserInfoData({ ...userInfoData, name: e.target.value });
-        break;
-      case "email":
-        setUserInfoData({ ...userInfoData, email: e.target.value });
-        break;
-      case "phoneNumber":
-        setUserInfoData({ ...userInfoData, phoneNumber: e.target.value });
-        break;
-      case "avatar":
-        setUserInfoData({ ...userInfoData, avatar: e.target.value });
-        break;
-      case "current_password":
-        setChangePasswordForm({
-          ...changePasswordForm,
-          current_password: e.target.value,
-        });
-        break;
-      case "new_password":
-        setChangePasswordForm({
-          ...changePasswordForm,
-          new_password: e.target.value,
-        });
-        break;
-      case "new_password2":
-        setChangePasswordForm({
-          ...changePasswordForm,
-          new_password2: e.target.value,
-        });
-        break;
-      default:
-        return;
-    }
-  };
-
-  const handleChangeProfile = async () => {
+  const handleChangeProfile = async (data) => {
     setIsLoading(true);
-    await editUserInfoApi(userInfoData.name, userInfoData.avatar)
+    await editUserInfoApi(data.name, data.avatar)
       .then((res) => {
         console.log(123, res);
         if (res.status === 200) {
-          dispatch(setUserData(userInfoData));
+          dispatch(setUserData(data));
           toast.success("Thay đổi thông tin thành công.");
           setIsEditProfile(false);
         } else {
@@ -113,19 +99,22 @@ function Setting() {
       .catch((err) => {
         console.log(2, err);
       });
-      setIsLoading(false);
+    setIsLoading(false);
   };
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleChangePassword = async () => {
+  const handleChangePassword = async (data) => {
     setIsLoading(true);
-    await changePasswordApi(changePasswordForm.current_password, changePasswordForm.new_password, changePasswordForm.new_password2)
-    .then(res => {
-      console.log(res)
-      if (res.status === 200){
+    await changePasswordApi(
+      data.current_password,
+      data.new_password,
+      data.new_password2
+    ).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
         dispatch(setToken(""));
         localStorage.setItem("token", "");
         navigate("/login");
@@ -139,9 +128,9 @@ function Setting() {
           toast.error("Xác nhận mật khẩu mới: " + res.data.new_password2[0]);
         }
       }
-    })
+    });
     setIsLoading(false);
-  }
+  };
 
   return (
     <DashboardLayout page="setting">
@@ -203,57 +192,108 @@ function Setting() {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-5 mb-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-5">
                   <div>
-                    <Input
+                    <Controller
+                      control={infoControl}
                       name="name"
-                      onChange={handleChangeValue}
-                      isDisabled={!isEditProfile}
-                      type="text"
-                      variant="bordered"
-                      label={t("name")}
-                      placeholder={t("enter_your_name")}
-                      className="mb-5"
-                      value={userInfoData.name}
+                      rules={{
+                        required: t("required"),
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="name"
+                          label={t("name")}
+                          placeholder={t("enter_your_name")}
+                          type="text"
+                          variant="bordered"
+                          value={value}
+                          onChange={onChange}
+                          isRequired
+                          isDisabled={!isEditProfile}
+                        />
+                      )}
                     />
-                    <Input
-                      name="email"
-                      isDisabled
-                      type="email"
-                      variant="bordered"
-                      label="Email"
-                      placeholder={t("enter_your_email")}
-                      className="mb-5"
-                      value={userInfoData.email}
-                    />
+                    {infoErrors.name && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {infoErrors.name.message}
+                      </div>
+                    )}
                   </div>
                   <div>
-                    <Input
+                    <Controller
+                      control={infoControl}
                       name="phoneNumber"
-                      isDisabled
-                      type="text"
-                      variant="bordered"
-                      label={t("phone")}
-                      placeholder={t("enter_your_phone")}
-                      className="mb-5"
-                      value={userInfoData.phoneNumber}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="phoneNumber"
+                          label={t("phone")}
+                          placeholder={t("enter_your_phone")}
+                          type="text"
+                          variant="bordered"
+                          value={value}
+                          onChange={onChange}
+                          isDisabled
+                        />
+                      )}
                     />
-                    <Select
-                      variant="bordered"
-                      label={t("role")}
-                      className="mb-5"
-                      placeholder={t("select_role")}
-                      selectedKeys={[userInfoData.role]}
-                      isDisabled
-                    >
-                      <SelectItem key="OWNER">
-                        {t("enterprise_owner")}
-                      </SelectItem>
-                      <SelectItem key="ADMIN">
-                        {t("enterprise_admin")}
-                      </SelectItem>
-                      <SelectItem key="AGENT">{t("csr")}</SelectItem>
-                    </Select>
+                    {infoErrors.phoneNumber && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {infoErrors.phoneNumber.message}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Controller
+                      control={infoControl}
+                      name="email"
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="email"
+                          label="Email"
+                          placeholder={t("enter_your_email")}
+                          type="email"
+                          variant="bordered"
+                          value={value}
+                          onChange={onChange}
+                          isDisabled
+                        />
+                      )}
+                    />
+                    {infoErrors.email && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {infoErrors.email.message}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Controller
+                      control={infoControl}
+                      name="role"
+                      render={({ field: { onChange, value } }) => (
+                        <Select
+                          variant="bordered"
+                          label={t("role")}
+                          placeholder={t("select_role")}
+                          selectedKeys={[value]}
+                          isDisabled
+                          onChange={onChange}
+                        >
+                          <SelectItem key="OWNER">
+                            {t("enterprise_owner")}
+                          </SelectItem>
+                          <SelectItem key="ADMIN">
+                            {t("enterprise_admin")}
+                          </SelectItem>
+                          <SelectItem key="AGENT">{t("csr")}</SelectItem>
+                        </Select>
+                      )}
+                    />
+                    {infoErrors.role && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {infoErrors.role.message}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-5 justify-end">
@@ -268,7 +308,7 @@ function Setting() {
                       >
                         HỦY BỎ
                       </Button>
-                      <Button color="success" onClick={handleChangeProfile}>
+                      <Button color="success" onClick={infoHandleSubmit(handleChangeProfile)}>
                         LƯU
                       </Button>
                     </>
@@ -283,84 +323,162 @@ function Setting() {
                 </div>
               </Tab>
               <Tab key="password" title="Mật khẩu">
-                <div className="grid grid-cols-2 gap-5 mb-3">
-                  <Input
-                    name="current_password"
-                    value={changePasswordForm.current_password}
-                    onChange={handleChangeValue}
-                    type={showPassword ? "text" : "password"}
-                    variant="bordered"
-                    label="Mật khẩu hiện tại"
-                    placeholder="Nhập mật khẩu hiện tại"
-                    className="mb-5"
-                    endContent={
-                      <button
-                        aria-label="toggle password visibility"
-                        className="focus:outline-none"
-                        type="button"
-                        onClick={toggleShowPassword}
-                      >
-                        {!showPassword ? (
-                          <FaEyeSlash className="text-default-400 pointer-events-none" />
-                        ) : (
-                          <FaEye className="text-default-400 pointer-events-none" />
-                        )}
-                      </button>
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-5 mb-3">
-                  <Input
-                    name="new_password"
-                    value={changePasswordForm.new_password}
-                    onChange={handleChangeValue}
-                    type={showPassword ? "text" : "password"}
-                    variant="bordered"
-                    label="Mật khẩu mới"
-                    placeholder="Nhập mật khẩu mới"
-                    className="mb-5"
-                    endContent={
-                      <button
-                        aria-label="toggle password visibility"
-                        className="focus:outline-none"
-                        type="button"
-                        onClick={toggleShowPassword}
-                      >
-                        {!showPassword ? (
-                          <FaEyeSlash className="text-default-400 pointer-events-none" />
-                        ) : (
-                          <FaEye className="text-default-400 pointer-events-none" />
-                        )}
-                      </button>
-                    }
-                  />
-                  <Input
-                    name="new_password2"
-                    value={changePasswordForm.new_password2}
-                    onChange={handleChangeValue}
-                    type={showPassword ? "text" : "password"}
-                    variant="bordered"
-                    label="Xác nhận mật khẩu"
-                    placeholder="Nhập lại mật khẩu mới"
-                    className="mb-5"
-                    endContent={
-                      <button
-                        aria-label="toggle password visibility"
-                        className="focus:outline-none"
-                        type="button"
-                        onClick={toggleShowPassword}
-                      >
-                        {!showPassword ? (
-                          <FaEyeSlash className="text-default-400 pointer-events-none" />
-                        ) : (
-                          <FaEye className="text-default-400 pointer-events-none" />
-                        )}
-                      </button>
-                    }
-                  />
+                <div className="grid grid-cols-1 gap-2 md:gap-5 mb-5">
+                  <div>
+                    <Controller
+                      control={passwordControl}
+                      name="current_password"
+                      rules={{
+                        required: t("required"),
+                        pattern: {
+                          value: PASSWORD_PATTERN,
+                          message: t("password_inclusion_rule"),
+                        },
+                        minLength: {
+                          value: 8,
+                          message: t("password_length_rule"),
+                        },
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="current_password"
+                          type={showPassword ? "text" : "password"}
+                          variant="bordered"
+                          label="Mật khẩu hiện tại"
+                          placeholder="Nhập mật khẩu hiện tại"
+                          value={value}
+                          endContent={
+                            <button
+                              aria-label="toggle password visibility"
+                              className="focus:outline-none"
+                              type="button"
+                              onClick={toggleShowPassword}
+                            >
+                              {!showPassword ? (
+                                <FaEyeSlash className="text-default-400 pointer-events-none" />
+                              ) : (
+                                <FaEye className="text-default-400 pointer-events-none" />
+                              )}
+                            </button>
+                          }
+                          onChange={onChange}
+                          isRequired
+                        />
+                      )}
+                    />
+                    {passwordErrors.current_password && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {passwordErrors.current_password.message}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Controller
+                      control={passwordControl}
+                      name="new_password"
+                      rules={{
+                        required: t("required"),
+                        pattern: {
+                          value: PASSWORD_PATTERN,
+                          message: t("password_inclusion_rule"),
+                        },
+                        minLength: {
+                          value: 8,
+                          message: t("password_length_rule"),
+                        },
+                        validate: (value) =>
+                          value !== passwordWatch("current_password") ||
+                          "Mật khẩu mới không được trùng mật khẩu hiện tại",
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="new_password"
+                          type={showPassword ? "text" : "password"}
+                          variant="bordered"
+                          label="Mật khẩu mới"
+                          placeholder="Nhập mật khẩu mới"
+                          value={value}
+                          endContent={
+                            <button
+                              aria-label="toggle password visibility"
+                              className="focus:outline-none"
+                              type="button"
+                              onClick={toggleShowPassword}
+                            >
+                              {!showPassword ? (
+                                <FaEyeSlash className="text-default-400 pointer-events-none" />
+                              ) : (
+                                <FaEye className="text-default-400 pointer-events-none" />
+                              )}
+                            </button>
+                          }
+                          onChange={onChange}
+                          isRequired
+                        />
+                      )}
+                    />
+                    {passwordErrors.new_password && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {passwordErrors.new_password.message}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <Controller
+                      control={passwordControl}
+                      name="new_password2"
+                      rules={{
+                        required: t("required"),
+                        pattern: {
+                          value: PASSWORD_PATTERN,
+                          message: t("password_inclusion_rule"),
+                        },
+                        minLength: {
+                          value: 8,
+                          message: t("password_length_rule"),
+                        },
+                        validate: (value) =>
+                          value === passwordWatch("new_password") ||
+                          t("unmatched_password"),
+                      }}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          name="new_password2"
+                          type={showPassword ? "text" : "password"}
+                          variant="bordered"
+                          label="Xác nhận mật khẩu mới"
+                          placeholder="Nhập lại mật khẩu mới"
+                          value={value}
+                          endContent={
+                            <button
+                              aria-label="toggle password visibility"
+                              className="focus:outline-none"
+                              type="button"
+                              onClick={toggleShowPassword}
+                            >
+                              {!showPassword ? (
+                                <FaEyeSlash className="text-default-400 pointer-events-none" />
+                              ) : (
+                                <FaEye className="text-default-400 pointer-events-none" />
+                              )}
+                            </button>
+                          }
+                          onChange={onChange}
+                          isRequired
+                        />
+                      )}
+                    />
+                    {passwordErrors.new_password2 && (
+                      <div className="text-red-500 text-xs mt-2">
+                        {passwordErrors.new_password2.message}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex gap-5 justify-end">
-                  <Button color="primary" onClick={handleChangePassword}>ĐỔI MẬT KHẨU</Button>
+                  <Button color="primary" onClick={passwordHandleSubmit(handleChangePassword)}>
+                    ĐỔI MẬT KHẨU
+                  </Button>
                 </div>
               </Tab>
             </Tabs>
