@@ -60,6 +60,7 @@ function Organization() {
   const [totalMembers, setTotalMembers] = useState(0);
   const [memberPages, setMemberPages] = useState(0);
   const [memberOfPage, setMemberOfPage] = useState(0);
+  const [memberPageSize, setMemberPageSize] = useState(10);
 
   const [invitationId, setInvitationId] = useState(null);
   const [invitationPage, setInvitationPage] = useState(1);
@@ -67,6 +68,7 @@ function Organization() {
   const [invitationPages, setInvitationPages] = useState(0);
   const [inviteStatus, setInviteStatus] = useState("");
   const [inviteOfPage, setInviteOfPage] = useState(0);
+  const [invitePageSize, setInvitePageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const {
     control: editControl,
@@ -105,13 +107,23 @@ function Organization() {
     refetch: refetchMember,
     isLoading: isLoadingMember,
   } = useQuery({
-    queryKey: ["member", memberPage],
+    queryKey: ["member", memberPage, memberPageSize],
     queryFn: async () => {
-      const res = await getMembersApi(memberPage);
-      setTotalMembers(res.data.count);
-      setMemberOfPage(res.data.results.length);
-      setMemberPages(Math.ceil(res.data.count / 50));
-      return res.data.results;
+      try {
+        const res = await getMembersApi(memberPage, memberPageSize);
+        if (res.status === 200) {
+          setTotalMembers(res.data.count);
+          setMemberOfPage(res.data.results.length);
+          setMemberPages(Math.ceil(res.data.count / memberPageSize));
+          return res.data.results;
+        } else {
+          toast.error(res.data.detail);
+          return []; 
+        }
+      } catch (e) {
+        throw new Error("Failed to fetch invitations."); 
+      }
+      
     },
   });
 
@@ -120,13 +132,22 @@ function Organization() {
     refetch: refetchInvitation,
     isLoading: isLoadingInvite,
   } = useQuery({
-    queryKey: ["invitation", invitationPage, inviteStatus],
+    queryKey: ["invitation", invitationPage, inviteStatus, invitePageSize],
     queryFn: async () => {
-      const res = await getInvitesApi(invitationPage, inviteStatus);
-      setTotalInvites(res.data.count);
-      setInviteOfPage(res.data.results.length);
-      setInvitationPages(Math.ceil(res.data.count / 50));
-      return res.data.results;
+      try {
+        const res = await getInvitesApi(invitationPage, inviteStatus, invitePageSize);
+        if (res.status === 200) {
+          setTotalInvites(res.data.count);
+          setInviteOfPage(res.data.results.length);
+          setInvitationPages(Math.ceil(res.data.count / invitePageSize));
+          return res.data.results; 
+        } else {
+          toast.error(res.data.detail);
+          return []; 
+        }
+      } catch (e) {
+        throw new Error("Failed to fetch invitations."); 
+      }
     },
   });
 
@@ -662,12 +683,28 @@ function Organization() {
                   aria-label="member"
                   bottomContent={
                     <div className="flex justify-between items-center mt-4">
-                      <div className="text-sm text-neutral-500">
-                        {memberOfPage === 0
-                          ? "Không có dữ liệu"
-                          : `Hiển thị ${(memberPage - 1) * 50 + 1} đến ${
-                              (memberPage - 1) * 50 + memberOfPage
-                            } trong ${totalMembers} dữ liệu`}
+                      <div className="flex items-center gap-3">
+                        <Select
+                          variant="bordered"
+                          label="Số hàng"
+                          defaultSelectedKeys={[memberPageSize.toString()]}
+                          size="sm"
+                          labelPlacement="outside-left"
+                          className="w-24"
+                          onChange={(e) => setMemberPageSize(e.target.value)}
+                        >
+                          <SelectItem key="5">5</SelectItem>
+                          <SelectItem key="10">10</SelectItem>
+                          <SelectItem key="20">20</SelectItem>
+                          <SelectItem key="50">50</SelectItem>
+                        </Select>
+                        <div className="text-sm text-neutral-500">
+                          {memberOfPage === 0
+                            ? "Không có dữ liệu"
+                            : `Hiển thị ${(memberPage - 1) * memberPageSize + 1} đến ${
+                                (memberPage - 1) * memberPageSize + memberOfPage
+                              } trong tổng ${totalMembers} dữ liệu`}
+                        </div>
                       </div>
                       <Pagination
                         isCompact
@@ -722,12 +759,28 @@ function Organization() {
                   aria-label="invitation"
                   bottomContent={
                     <div className="flex justify-between items-center mt-4">
-                      <div className="text-sm text-neutral-500">
-                        {inviteOfPage === 0
-                          ? "Không có dữ liệu"
-                          : `Hiển thị ${(invitationPage - 1) * 50 + 1} đến ${
-                              (invitationPage - 1) * 50 + inviteOfPage
-                            } trong ${totalInvites} dữ liệu`}
+                      <div className="flex items-center gap-3">
+                        <Select
+                          variant="bordered"
+                          label="Số hàng"
+                          defaultSelectedKeys={[invitePageSize.toString()]}
+                          size="sm"
+                          labelPlacement="outside-left"
+                          className="w-24"
+                          onChange={(e) => setInvitePageSize(e.target.value)}
+                        >
+                          <SelectItem key="5">5</SelectItem>
+                          <SelectItem key="10">10</SelectItem>
+                          <SelectItem key="20">20</SelectItem>
+                          <SelectItem key="50">50</SelectItem>
+                        </Select>
+                        <div className="text-sm text-neutral-500">
+                          {inviteOfPage === 0
+                            ? "Không có dữ liệu"
+                            : `Hiển thị ${(invitationPage - 1) * invitePageSize + 1} đến ${
+                                (invitationPage - 1) * invitePageSize + inviteOfPage
+                              } trong tổng ${totalInvites} dữ liệu`}
+                        </div>
                       </div>
                       <Pagination
                         isCompact

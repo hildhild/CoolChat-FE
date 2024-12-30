@@ -14,17 +14,18 @@ export const editOrgInfoApi = (name, description, contact_email, contact_phone, 
     });
 }
 
-export const getMembersApi = (page) => {
+export const getMembersApi = (page, size) => {
     return axios.get(`/organization/members/`, {
-        params: {page: page}
+        params: {page: page, page_size: size}
     });
 }
 
-export const getInvitesApi = (page, status = "") => {
+export const getInvitesApi = (page, status = "", size) => {
     return axios.get(`/organization/invites/`, {
         params: {
             page: page,
-            ...(status ? {status: status} : {})
+            ...(status ? {status: status} : {}),
+            page_size: size
         }
     });
 }
