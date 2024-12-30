@@ -80,7 +80,7 @@ function Setting() {
 
   const handleChangeProfile = async (data) => {
     setIsLoading(true);
-    await editUserInfoApi(data.name, data.avatar)
+    await editUserInfoApi(data.name, data.avatar, data.phoneNumber)
       .then((res) => {
         console.log(123, res);
         if (res.status === 200) {
@@ -224,6 +224,9 @@ function Setting() {
                     <Controller
                       control={infoControl}
                       name="phoneNumber"
+                      rules={{
+                        required: t("required"),
+                      }}
                       render={({ field: { onChange, value } }) => (
                         <Input
                           name="phoneNumber"
@@ -233,7 +236,8 @@ function Setting() {
                           variant="bordered"
                           value={value}
                           onChange={onChange}
-                          isDisabled
+                          isRequired
+                          isDisabled={!isEditProfile}
                         />
                       )}
                     />

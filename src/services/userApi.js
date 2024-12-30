@@ -4,9 +4,10 @@ export const getUserInfoApi = () => {
     return axios.get(`/users/info/`);
 }
 
-export const editUserInfoApi = (name, avatar) => {
+export const editUserInfoApi = (name, avatar, phone_number) => {
     return axios.put(`/users/update/`, {
         name: name,
+        phone_number: phone_number,
         ...(avatar ? {avatar: avatar} : {})
     });
 }

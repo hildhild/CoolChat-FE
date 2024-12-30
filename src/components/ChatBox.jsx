@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
@@ -7,10 +7,22 @@ import { BsThreeDots } from "react-icons/bs";
 import { Button } from "@nextui-org/react";
 import { IoIosSend } from "react-icons/io";
 import { LuBot } from "react-icons/lu";
+import { useSelector } from "react-redux";
 
-export default function ChatBox() {
+export default function ChatBox({toggleOpenChatbox, config = null}) {
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const chatbotInterfaceConfig = useSelector((state) => state.chatbotInterface);
+  const [isFirst, setIsFirst] = useState(true);
+
+  useEffect(()=>{
+    if(!isFirst){
+      setIsOpen(true);
+    } else {
+      setIsFirst(false);
+    }
+  }, [toggleOpenChatbox]);
+
   if (!isOpen) {
     return (
       <button
@@ -35,8 +47,8 @@ export default function ChatBox() {
               <img src={LogoOnly} className="w-8 h-8"></img>
             </div>
             <div>
-              <div>CoolChat</div>
-              <div className="text-xs">Luôn sẵn sàng hỗ trợ bạn</div>
+              <div>{config ? config.main_name : chatbotInterfaceConfig.main_name}</div>
+              <div className="text-xs">{config ? config.sub_name : chatbotInterfaceConfig.sub_name}</div>
             </div>
           </div>
           <div className="flex rounded-full bg-gray-100 border-[1px] border-[#b9b9b9]">
@@ -48,29 +60,116 @@ export default function ChatBox() {
             </button>
           </div>
         </div>
-        <div className="flex-grow overflow-y-scroll">
+        <div
+          className={`flex-grow overflow-y-scroll ${config ? config.font_family : chatbotInterfaceConfig.font_family}`}
+        >
           <div className="flex gap-3 items-end justify-start p-3 mb-3">
-            <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
-              <LuBot size={18} />
+            <div
+              className={`w-7 h-7 flex justify-center items-center rounded-full`}
+              style={{
+                backgroundColor:
+                  config ? config.message_background_color : chatbotInterfaceConfig.message_background_color,
+              }}
+            >
+              <LuBot
+                size={18}
+                style={{
+                  color: config ? config.message_text_color : chatbotInterfaceConfig.message_text_color,
+                }}
+              />
             </div>
-            <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
-              <div>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </div>
-              <div className="text-end text-neutral-400 text-xs">6:30 pm</div>
+            <div
+              className={`w-[270px] p-3`}
+              style={{
+                backgroundColor:
+                config ? config.message_background_color : chatbotInterfaceConfig.message_background_color,
+                borderRadius: `${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px ${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px ${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px 0px`,
+              }}
+            >
+              <div
+                style={{
+                  color: config ? config.message_text_color : chatbotInterfaceConfig.message_text_color,
+                }}
+              >
+                It is a long established fact that a reader will be distracted
+                by the readable content of a page when looking at its layout.{" "}
+              </div>
+              <div
+                className={`text-end text-xs`}
+                style={{
+                  color: config ? config.message_text_color : chatbotInterfaceConfig.message_text_color + "70",
+                }}
+              >
+                6:30 pm
+              </div>
             </div>
           </div>
           <div className="flex gap-3 items-end justify-start p-3 mb-3">
-            <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
-              <FaRegUser size={18} />
+            <div
+              className={`w-7 h-7 flex justify-center items-center rounded-full`}
+              style={{
+                backgroundColor:
+                config ? config.message_background_color : chatbotInterfaceConfig.message_background_color,
+              }}
+            >
+              <FaRegUser
+                size={18}
+                style={{
+                  color: config ? config.message_text_color : chatbotInterfaceConfig.message_text_color,
+                }}
+              />
             </div>
-            <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
-              <div>OK. </div>
-              <div className="text-end text-neutral-400 text-xs">9:30 pm</div>
+            <div
+              className={`w-[270px] p-3`}
+              style={{
+                backgroundColor:
+                config ? config.message_background_color : chatbotInterfaceConfig.message_background_color,
+                borderRadius: `${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px ${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px ${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px 0px`,
+              }}
+            >
+              <div
+                style={{
+                  color: config ? config.message_text_color : chatbotInterfaceConfig.message_text_color,
+                }}
+              >
+                OK.{" "}
+              </div>
+              <div
+                className={`text-end text-xs`}
+                style={{
+                  color: config ? config.message_text_color : chatbotInterfaceConfig.message_text_color + "70",
+                }}
+              >
+                9:30 pm
+              </div>
             </div>
           </div>
           <div className="flex gap-3 items-end justify-end p-3 mb-3">
-            <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl w-[270px] p-3">
-              <div>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour. </div>
-              <div className="text-end text-xs">9:32 pm</div>
+            <div
+              className={`text-white w-[270px] p-3`}
+              style={{
+                backgroundColor:
+                config ? config.message_background_color_me : chatbotInterfaceConfig.message_background_color_me,
+                borderRadius: `${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px ${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px 0px ${config ? config.message_border_radius : chatbotInterfaceConfig.message_border_radius}px`,
+              }}
+            >
+              <div
+                style={{
+                  color: config ? config.message_text_color_me : chatbotInterfaceConfig.message_text_color_me,
+                }}
+              >
+                There are many variations of passages of Lorem Ipsum available,
+                but the majority have suffered alteration in some form, by
+                injected humour.{" "}
+              </div>
+              <div
+                className="text-end text-xs"
+                style={{
+                  color: config ? config.message_text_color_me : chatbotInterfaceConfig.message_text_color_me + "70",
+                }}
+              >
+                9:32 pm
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +177,10 @@ export default function ChatBox() {
           <button className="w-8 h-8 flex justify-center items-center rounded-full">
             <MdOutlineImage size={25} />
           </button>
-          <input className="flex-grow !bg-white !border-none !outline-none" placeholder="Aa"></input>
+          <input
+            className="flex-grow !bg-white !border-none !outline-none"
+            placeholder="Aa"
+          ></input>
           <Button className="flex justify-center items-center" color="primary">
             Gửi
             <IoIosSend size={20} />

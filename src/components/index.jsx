@@ -9,6 +9,8 @@ import VerifyEmailBody from "./VerifyEmailBody";
 import ResetPasswordBody from "./ResetPasswordBody";
 import { ConfirmModal } from "./ConfirmModal";
 import LoadingProcess from "./LoadingProcess";
+export { EditChatbotInterface } from "./EditChatbotInterface";
+export { EditChatbotStyle } from "./EditChatbotStyle";
 
 export {
   Header,
@@ -21,5 +23,5 @@ export {
   VerifyEmailBody,
   ResetPasswordBody,
   ConfirmModal,
-  LoadingProcess
+  LoadingProcess,
 };

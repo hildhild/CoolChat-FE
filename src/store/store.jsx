@@ -14,11 +14,12 @@ import SignupDataReducer from './slices/SignupDataSlice';
 import SidebarReducer from './slices/SidebarSlice';
 import UserReducer from './slices/UserSlice';
 import OrganizationReducer from './slices/OrganizationSlice';
+import ChatbotInterfaceReducer from './slices/ChatbotInterfaceSlice';
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['sidebar', 'user', 'organization'],
+    whitelist: ['sidebar', 'user', 'organization', 'chatbotInterface'],
 }
 
 
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
     signupData: SignupDataReducer,
     sidebar: SidebarReducer,
     user: UserReducer,
-    organization: OrganizationReducer
+    chatbotInterface: ChatbotInterfaceReducer,
+    organization: OrganizationReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
