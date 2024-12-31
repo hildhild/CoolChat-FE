@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { setChatbotInterface } from "../store/slices/ChatbotInterfaceSlice";
 import { toast } from "react-toastify";
+import { ConfirmModal } from "./ConfirmModal";
 
 export const EditChatbotInterface = ({toggleOpenChatbox, setToggleOpenChatbox, setChatboxConfig}) => {
   const chatbotInterfaceConfig = useSelector((state) => state.chatbotInterface);
@@ -16,6 +17,24 @@ export const EditChatbotInterface = ({toggleOpenChatbox, setToggleOpenChatbox, s
   const [isSelectBgColorMe, setIsSelectBgColorMe] = useState(false);
   const [isSelectTextColorMe, setIsSelectTextColorMe] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
+  const [isOpenConfirm, setIsOpenConfirm] = useState(false);
+
+  const handleResetDefault = () => {
+    const defaultConfig = {
+      main_name: "CoolChat",
+      sub_name: "Luôn sẵn sàng hỗ trợ bạn",
+      font_family: "font-sans",
+      message_border_radius: "12",
+      message_background_color: "#EAF2F6",
+      message_text_color: "#000000",
+      message_background_color_me: "#4880FF",
+      message_text_color_me: "#ffffff",
+    };
+    dispatch(setChatbotInterface(defaultConfig));
+    setEditConfigData(defaultConfig);
+    toast.success("Khôi phục thành công");
+    setIsOpenConfirm(false);
+  }
 
   const handleChangeInput = (e) => {
     console.log(e);
@@ -54,6 +73,7 @@ export const EditChatbotInterface = ({toggleOpenChatbox, setToggleOpenChatbox, s
 
   return (
     <div>
+      <ConfirmModal isOpen={isOpenConfirm} onClose={()=>setIsOpenConfirm(false)} onConfirm={handleResetDefault} title="Khôi phục mặc định" description="Bạn có chắc chắn muốn khôi phục lại cấu hình mặc định?"/>
       <div className="flex gap-8 mb-5">
         <div>
           <div className="mb-2 text-center">Ảnh đại diện</div>
@@ -181,7 +201,10 @@ export const EditChatbotInterface = ({toggleOpenChatbox, setToggleOpenChatbox, s
           <Button color="success" onClick={handleChangeConfig}>LƯU</Button>
         </div>
         :
-        <Button color="primary" onClick={()=>setIsEditable(true)}>CHỈNH SỬA</Button>
+        <div className="flex gap-5">
+          <Button color="default" onClick={()=>setIsOpenConfirm(true)}>KHÔI PHỤC MẶC ĐỊNH</Button>
+          <Button color="primary" onClick={()=>setIsEditable(true)}>CHỈNH SỬA</Button>
+        </div>
       }
       
     </div>
