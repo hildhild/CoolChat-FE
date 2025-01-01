@@ -32,6 +32,7 @@ export const EditChatbotInterface = ({toggleOpenChatbox, setToggleOpenChatbox, s
     };
     dispatch(setChatbotInterface(defaultConfig));
     setEditConfigData(defaultConfig);
+    setChatboxConfig(defaultConfig);
     toast.success("Khôi phục thành công");
     setIsOpenConfirm(false);
   }
