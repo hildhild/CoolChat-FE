@@ -48,7 +48,6 @@ function LoginBody() {
       await loginApi(loginData.email, loginData.password)
         .then((res) => {
           if (res.status === 200) {
-            navigate("../chatbot-training");
             toast.success(t('login_success'));
             dispatch(setToken(res.data.access));
             localStorage.setItem("token", res.data.access);
@@ -60,6 +59,11 @@ function LoginBody() {
             const decoded = jwtDecode(res.data.access);
             dispatch(setUserRole(decoded.organization.role));
             dispatch(setCompanyName(decoded.organization.name));
+            if (decoded.organization.role === "AGENT") {
+              navigate("../chat");
+            } else {
+              navigate("../chatbot-training");
+            }
             if (decoded.organization.role === "OWNER"){
               getOrgInfoApi().then((res) => {
                 if (res.status === 200) {

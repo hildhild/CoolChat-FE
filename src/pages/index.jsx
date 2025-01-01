@@ -4,17 +4,18 @@ import Login from "./Login";
 import ForgotPassword from "./ForgotPassword";
 import VerifyEmail from "./VerifyEmail";
 import ResetPassword from "./ResetPassword";
+import Setting from "./Setting";
 import {
   ChatbotTraining,
   ChatbotEditting,
   Chat,
   Report,
   Subscription,
-  Setting,
   ChatbotComparison,
   ChatDetail,
   Organization
 } from "./Admin";
+import { Appointment } from "./CSR";
 
 export {
   Landing,
@@ -31,5 +32,6 @@ export {
   ResetPassword,
   ChatbotComparison,
   ChatDetail,
-  Organization
+  Organization,
+  Appointment
 };

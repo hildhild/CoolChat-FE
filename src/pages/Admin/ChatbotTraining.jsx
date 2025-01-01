@@ -234,6 +234,7 @@ function ChatbotTraining() {
                     startContent={<MdSearch size={25} />}
                   />
                   <Select
+                    aria-label="sort-training"
                     variant="bordered"
                     label="Sắp xếp theo"
                     defaultSelectedKeys={["newest"]}

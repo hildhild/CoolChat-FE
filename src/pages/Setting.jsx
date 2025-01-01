@@ -10,7 +10,7 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
-import { DashboardLayout } from "../../layouts";
+import { DashboardLayout } from "../layouts";
 import { FaUserCircle, FaBell, FaEyeSlash, FaEye } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
@@ -18,12 +18,12 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { changePasswordApi, editUserInfoApi } from "../../services/userApi";
-import { setToken, setUserData } from "../../store/slices/UserSlice";
+import { changePasswordApi, editUserInfoApi } from "../services/userApi";
+import { setToken, setUserData } from "../store/slices/UserSlice";
 import { toast } from "react-toastify";
-import { LoadingProcess } from "../../components";
+import { LoadingProcess } from "../components";
 import { Controller, useForm } from "react-hook-form";
-import { PASSWORD_PATTERN } from "../../constants/patterns";
+import { PASSWORD_PATTERN } from "../constants/patterns";
 
 function Setting() {
   const { t } = useTranslation();
@@ -50,6 +50,7 @@ function Setting() {
     mode: "onSubmit",
     defaultValues: userInfo,
   });
+  const userRole = useSelector((state) => state.user.role);
 
   const {
     control: passwordControl,
@@ -312,7 +313,10 @@ function Setting() {
                       >
                         HỦY BỎ
                       </Button>
-                      <Button color="success" onClick={infoHandleSubmit(handleChangeProfile)}>
+                      <Button
+                        color="success"
+                        onClick={infoHandleSubmit(handleChangeProfile)}
+                      >
                         LƯU
                       </Button>
                     </>
@@ -480,7 +484,10 @@ function Setting() {
                   </div>
                 </div>
                 <div className="flex gap-5 justify-end">
-                  <Button color="primary" onClick={passwordHandleSubmit(handleChangePassword)}>
+                  <Button
+                    color="primary"
+                    onClick={passwordHandleSubmit(handleChangePassword)}
+                  >
                     ĐỔI MẬT KHẨU
                   </Button>
                 </div>
@@ -488,108 +495,112 @@ function Setting() {
             </Tabs>
           </div>
         )}
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsNotificationSetting(!isNotificationSetting);
-          }}
-        >
-          <div className="flex gap-3 justify-center items-center">
-            <FaBell size={30} />
-            <div>Thông báo và Cảnh báo</div>
-          </div>
-          {isNotificationSetting ? (
-            <CiSquareMinus size={20} />
-          ) : (
-            <CiSquarePlus size={20} />
-          )}
-        </Button>
-        {isNotificationSetting && (
-          <div className="bg-white px-5 py-8 rounded-xl">
-            <Tabs
-              variant="underlined"
-              aria-label="Tabs variants"
-              className="mb-4"
-              classNames={{
-                cursor: "w-full bg-coolchat",
-                tabContent: "group-data-[selected=true]:text-coolchat",
+        {userRole !== "AGENT" && (
+          <>
+            <Button
+              className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
+              onClick={() => {
+                setIsNotificationSetting(!isNotificationSetting);
               }}
             >
-              <Tab key="general" title="Chung">
-                <div className="w-full mb-5 text-sm">
-                  Bật nhận thông báo/ cảnh báo qua:
-                </div>
-                <div className="grid grid-cols-3 mb-8">
-                  <div>
-                    <Checkbox defaultSelected radius="sm">
-                      Email
-                    </Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox defaultSelected radius="sm">
-                      Ứng dụng
-                    </Checkbox>
-                  </div>
-                  <div>
-                    <Checkbox defaultSelected radius="sm">
-                      SMS
-                    </Checkbox>
-                  </div>
-                </div>
-                <div className="flex gap-5 justify-end">
-                  <Button color="danger">HỦY BỎ</Button>
-                  <Button color="success">LƯU</Button>
-                </div>
-              </Tab>
-              <Tab key="threshold" title="Thiết lập ngưỡng">
-                <div className="grid grid-cols-2 gap-5 mb-3">
-                  <div className="flex justify-center items-center gap-3 mb-5">
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      label="Ngưỡng cảnh báo sử dụng token"
-                      placeholder="Nhập ngưỡng cảnh báo sử dụng token"
-                    />
-                    <Switch
-                      defaultSelected
-                      aria-label="Automatic updates"
-                      size="sm"
-                    />
-                  </div>
-                  <div className="flex justify-center items-center gap-3 mb-5">
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      label="Ngưỡng bộ nhớ đã dùng"
-                      placeholder="Nhập ngưỡng bộ nhớ đã dùng"
-                    />
-                    <Switch
-                      defaultSelected
-                      aria-label="Automatic updates"
-                      size="sm"
-                    />
-                  </div>
-                  <div className="flex justify-center items-center gap-3 mb-5">
-                    <Input
-                      type="text"
-                      variant="bordered"
-                      label="Ngưỡng cảnh báo  lưu lượng truy cập"
-                      placeholder="Nhập ngưỡng cảnh báo  lưu lượng truy cập"
-                    />
-                    <Switch
-                      defaultSelected
-                      aria-label="Automatic updates"
-                      size="sm"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-5 justify-end">
-                  <Button color="danger">HỦY BỎ</Button>
-                  <Button color="success">LƯU</Button>
-                </div>
-              </Tab>
-            </Tabs>
-          </div>
+              <div className="flex gap-3 justify-center items-center">
+                <FaBell size={30} />
+                <div>Thông báo và Cảnh báo</div>
+              </div>
+              {isNotificationSetting ? (
+                <CiSquareMinus size={20} />
+              ) : (
+                <CiSquarePlus size={20} />
+              )}
+            </Button>
+            {isNotificationSetting && (
+              <div className="bg-white px-5 py-8 rounded-xl">
+                <Tabs
+                  variant="underlined"
+                  aria-label="Tabs variants"
+                  className="mb-4"
+                  classNames={{
+                    cursor: "w-full bg-coolchat",
+                    tabContent: "group-data-[selected=true]:text-coolchat",
+                  }}
+                >
+                  <Tab key="general" title="Chung">
+                    <div className="w-full mb-5 text-sm">
+                      Bật nhận thông báo/ cảnh báo qua:
+                    </div>
+                    <div className="grid grid-cols-3 mb-8">
+                      <div>
+                        <Checkbox defaultSelected radius="sm">
+                          Email
+                        </Checkbox>
+                      </div>
+                      <div>
+                        <Checkbox defaultSelected radius="sm">
+                          Ứng dụng
+                        </Checkbox>
+                      </div>
+                      <div>
+                        <Checkbox defaultSelected radius="sm">
+                          SMS
+                        </Checkbox>
+                      </div>
+                    </div>
+                    <div className="flex gap-5 justify-end">
+                      <Button color="danger">HỦY BỎ</Button>
+                      <Button color="success">LƯU</Button>
+                    </div>
+                  </Tab>
+                  <Tab key="threshold" title="Thiết lập ngưỡng">
+                    <div className="grid grid-cols-2 gap-5 mb-3">
+                      <div className="flex justify-center items-center gap-3 mb-5">
+                        <Input
+                          type="text"
+                          variant="bordered"
+                          label="Ngưỡng cảnh báo sử dụng token"
+                          placeholder="Nhập ngưỡng cảnh báo sử dụng token"
+                        />
+                        <Switch
+                          defaultSelected
+                          aria-label="Automatic updates"
+                          size="sm"
+                        />
+                      </div>
+                      <div className="flex justify-center items-center gap-3 mb-5">
+                        <Input
+                          type="text"
+                          variant="bordered"
+                          label="Ngưỡng bộ nhớ đã dùng"
+                          placeholder="Nhập ngưỡng bộ nhớ đã dùng"
+                        />
+                        <Switch
+                          defaultSelected
+                          aria-label="Automatic updates"
+                          size="sm"
+                        />
+                      </div>
+                      <div className="flex justify-center items-center gap-3 mb-5">
+                        <Input
+                          type="text"
+                          variant="bordered"
+                          label="Ngưỡng cảnh báo  lưu lượng truy cập"
+                          placeholder="Nhập ngưỡng cảnh báo  lưu lượng truy cập"
+                        />
+                        <Switch
+                          defaultSelected
+                          aria-label="Automatic updates"
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-5 justify-end">
+                      <Button color="danger">HỦY BỎ</Button>
+                      <Button color="success">LƯU</Button>
+                    </div>
+                  </Tab>
+                </Tabs>
+              </div>
+            )}
+          </>
         )}
       </div>
     </DashboardLayout>
