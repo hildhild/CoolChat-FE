@@ -113,5 +113,6 @@
     "verify_email": "Verify email address",
     "verify_account_success": "Account verification successful.",
     "login_now": "Log in now",
-    "pls_register_other_account": "Please register another account"
+    "pls_register_other_account": "Please register another account",
+    "verify_email_success": "Account verification successful, please login to use the service"
 }

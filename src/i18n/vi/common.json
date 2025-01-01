@@ -113,5 +113,6 @@
     "verify_email": "Xác minh địa chỉ email",
     "verify_account_success": "Xác minh tài khoản thành công.",
     "login_now": "Đăng nhập ngay",
-    "pls_register_other_account": "Vui lòng đăng ký lại tài khoản khác"
+    "pls_register_other_account": "Vui lòng đăng ký lại tài khoản khác",
+    "verify_email_success": "Xác minh tài khoản thành công, vui lòng đăng nhập để sử dụng dịch vụ"
 }
