@@ -269,7 +269,15 @@ function Organization() {
       );
     } else if (columnKey === "joined_at") {
       const date = new Date(cellValue);
-      return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+      return date.toLocaleString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
     } else if (columnKey === "role") {
       if (cellValue === "OWNER") {
         return t("enterprise_owner");
@@ -330,7 +338,15 @@ function Organization() {
       }
     } else if (columnKey === "created_at" || columnKey === "expires_at") {
       const date = new Date(cellValue);
-      return date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" });
+      return date.toLocaleString("vi-VN", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
     } else if (columnKey === "role") {
       if (cellValue === "ADMIN") {
         return t("enterprise_admin");
