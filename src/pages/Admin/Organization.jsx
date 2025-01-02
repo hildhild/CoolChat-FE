@@ -17,11 +17,11 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../layouts";
-import { FaTrash, FaInfoCircle } from "react-icons/fa";
+import { FaTrash, FaInfoCircle, FaCamera } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import { MdOutlineGroups } from "react-icons/md";
+import { MdOutlineAddPhotoAlternate, MdOutlineGroups } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -71,6 +71,7 @@ function Organization() {
   const [inviteOfPage, setInviteOfPage] = useState(0);
   const [invitePageSize, setInvitePageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
+  const inputFileRef = useRef(null);
   const {
     control: editControl,
     handleSubmit: editHandleSubmit,
@@ -84,7 +85,7 @@ function Organization() {
     control: inviteControl,
     handleSubmit: inviteHandleSubmit,
     formState: { errors: inviteErrors },
-    reset
+    reset,
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
@@ -119,12 +120,11 @@ function Organization() {
           return res.data.results;
         } else {
           toast.error(res.data.detail);
-          return []; 
+          return [];
         }
       } catch (e) {
-        throw new Error("Failed to fetch invitations."); 
+        throw new Error("Failed to fetch invitations.");
       }
-      
     },
   });
 
@@ -136,28 +136,25 @@ function Organization() {
     queryKey: ["invitation", invitationPage, inviteStatus, invitePageSize],
     queryFn: async () => {
       try {
-        const res = await getInvitesApi(invitationPage, inviteStatus, invitePageSize);
+        const res = await getInvitesApi(
+          invitationPage,
+          inviteStatus,
+          invitePageSize
+        );
         if (res.status === 200) {
           setTotalInvites(res.data.count);
           setInviteOfPage(res.data.results.length);
           setInvitationPages(Math.ceil(res.data.count / invitePageSize));
-          return res.data.results; 
+          return res.data.results;
         } else {
           toast.error(res.data.detail);
-          return []; 
+          return [];
         }
       } catch (e) {
-        throw new Error("Failed to fetch invitations."); 
+        throw new Error("Failed to fetch invitations.");
       }
     },
   });
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setOrgInfoData({ ...orgInfoData, logo: URL.createObjectURL(file) });
-    }
-  };
 
   const handleChangeInfo = async (data) => {
     setIsLoading(true);
@@ -417,6 +414,30 @@ function Organization() {
     }
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setOrgInfoData({ ...orgInfoData, logo: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setOrgInfoData({ ...orgInfoData, logo: URL.createObjectURL(file) });
+  //   }
+  // };
+
+  const handleAvatarClick = () => {
+    if (isEditInfo){
+      inputFileRef.current.click();
+    }
+  };
+
   return (
     <DashboardLayout page="organization">
       <LoadingProcess
@@ -463,13 +484,38 @@ function Organization() {
                   <div className="text-sm">Logo</div>
                   {/* <MdOutlineAddPhotoAlternate /> */}
                 </div>
-                <Avatar
+                {isEditInfo && (
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={inputFileRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                  />
+                )}
+                <button
+                  onClick={handleAvatarClick}
+                  className="overflow-hidden group rounded-2xl aspect-square relative max-w-24 max-h-24 h-24 w-24 border-gray-300 border-2"
+                >
+                  <img
+                    className={`${isEditInfo ? "group-hover:grayscale transition-all duration-300 cursor-pointer" : "cursor-default"} w-full h-full object-contain`}
+                    alt="avatar"
+                    src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
+                  />
+                  {isEditInfo && (
+                    <>
+                      <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
+                      <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                    </>
+                  )}
+                </button>
+                {/* <Avatar
                   className="w-20 h-20 bg-white"
                   isBordered
                   radius="sm"
                   src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
-                />
-                {isEditInfo && (
+                /> */}
+                {/* {isEditInfo && (
                   <input
                     id="avatar-input"
                     type="file"
@@ -477,7 +523,7 @@ function Organization() {
                     onChange={handleImageChange}
                     className="mt-3"
                   />
-                )}
+                )} */}
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-3">
@@ -643,7 +689,10 @@ function Organization() {
                   >
                     HỦY BỎ
                   </Button>
-                  <Button color="success" onClick={editHandleSubmit(handleChangeInfo)}>
+                  <Button
+                    color="success"
+                    onClick={editHandleSubmit(handleChangeInfo)}
+                  >
                     LƯU
                   </Button>
                 </>
@@ -702,7 +751,9 @@ function Organization() {
                         <div className="text-sm text-neutral-500">
                           {memberOfPage === 0
                             ? "Không có dữ liệu"
-                            : `Hiển thị ${(memberPage - 1) * memberPageSize + 1} đến ${
+                            : `Hiển thị ${
+                                (memberPage - 1) * memberPageSize + 1
+                              } đến ${
                                 (memberPage - 1) * memberPageSize + memberOfPage
                               } trong tổng ${totalMembers} dữ liệu`}
                         </div>
@@ -778,8 +829,11 @@ function Organization() {
                         <div className="text-sm text-neutral-500">
                           {inviteOfPage === 0
                             ? "Không có dữ liệu"
-                            : `Hiển thị ${(invitationPage - 1) * invitePageSize + 1} đến ${
-                                (invitationPage - 1) * invitePageSize + inviteOfPage
+                            : `Hiển thị ${
+                                (invitationPage - 1) * invitePageSize + 1
+                              } đến ${
+                                (invitationPage - 1) * invitePageSize +
+                                inviteOfPage
                               } trong tổng ${totalInvites} dữ liệu`}
                         </div>
                       </div>
@@ -862,7 +916,9 @@ function Organization() {
                           isRequired
                         >
                           {/* <SelectItem key="OWNER">{t("enterprise_owner")}</SelectItem> */}
-                          <SelectItem key="ADMIN">{t("enterprise_admin")}</SelectItem>
+                          <SelectItem key="ADMIN">
+                            {t("enterprise_admin")}
+                          </SelectItem>
                           <SelectItem key="AGENT">{t("csr")}</SelectItem>
                         </Select>
                       )}
@@ -873,10 +929,12 @@ function Organization() {
                       </div>
                     )}
                   </div>
-                  
                 </div>
                 <div className="flex gap-5 justify-end">
-                  <Button color="primary" onClick={inviteHandleSubmit(handleInviteMember)}>
+                  <Button
+                    color="primary"
+                    onClick={inviteHandleSubmit(handleInviteMember)}
+                  >
                     MỜI
                   </Button>
                 </div>

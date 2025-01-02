@@ -15,7 +15,7 @@ import { FaUserCircle, FaBell, FaEyeSlash, FaEye } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { changePasswordApi, editUserInfoApi } from "../services/userApi";
@@ -51,6 +51,7 @@ function Setting() {
     defaultValues: userInfo,
   });
   const userRole = useSelector((state) => state.user.role);
+  const inputFileRef = useRef(null);
 
   const {
     control: passwordControl,
@@ -65,13 +66,6 @@ function Setting() {
       new_password2: "",
     },
   });
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setUserInfoData({ ...userInfoData, avatar: URL.createObjectURL(file) });
-    }
-  };
 
   useEffect(() => {
     if (!accessToken) {
@@ -133,6 +127,30 @@ function Setting() {
     setIsLoading(false);
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUserInfoData({ ...userInfoData, avatar: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setUserInfoData({ ...userInfoData, avatar: URL.createObjectURL(file) });
+  //   }
+  // };
+
+  const handleAvatarClick = () => {
+    if (isEditProfile) {
+      inputFileRef.current.click();
+    }
+  };
+
   return (
     <DashboardLayout page="setting">
       <LoadingProcess isLoading={isLoading} />
@@ -172,7 +190,38 @@ function Setting() {
                       <div className="text-sm">Ảnh đại diện</div>
                       {/* <MdOutlineAddPhotoAlternate /> */}
                     </div>
-                    <Avatar
+                    {isEditProfile && (
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={inputFileRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                      />
+                    )}
+                    <button
+                      onClick={handleAvatarClick}
+                      className="overflow-hidden group rounded-2xl aspect-square relative max-w-24 max-h-24 h-24 w-24 border-gray-300 border-2"
+                    >
+                      <img
+                        className={`${
+                          isEditProfile
+                            ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
+                            : "cursor-default"
+                        } w-full h-full object-contain`}
+                        alt="avatar"
+                        src={userInfoData.avatar
+                          ? userInfoData.avatar
+                          : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"}
+                      />
+                      {isEditProfile && (
+                        <>
+                          <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
+                          <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                        </>
+                      )}
+                    </button>
+                    {/* <Avatar
                       className="w-20 h-20 bg-white"
                       isBordered
                       radius="sm"
@@ -190,7 +239,7 @@ function Setting() {
                         onChange={handleImageChange}
                         className="mt-3"
                       />
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-5">
