@@ -41,6 +41,7 @@ import { ConfirmModal, LoadingProcess } from "../../components";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { EMAIL_PATTERN } from "../../constants/patterns";
+import { dateTimeToString } from "../../utils";
 
 function Organization() {
   const { t } = useTranslation();
@@ -269,15 +270,7 @@ function Organization() {
       );
     } else if (columnKey === "joined_at") {
       const date = new Date(cellValue);
-      return date.toLocaleString("vi-VN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      });
+      return dateTimeToString(date);
     } else if (columnKey === "role") {
       if (cellValue === "OWNER") {
         return t("enterprise_owner");
@@ -338,15 +331,7 @@ function Organization() {
       }
     } else if (columnKey === "created_at" || columnKey === "expires_at") {
       const date = new Date(cellValue);
-      return date.toLocaleString("vi-VN", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      });
+      return dateTimeToString(date);
     } else if (columnKey === "role") {
       if (cellValue === "ADMIN") {
         return t("enterprise_admin");
