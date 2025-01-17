@@ -16,6 +16,7 @@ import {
   Organization,
 } from "./Admin";
 import { Appointment } from "./CSR";
+import { NotFound } from "./NotFound";
 
 export {
   Landing,
@@ -34,4 +35,5 @@ export {
   ChatDetail,
   Organization,
   Appointment,
+  NotFound
 };

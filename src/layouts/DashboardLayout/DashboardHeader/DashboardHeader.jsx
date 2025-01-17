@@ -122,14 +122,14 @@ const DashboardHeader = () => {
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
+              <DropdownItem key="profile" className="h-14 gap-2" textValue="Đăng nhập với">
                 <p className="font-semibold">Đăng nhập với:</p>
                 <p className="font-semibold">{userInfo.email}</p>
               </DropdownItem>
-              <DropdownItem key="settings" onClick={() => navigate("/setting")}>
+              <DropdownItem key="settings" onClick={() => navigate("/setting")} textValue="Cài đặt">
                 Cài đặt
               </DropdownItem>
-              <DropdownItem key="logout" color="danger" onClick={handleLogout}>
+              <DropdownItem key="logout" color="danger" onClick={handleLogout} textValue="Đăng xuất">
                 Đăng xuất
               </DropdownItem>
             </DropdownMenu>

@@ -16,11 +16,13 @@ import {
   ChatDetail,
   Organization,
   Appointment,
+  NotFound
 } from "./pages";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   const userRole = useSelector((state) => state.user.role);
+  const token = useSelector((state) => state.user.accessToken);
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
@@ -56,6 +58,7 @@ function App() {
           &&
           <Route path="/appointment" element={<Appointment />} />
         }
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

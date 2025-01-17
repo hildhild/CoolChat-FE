@@ -6,11 +6,14 @@ import { useEffect } from "react";
 
 function Landing() {
     const accessToken = useSelector((state) => state.user.accessToken);
+    const userRole = useSelector((state) => state.user.role);
     const navigate = useNavigate();
 
     useEffect(()=> {
-        if (accessToken) {
-        navigate("/chatbot-training");
+        if (accessToken && userRole !== "AGENT") {
+            navigate("/chatbot-training");
+        } else if (accessToken && userRole === "AGENT") {
+            navigate("/chat");
         }
     }, []);
 
