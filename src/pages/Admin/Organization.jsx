@@ -119,7 +119,7 @@ function Organization() {
           setMemberPages(Math.ceil(res.data.count / memberPageSize));
           return res.data.results;
         } else {
-          toast.error(res.data.detail);
+          // toast.error(res.data.detail);
           return [];
         }
       } catch (e) {
@@ -147,7 +147,7 @@ function Organization() {
           setInvitationPages(Math.ceil(res.data.count / invitePageSize));
           return res.data.results;
         } else {
-          toast.error(res.data.detail);
+          // toast.error(res.data.detail);
           return [];
         }
       } catch (e) {
@@ -172,20 +172,21 @@ function Organization() {
           dispatch(setCompanyName(data.name));
           toast.success("Thay đổi thông tin thành công.");
           setIsEditInfo(false);
-        } else {
-          console.log(res);
-          if (res.data?.name) {
-            toast.error("Tên: " + res.data.name[0]);
-          } else if (res.data?.description) {
-            toast.error("Mô tả: " + res.data.description[0]);
-          } else if (res.data?.contact_email) {
-            toast.error("Email liên hệ: " + res.data.contact_email[0]);
-          } else if (res.data?.contact_phone) {
-            toast.error("Số điện thoại liên hệ: " + res.data.contact_phone[0]);
-          } else if (res.data?.address) {
-            toast.error("Dịa chỉ: " + res.data.address[0]);
-          }
         }
+        // else {
+        //   console.log(res);
+        //   if (res.data?.name) {
+        //     toast.error("Tên: " + res.data.name[0]);
+        //   } else if (res.data?.description) {
+        //     toast.error("Mô tả: " + res.data.description[0]);
+        //   } else if (res.data?.contact_email) {
+        //     toast.error("Email liên hệ: " + res.data.contact_email[0]);
+        //   } else if (res.data?.contact_phone) {
+        //     toast.error("Số điện thoại liên hệ: " + res.data.contact_phone[0]);
+        //   } else if (res.data?.address) {
+        //     toast.error("Dịa chỉ: " + res.data.address[0]);
+        //   }
+        // }
       })
       .catch((err) => {
         console.log(2, err);
@@ -201,11 +202,12 @@ function Organization() {
         setMemberId(null);
         refetchMember();
         onClose();
-      } else {
-        if (res?.data.non_field_errors) {
-          toast.error(res?.data.non_field_errors[0]);
-        }
       }
+      // else {
+      //   if (res?.data.non_field_errors) {
+      //     toast.error(res?.data.non_field_errors[0]);
+      //   }
+      // }
     });
     setIsLoading(false);
   };
@@ -219,11 +221,12 @@ function Organization() {
         setInvitationId(null);
         refetchInvitation();
         onClose();
-      } else {
-        if (res?.data.detail) {
-          toast.error(res?.data.detail);
-        }
       }
+      // else {
+      //   if (res?.data.detail) {
+      //     toast.error(res?.data.detail);
+      //   }
+      // }
     });
     setIsLoading(false);
   };
@@ -395,13 +398,14 @@ function Organization() {
         );
         reset();
         refetchInvitation();
-      } else {
-        if (res?.data.email) {
-          toast.error("Email: " + res.data.email[0]);
-        } else if (res?.data.role) {
-          toast.error("Vai trò: " + res.data.role[0]);
-        }
       }
+      // else {
+      //   if (res?.data.email) {
+      //     toast.error("Email: " + res.data.email[0]);
+      //   } else if (res?.data.role) {
+      //     toast.error("Vai trò: " + res.data.role[0]);
+      //   }
+      // }
     });
     setIsLoading(false);
   };
@@ -433,7 +437,7 @@ function Organization() {
   // };
 
   const handleAvatarClick = () => {
-    if (isEditInfo){
+    if (isEditInfo) {
       inputFileRef.current.click();
     }
   };
@@ -498,7 +502,11 @@ function Organization() {
                   className="overflow-hidden group rounded-2xl aspect-square relative max-w-24 max-h-24 h-24 w-24 border-gray-300 border-2"
                 >
                   <img
-                    className={`${isEditInfo ? "group-hover:grayscale transition-all duration-300 cursor-pointer" : "cursor-default"} w-full h-full object-contain`}
+                    className={`${
+                      isEditInfo
+                        ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
+                        : "cursor-default"
+                    } w-full h-full object-contain`}
                     alt="avatar"
                     src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
                   />
@@ -721,7 +729,7 @@ function Organization() {
             <Tabs
               variant="underlined"
               aria-label="Tabs variants"
-              className="mb-4"
+              className="mb-4 w-full"
               classNames={{
                 cursor: "w-full bg-coolchat",
                 tabContent: "group-data-[selected=true]:text-coolchat",
@@ -729,46 +737,9 @@ function Organization() {
             >
               <Tab key="memberList" title="Thành viên">
                 <Table
+                  className="w-full overflow-x-scroll md:overflow-auto"
                   removeWrapper
                   aria-label="member"
-                  bottomContent={
-                    <div className="flex justify-between items-center mt-4">
-                      <div className="flex items-center gap-3">
-                        <Select
-                          variant="bordered"
-                          label="Số hàng"
-                          defaultSelectedKeys={[memberPageSize.toString()]}
-                          size="sm"
-                          labelPlacement="outside-left"
-                          className="w-24"
-                          onChange={(e) => setMemberPageSize(e.target.value)}
-                        >
-                          <SelectItem key="5">5</SelectItem>
-                          <SelectItem key="10">10</SelectItem>
-                          <SelectItem key="20">20</SelectItem>
-                          <SelectItem key="50">50</SelectItem>
-                        </Select>
-                        <div className="text-sm text-neutral-500">
-                          {memberOfPage === 0
-                            ? "Không có dữ liệu"
-                            : `Hiển thị ${
-                                (memberPage - 1) * memberPageSize + 1
-                              } đến ${
-                                (memberPage - 1) * memberPageSize + memberOfPage
-                              } trong tổng ${totalMembers} dữ liệu`}
-                        </div>
-                      </div>
-                      <Pagination
-                        isCompact
-                        showControls
-                        showShadow
-                        color="primary"
-                        page={memberPage}
-                        total={memberPages}
-                        onChange={(page) => setMemberPage(page)}
-                      />
-                    </div>
-                  }
                 >
                   <TableHeader columns={memberColumns}>
                     {(column) => (
@@ -787,6 +758,42 @@ function Organization() {
                     )}
                   </TableBody>
                 </Table>
+                <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">
+                  <div className="flex justify-between items-center gap-3">
+                    <Select
+                      variant="bordered"
+                      label="Số hàng"
+                      defaultSelectedKeys={[memberPageSize.toString()]}
+                      size="sm"
+                      labelPlacement="outside-left"
+                      className="w-24"
+                      onChange={(e) => setMemberPageSize(e.target.value)}
+                    >
+                      <SelectItem key="5">5</SelectItem>
+                      <SelectItem key="10">10</SelectItem>
+                      <SelectItem key="20">20</SelectItem>
+                      <SelectItem key="50">50</SelectItem>
+                    </Select>
+                    <div className="text-sm text-neutral-500 text-end md:text-start">
+                      {memberOfPage === 0
+                        ? "Không có dữ liệu"
+                        : `Hiển thị ${
+                            (memberPage - 1) * memberPageSize + 1
+                          } đến ${
+                            (memberPage - 1) * memberPageSize + memberOfPage
+                          } trong tổng ${totalMembers} dữ liệu`}
+                    </div>
+                  </div>
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    color="primary"
+                    page={memberPage}
+                    total={memberPages}
+                    onChange={(page) => setMemberPage(page)}
+                  />
+                </div>
               </Tab>
               <Tab key="invitationList" title="Lời mời đã gửi">
                 <div className="flex justify-end mb-5">
@@ -807,47 +814,9 @@ function Organization() {
                   </Select>
                 </div>
                 <Table
+                  className="w-full overflow-x-scroll md:overflow-auto"
                   removeWrapper
                   aria-label="invitation"
-                  bottomContent={
-                    <div className="flex justify-between items-center mt-4">
-                      <div className="flex items-center gap-3">
-                        <Select
-                          variant="bordered"
-                          label="Số hàng"
-                          defaultSelectedKeys={[invitePageSize.toString()]}
-                          size="sm"
-                          labelPlacement="outside-left"
-                          className="w-24"
-                          onChange={(e) => setInvitePageSize(e.target.value)}
-                        >
-                          <SelectItem key="5">5</SelectItem>
-                          <SelectItem key="10">10</SelectItem>
-                          <SelectItem key="20">20</SelectItem>
-                          <SelectItem key="50">50</SelectItem>
-                        </Select>
-                        <div className="text-sm text-neutral-500">
-                          {inviteOfPage === 0
-                            ? "Không có dữ liệu"
-                            : `Hiển thị ${
-                                (invitationPage - 1) * invitePageSize + 1
-                              } đến ${
-                                (invitationPage - 1) * invitePageSize +
-                                inviteOfPage
-                              } trong tổng ${totalInvites} dữ liệu`}
-                        </div>
-                      </div>
-                      <Pagination
-                        isCompact
-                        showControls
-                        showShadow
-                        color="primary"
-                        page={invitationPage}
-                        total={invitationPages}
-                        onChange={(page) => setInvitationPage(page)}
-                      />
-                    </div>
-                  }
                 >
                   <TableHeader columns={invitationColumns}>
                     {(column) => (
@@ -866,6 +835,42 @@ function Organization() {
                     )}
                   </TableBody>
                 </Table>
+                <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">
+                  <div className="flex justify-between items-center gap-3">
+                    <Select
+                      variant="bordered"
+                      label="Số hàng"
+                      defaultSelectedKeys={[invitePageSize.toString()]}
+                      size="sm"
+                      labelPlacement="outside-left"
+                      className="w-24"
+                      onChange={(e) => setInvitePageSize(e.target.value)}
+                    >
+                      <SelectItem key="5">5</SelectItem>
+                      <SelectItem key="10">10</SelectItem>
+                      <SelectItem key="20">20</SelectItem>
+                      <SelectItem key="50">50</SelectItem>
+                    </Select>
+                    <div className="text-sm text-neutral-500 text-end md:text-start">
+                      {inviteOfPage === 0
+                        ? "Không có dữ liệu"
+                        : `Hiển thị ${
+                            (invitationPage - 1) * invitePageSize + 1
+                          } đến ${
+                            (invitationPage - 1) * invitePageSize + inviteOfPage
+                          } trong tổng ${totalInvites} dữ liệu`}
+                    </div>
+                  </div>
+                  <Pagination
+                    isCompact
+                    showControls
+                    showShadow
+                    color="primary"
+                    page={invitationPage}
+                    total={invitationPages}
+                    onChange={(page) => setInvitationPage(page)}
+                  />
+                </div>
               </Tab>
               <Tab key="inviteMember" title="Mời thêm thành viên">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3">

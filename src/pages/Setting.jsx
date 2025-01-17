@@ -82,14 +82,15 @@ function Setting() {
           dispatch(setUserData(data));
           toast.success("Thay đổi thông tin thành công.");
           setIsEditProfile(false);
-        } else {
-          console.log(res);
-          if (res.data?.name) {
-            toast.error("Tên: " + res.data.name[0]);
-          } else if (res.data?.avatar) {
-            toast.error("Ảnh đại diện: " + res.data.avatar[0]);
-          }
-        }
+        } 
+        // else {
+        //   console.log(res);
+        //   if (res.data?.name) {
+        //     toast.error("Tên: " + res.data.name[0]);
+        //   } else if (res.data?.avatar) {
+        //     toast.error("Ảnh đại diện: " + res.data.avatar[0]);
+        //   }
+        // }
       })
       .catch((err) => {
         console.log(2, err);
@@ -114,15 +115,16 @@ function Setting() {
         localStorage.setItem("token", "");
         navigate("/login");
         toast.success("Đổi mật khẩu thành công, vui lòng đăng nhập lại.");
-      } else {
-        if (res?.data.current_password) {
-          toast.error("Mật khẩu hiện tại: " + res.data.current_password[0]);
-        } else if (res?.data.new_password) {
-          toast.error("Mật khẩu mới: " + res.data.new_password[0]);
-        } else if (res?.data.new_password2) {
-          toast.error("Xác nhận mật khẩu mới: " + res.data.new_password2[0]);
-        }
-      }
+      } 
+      // else {
+      //   if (res?.data.current_password) {
+      //     toast.error("Mật khẩu hiện tại: " + res.data.current_password[0]);
+      //   } else if (res?.data.new_password) {
+      //     toast.error("Mật khẩu mới: " + res.data.new_password[0]);
+      //   } else if (res?.data.new_password2) {
+      //     toast.error("Xác nhận mật khẩu mới: " + res.data.new_password2[0]);
+      //   }
+      // }
     });
     setIsLoading(false);
   };
@@ -577,7 +579,7 @@ function Setting() {
                     <div className="w-full mb-5 text-sm">
                       Bật nhận thông báo/ cảnh báo qua:
                     </div>
-                    <div className="grid grid-cols-3 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 mb-8 gap-3">
                       <div>
                         <Checkbox defaultSelected radius="sm">
                           Email
@@ -600,7 +602,7 @@ function Setting() {
                     </div>
                   </Tab>
                   <Tab key="threshold" title="Thiết lập ngưỡng">
-                    <div className="grid grid-cols-2 gap-5 mb-3">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-3">
                       <div className="flex justify-center items-center gap-3 mb-5">
                         <Input
                           type="text"

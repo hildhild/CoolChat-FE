@@ -130,7 +130,7 @@ function Report() {
             <BiExport />
           </Button>
         </div>
-        <div className="grid grid-cols-4 gap-5 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
           <div className="bg-white p-5 rounded-xl">
             <div className="flex w-full justify-between mb-2">
               <div className="text-neutral-600 font-semibold max-w-[70%]">
@@ -219,7 +219,7 @@ function Report() {
             height={400}
           />
         </div>
-        <div className="grid grid-cols-2 gap-5 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
           <div className="bg-white p-5 rounded-xl">
             <div className="flex w-full justify-between">
               <div className="font-semibold text-lg mb-5">Vị trí</div>
