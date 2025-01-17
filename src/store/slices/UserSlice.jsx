@@ -7,7 +7,7 @@ export const UserSlice = createSlice({
         email: "",
         name: "",
         phoneNumber: "",
-        avatar: null,
+        avatar: "",
         role: "",
         companyName: "",
     },
@@ -19,7 +19,7 @@ export const UserSlice = createSlice({
             state.email = action.payload.email;
             state.name = action.payload.name;
             state.phoneNumber = action.payload.phone_number;
-            state.avatar = action.payload.avatar;
+            state.avatar = action.payload.avatar_url;
         },
         setUserRole: (state, action) => {
             state.role = action.payload;

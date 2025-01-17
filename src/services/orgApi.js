@@ -5,7 +5,7 @@ export const getOrgInfoApi = () => {
 }
 
 export const editOrgInfoApi = (name, description, contact_email, contact_phone, address) => {
-    return axios.put(`/organization/detail/`, {
+    return axios.patch(`/organization/detail/`, {
         "name": name,
         "description": description,
         "contact_email": contact_email,

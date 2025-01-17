@@ -13,7 +13,7 @@ import {
   Subscription,
   ChatbotComparison,
   ChatDetail,
-  Organization
+  Organization,
 } from "./Admin";
 import { Appointment } from "./CSR";
 
@@ -33,5 +33,5 @@ export {
   ChatbotComparison,
   ChatDetail,
   Organization,
-  Appointment
+  Appointment,
 };

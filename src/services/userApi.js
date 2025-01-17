@@ -5,10 +5,14 @@ export const getUserInfoApi = () => {
 }
 
 export const editUserInfoApi = (name, avatar, phone_number) => {
-    return axios.put(`/users/update/`, {
-        name: name,
-        phone_number: phone_number,
-        ...(avatar ? {avatar: avatar} : {})
+    const formData = new FormData();
+    if (name) formData.append("name", name);
+    if (avatar) formData.append("avatar", avatar);
+    if (phone_number) formData.append("phone_number", phone_number);
+    return axios.patch(`/users/update/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
     });
 }
 
