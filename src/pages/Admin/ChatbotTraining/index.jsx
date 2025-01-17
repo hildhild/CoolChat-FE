@@ -190,8 +190,8 @@ function ChatbotTraining() {
     if (columnKey === "category") {
       return (
         <Select
+          aria-label="Select category"
           color={categoryColor[cellValue]}
-          placeholder="Select an animal"
           defaultSelectedKeys={[cellValue]}
           size="sm"
           className="w-full"

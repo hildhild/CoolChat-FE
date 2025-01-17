@@ -201,6 +201,7 @@ function Report() {
             <div className="font-semibold text-lg mb-5">Cuộc hội thoại</div>
             <div className="w-20">
               <Select
+                aria-label="Select filter type"
                 variant="bordered"
                 className="mb-5"
                 defaultSelectedKeys={["year"]}
@@ -225,6 +226,7 @@ function Report() {
               <div className="font-semibold text-lg mb-5">Vị trí</div>
               <div className="w-32">
                 <Select
+                  aria-label="Select location type"
                   variant="bordered"
                   className="mb-5"
                   defaultSelectedKeys={["internal"]}
@@ -257,6 +259,7 @@ function Report() {
               <div className="font-semibold text-lg mb-5">Thiết bị</div>
               <div className="w-32">
                 <Select
+                  aria-label="Select device type"
                   variant="bordered"
                   className="mb-5"
                   defaultSelectedKeys={["browser"]}

@@ -98,7 +98,6 @@ function Organization() {
     if (!accessToken) {
       navigate("/login");
     }
-    console.log(userRole);
     if (userRole !== "OWNER") {
       navigate("/chatbot-training");
     }
@@ -166,7 +165,6 @@ function Organization() {
       data.address
     )
       .then((res) => {
-        console.log(123, res);
         if (res.status === 200) {
           dispatch(setOrganizationData(data));
           dispatch(setCompanyName(data.name));

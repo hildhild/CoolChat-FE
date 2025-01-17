@@ -71,6 +71,7 @@ function Chat() {
               <div className="flex gap-3 items-center">
                 Hiển thị
                 <Select
+                  aria-label="Select page size"
                   variant="bordered"
                   className="w-20 bg-white rounded-2xl"
                   size="sm"
@@ -117,6 +118,7 @@ function Chat() {
               <div className="flex gap-3 items-center">
                 Hiển thị
                 <Select
+                  aria-label="Select page size"
                   variant="bordered"
                   className="w-20 bg-white rounded-2xl"
                   size="sm"
@@ -147,6 +149,7 @@ function Chat() {
             startContent={<MdSearch />}
           />
           <Select
+            aria-label="Select filter type"
             variant="bordered"
             className="w-20 bg-white rounded-2xl"
             placeholder="Lọc"

@@ -22,7 +22,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App() {
   const userRole = useSelector((state) => state.user.role);
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/sign-up" element={<Signup />} />
