@@ -34,7 +34,7 @@ export default function ChatBox({ toggleOpenChatbox, config = null }) {
     );
   } else {
     return (
-      <div className="flex flex-col fixed z-50 right-7 bottom-7 w-[420px] h-[580px] bg-white border-[1px] border-[#b9b9b9] rounded-2xl">
+      <div className="flex flex-col fixed z-50 right-[15px] sm:right-7 bottom-7 w-[calc(100vw-30px)] sm:w-[420px] h-[580px] bg-white border-[1px] border-[#b9b9b9] rounded-2xl">
         <div className="flex justify-between items-center p-3 border-b-[1px] border-[#b9b9b9] h-[64px]">
           <div className="flex gap-3 items-center">
             <button
