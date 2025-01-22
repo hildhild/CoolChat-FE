@@ -32,7 +32,7 @@ const DashboardHeader = () => {
 
   const handleLogout = () => {
     dispatch(setToken(""));
-    localStorage.setItem("token", "");
+    localStorage.removeItem("token");
     navigate("/");
     toast.success("Đăng xuất thành công");
   };

@@ -27,6 +27,7 @@ export const UserInfo = () => {
   const inputFileRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  
 
   const handleChangeProfile = async (data) => {
     setIsLoading(true);
@@ -69,13 +70,6 @@ export const UserInfo = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setUserInfoData({ ...userInfoData, avatar: URL.createObjectURL(file) });
-  //   }
-  // };
 
   const handleAvatarClick = () => {
     if (isEditProfile) {

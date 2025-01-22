@@ -4,13 +4,18 @@ export const getOrgInfoApi = () => {
     return axios.get(`/organization/detail/`);
 }
 
-export const editOrgInfoApi = (name, description, contact_email, contact_phone, address) => {
-    return axios.patch(`/organization/detail/`, {
-        "name": name,
-        "description": description,
-        "contact_email": contact_email,
-        "contact_phone": contact_phone,
-        "address": address
+export const editOrgInfoApi = (name, description, contact_email, contact_phone, address, logo) => {
+    const formData = new FormData();
+    if (name) formData.append("name", name);
+    if (description) formData.append("description", description);
+    if (contact_email) formData.append("contact_email", contact_email);
+    if (contact_phone) formData.append("contact_phone", contact_phone);
+    if (address) formData.append("address", address);
+    if (logo) formData.append("logo", logo);
+    return axios.patch(`/organization/detail/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
     });
 }
 

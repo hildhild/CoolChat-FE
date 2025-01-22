@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { store } from "../store/store.jsx";
+import store from '../store/store.jsx';
 import { setToken } from '../store/slices/UserSlice.jsx';
 
 const instance = axios.create({ //Tạo 1 instance cua axios để có thể tùy chỉnh như timeout, headers,...
@@ -30,12 +30,13 @@ instance.interceptors.response.use(function (response) { //Máy chặn yêu cầ
     } else {
         console.log('Error: ', error.message);
     }
-    if (res.data.code === "token_not_valid") {
+    console.log(1, res);
+    if (res.data.errors && res.data.errors.length > 0 && (res.data.errors[0] === "Given token not valid for any token type" || res.data.errors[0] === "Authentication credentials were not provided.")) {
         store.dispatch(setToken(""));
-        localStorage.setItem("token", "");
+        localStorage.removeItem("token");
         window.location.replace("/login");
-    } else {
-        toast.error(res.data.detail);
+    } else if (res.data.errors && res.data.errors.length > 0) {
+        toast.error(res.data.errors[0]);
     }
     return res;
 });

@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Button,
   Input,
   Select,
@@ -16,32 +15,29 @@ import {
   Chip,
   useDisclosure,
 } from "@nextui-org/react";
-import { DashboardLayout } from "../../layouts";
-import { FaTrash, FaInfoCircle, FaCamera } from "react-icons/fa";
+import { DashboardLayout } from "../../../layouts";
+import { FaTrash, FaInfoCircle } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import { MdOutlineAddPhotoAlternate, MdOutlineGroups } from "react-icons/md";
+import { MdOutlineGroups } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import {
-  editOrgInfoApi,
   getInvitesApi,
   getMembersApi,
   inviteMemberApi,
   removeMemberApi,
   revokeInviteApi,
-} from "../../services/orgApi";
+} from "../../../services/orgApi";
 import { toast } from "react-toastify";
-import { setOrganizationData } from "../../store/slices/OrganizationSlice";
-import { setCompanyName } from "../../store/slices/UserSlice";
-import { ConfirmModal, LoadingProcess } from "../../components";
+import { ConfirmModal, LoadingProcess } from "../../../components";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
-import { EMAIL_PATTERN } from "../../constants/patterns";
-import { dateTimeToString } from "../../utils";
+import { EMAIL_PATTERN } from "../../../constants/patterns";
+import { dateTimeToString } from "../../../utils";
+import { OrganizationInfo } from "./OrganizationInfo";
 
 function Organization() {
   const { t } = useTranslation();
@@ -49,10 +45,7 @@ function Organization() {
   const [isMember, setIsMember] = useState(false);
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
-  const orgInfo = useSelector((state) => state.organization);
-  const [orgInfoData, setOrgInfoData] = useState(orgInfo);
-  const [isEditInfo, setIsEditInfo] = useState(false);
-  const dispatch = useDispatch();
+  
   const userRole = useSelector((state) => state.user.role);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -71,15 +64,7 @@ function Organization() {
   const [inviteOfPage, setInviteOfPage] = useState(0);
   const [invitePageSize, setInvitePageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
-  const inputFileRef = useRef(null);
-  const {
-    control: editControl,
-    handleSubmit: editHandleSubmit,
-    formState: { errors: editErrors },
-  } = useForm({
-    mode: "onSubmit",
-    defaultValues: orgInfo,
-  });
+
 
   const {
     control: inviteControl,
@@ -155,43 +140,6 @@ function Organization() {
     },
   });
 
-  const handleChangeInfo = async (data) => {
-    setIsLoading(true);
-    await editOrgInfoApi(
-      data.name,
-      data.description,
-      data.contact_email,
-      data.contact_phone,
-      data.address
-    )
-      .then((res) => {
-        if (res.status === 200) {
-          dispatch(setOrganizationData(data));
-          dispatch(setCompanyName(data.name));
-          toast.success("Thay đổi thông tin thành công.");
-          setIsEditInfo(false);
-        }
-        // else {
-        //   console.log(res);
-        //   if (res.data?.name) {
-        //     toast.error("Tên: " + res.data.name[0]);
-        //   } else if (res.data?.description) {
-        //     toast.error("Mô tả: " + res.data.description[0]);
-        //   } else if (res.data?.contact_email) {
-        //     toast.error("Email liên hệ: " + res.data.contact_email[0]);
-        //   } else if (res.data?.contact_phone) {
-        //     toast.error("Số điện thoại liên hệ: " + res.data.contact_phone[0]);
-        //   } else if (res.data?.address) {
-        //     toast.error("Dịa chỉ: " + res.data.address[0]);
-        //   }
-        // }
-      })
-      .catch((err) => {
-        console.log(2, err);
-      });
-    setIsLoading(false);
-  };
-
   const handleDeleteMember = async (id) => {
     setIsLoading(true);
     await removeMemberApi(id).then((res) => {
@@ -255,17 +203,24 @@ function Organization() {
   const renderMemberCell = (item, columnKey) => {
     const cellValue = item[columnKey];
     if (columnKey === "id") {
-      return (
-        <button
-          className="text-red-500"
-          onClick={() => {
-            onOpen();
-            setMemberId(cellValue);
-          }}
-        >
-          <FaTrash />
-        </button>
-      );
+      if (
+        memberList.filter((member) => member.id === cellValue)[0].role !==
+        "OWNER"
+      ) {
+        return (
+          <button
+            className="text-red-500"
+            onClick={() => {
+              onOpen();
+              setMemberId(cellValue);
+            }}
+          >
+            <FaTrash />
+          </button>
+        );
+      } else {
+        return <></>;
+      }
     } else if (columnKey === "joined_at") {
       const date = new Date(cellValue);
       return dateTimeToString(date);
@@ -416,30 +371,6 @@ function Organization() {
     }
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setOrgInfoData({ ...orgInfoData, logo: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   if (file) {
-  //     setOrgInfoData({ ...orgInfoData, logo: URL.createObjectURL(file) });
-  //   }
-  // };
-
-  const handleAvatarClick = () => {
-    if (isEditInfo) {
-      inputFileRef.current.click();
-    }
-  };
-
   return (
     <DashboardLayout page="organization">
       <LoadingProcess
@@ -478,238 +409,7 @@ function Organization() {
             <CiSquarePlus size={20} />
           )}
         </Button>
-        {isOrganizationInfo && (
-          <div className="bg-white px-5 py-8 rounded-xl mb-8">
-            <div className="w-full flex justify-center items-center mb-5">
-              <div className="flex flex-col items-center">
-                <div className="flex justify-center items-center text-neutral-600 mb-2">
-                  <div className="text-sm">Logo</div>
-                  {/* <MdOutlineAddPhotoAlternate /> */}
-                </div>
-                {isEditInfo && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    ref={inputFileRef}
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                  />
-                )}
-                <button
-                  onClick={handleAvatarClick}
-                  className="overflow-hidden group rounded-2xl aspect-square relative max-w-24 max-h-24 h-24 w-24 border-gray-300 border-2"
-                >
-                  <img
-                    className={`${
-                      isEditInfo
-                        ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
-                        : "cursor-default"
-                    } w-full h-full object-contain`}
-                    alt="avatar"
-                    src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
-                  />
-                  {isEditInfo && (
-                    <>
-                      <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
-                      <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                    </>
-                  )}
-                </button>
-                {/* <Avatar
-                  className="w-20 h-20 bg-white"
-                  isBordered
-                  radius="sm"
-                  src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
-                /> */}
-                {/* {isEditInfo && (
-                  <input
-                    id="avatar-input"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="mt-3"
-                  />
-                )} */}
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-3">
-              <div>
-                <Controller
-                  control={editControl}
-                  name="name"
-                  rules={{
-                    required: t("required"),
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      name="name"
-                      label={t("org_name")}
-                      placeholder={t("enter_org_name")}
-                      type="text"
-                      variant="bordered"
-                      value={value}
-                      onChange={onChange}
-                      isRequired
-                      isDisabled={!isEditInfo}
-                    />
-                  )}
-                />
-                {editErrors.name && (
-                  <div className="text-red-500 text-xs mt-2">
-                    {editErrors.name.message}
-                  </div>
-                )}
-              </div>
-              <div>
-                <Controller
-                  control={editControl}
-                  name="description"
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      name="description"
-                      label={t("des")}
-                      placeholder={t("enter_des")}
-                      type="text"
-                      variant="bordered"
-                      value={value}
-                      onChange={onChange}
-                      isDisabled={!isEditInfo}
-                    />
-                  )}
-                />
-                {editErrors.description && (
-                  <div className="text-red-500 text-xs mt-2">
-                    {editErrors.description.message}
-                  </div>
-                )}
-              </div>
-              <div>
-                <Controller
-                  control={editControl}
-                  name="contact_email"
-                  rules={{
-                    required: t("required"),
-                    pattern: {
-                      value: EMAIL_PATTERN,
-                      message: t("invalid"),
-                    },
-                  }}
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      name="contact_email"
-                      label={t("contact_email")}
-                      placeholder={t("enter_contact_email")}
-                      type="email"
-                      variant="bordered"
-                      value={value}
-                      onChange={onChange}
-                      isRequired
-                      isDisabled={!isEditInfo}
-                    />
-                  )}
-                />
-                {editErrors.contact_email && (
-                  <div className="text-red-500 text-xs mt-2">
-                    {editErrors.contact_email.message}
-                  </div>
-                )}
-              </div>
-              <div>
-                <Controller
-                  control={editControl}
-                  name="contact_phone"
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      name="contact_phone"
-                      label={t("contact_phone")}
-                      placeholder={t("enter_contact_phone")}
-                      type="text"
-                      variant="bordered"
-                      value={value}
-                      onChange={onChange}
-                      isDisabled={!isEditInfo}
-                    />
-                  )}
-                />
-                {editErrors.contact_phone && (
-                  <div className="text-red-500 text-xs mt-2">
-                    {editErrors.contact_phone.message}
-                  </div>
-                )}
-              </div>
-              <div>
-                <Controller
-                  control={editControl}
-                  name="address"
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      name="address"
-                      label={t("address")}
-                      placeholder={t("enter_address")}
-                      type="text"
-                      variant="bordered"
-                      value={value}
-                      onChange={onChange}
-                      isDisabled={!isEditInfo}
-                    />
-                  )}
-                />
-                {editErrors.address && (
-                  <div className="text-red-500 text-xs mt-2">
-                    {editErrors.address.message}
-                  </div>
-                )}
-              </div>
-              <div>
-                <Controller
-                  control={editControl}
-                  name="subscription_type"
-                  render={({ field: { onChange, value } }) => (
-                    <Input
-                      name="subscription_type"
-                      label="Gói đăng ký"
-                      type="text"
-                      variant="bordered"
-                      value={value}
-                      onChange={onChange}
-                      isDisabled
-                    />
-                  )}
-                />
-                {editErrors.subscription_type && (
-                  <div className="text-red-500 text-xs mt-2">
-                    {editErrors.subscription_type.message}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="flex gap-5 justify-end">
-              {isEditInfo ? (
-                <>
-                  <Button
-                    color="danger"
-                    onClick={() => {
-                      setIsEditInfo(false);
-                      setOrgInfoData(orgInfo);
-                    }}
-                  >
-                    HỦY BỎ
-                  </Button>
-                  <Button
-                    color="success"
-                    onClick={editHandleSubmit(handleChangeInfo)}
-                  >
-                    LƯU
-                  </Button>
-                </>
-              ) : (
-                <Button color="primary" onClick={() => setIsEditInfo(true)}>
-                  CHỈNH SỬA
-                </Button>
-              )}
-            </div>
-          </div>
-        )}
+        {isOrganizationInfo && <OrganizationInfo />}
         <Button
           className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
           onClick={() => {
