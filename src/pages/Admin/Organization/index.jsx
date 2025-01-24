@@ -32,7 +32,7 @@ import {
   revokeInviteApi,
 } from "../../../services/orgApi";
 import { toast } from "react-toastify";
-import { ConfirmModal, LoadingProcess } from "../../../components";
+import { ConfirmModal, LoadingProcess, TableBottom } from "../../../components";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { EMAIL_PATTERN } from "../../../constants/patterns";
@@ -456,42 +456,7 @@ function Organization() {
                     )}
                   </TableBody>
                 </Table>
-                <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">
-                  <div className="flex justify-between items-center gap-3">
-                    <Select
-                      variant="bordered"
-                      label="Số hàng"
-                      defaultSelectedKeys={[memberPageSize.toString()]}
-                      size="sm"
-                      labelPlacement="outside-left"
-                      className="w-24"
-                      onChange={(e) => setMemberPageSize(e.target.value)}
-                    >
-                      <SelectItem key="5">5</SelectItem>
-                      <SelectItem key="10">10</SelectItem>
-                      <SelectItem key="20">20</SelectItem>
-                      <SelectItem key="50">50</SelectItem>
-                    </Select>
-                    <div className="text-sm text-neutral-500 text-end md:text-start">
-                      {memberOfPage === 0
-                        ? "Không có dữ liệu"
-                        : `Hiển thị ${
-                            (memberPage - 1) * memberPageSize + 1
-                          } đến ${
-                            (memberPage - 1) * memberPageSize + memberOfPage
-                          } trong tổng ${totalMembers} dữ liệu`}
-                    </div>
-                  </div>
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="primary"
-                    page={memberPage}
-                    total={memberPages}
-                    onChange={(page) => setMemberPage(page)}
-                  />
-                </div>
+                <TableBottom page={memberPage} setPage={setMemberPage} pageSize={memberPageSize} setPageSize={setMemberPageSize} pageCount={memberOfPage} totalCount={totalMembers} numOfPages={memberPages}/>
               </Tab>
               <Tab key="invitationList" title="Lời mời đã gửi">
                 <div className="flex justify-end mb-5">
@@ -533,42 +498,7 @@ function Organization() {
                     )}
                   </TableBody>
                 </Table>
-                <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">
-                  <div className="flex justify-between items-center gap-3">
-                    <Select
-                      variant="bordered"
-                      label="Số hàng"
-                      defaultSelectedKeys={[invitePageSize.toString()]}
-                      size="sm"
-                      labelPlacement="outside-left"
-                      className="w-24"
-                      onChange={(e) => setInvitePageSize(e.target.value)}
-                    >
-                      <SelectItem key="5">5</SelectItem>
-                      <SelectItem key="10">10</SelectItem>
-                      <SelectItem key="20">20</SelectItem>
-                      <SelectItem key="50">50</SelectItem>
-                    </Select>
-                    <div className="text-sm text-neutral-500 text-end md:text-start">
-                      {inviteOfPage === 0
-                        ? "Không có dữ liệu"
-                        : `Hiển thị ${
-                            (invitationPage - 1) * invitePageSize + 1
-                          } đến ${
-                            (invitationPage - 1) * invitePageSize + inviteOfPage
-                          } trong tổng ${totalInvites} dữ liệu`}
-                    </div>
-                  </div>
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="primary"
-                    page={invitationPage}
-                    total={invitationPages}
-                    onChange={(page) => setInvitationPage(page)}
-                  />
-                </div>
+                <TableBottom page={invitationPage} setPage={setInvitationPage} pageSize={invitePageSize} setPageSize={setInvitePageSize} pageCount={inviteOfPage} totalCount={totalInvites} numOfPages={invitationPages}/>
               </Tab>
               <Tab key="inviteMember" title="Mời thêm thành viên">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3">

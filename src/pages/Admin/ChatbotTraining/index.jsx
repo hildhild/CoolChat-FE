@@ -48,19 +48,9 @@ import { FaFilePdf } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { trainingLegends } from "../../../constants/trainingLegend";
+import { DocumentList } from "./DocumentList";
 
-const LegendItem = ({ legend }) => {
-  return (
-    <div className="grid grid-cols-12">
-      <Chip color={legend.color} className="col-span-3 lg:col-span-2">
-        {legend.name}
-      </Chip>
-      <div className="text-sm col-span-9 lg:col-span-10">
-        {legend.description}
-      </div>
-    </div>
-  );
-};
+
 function ChatbotTraining() {
   const { t } = useTranslation();
   const [isLabel, setIsLabel] = useState(true);
@@ -74,140 +64,7 @@ function ChatbotTraining() {
     }
   }, []);
 
-  const rows = [
-    {
-      key: "1",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "uncat",
-    },
-    {
-      key: "2",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "mp",
-    },
-    {
-      key: "3",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "np",
-    },
-    {
-      key: "4",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "np",
-    },
-    {
-      key: "5",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "npr",
-    },
-    {
-      key: "6",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "cr",
-    },
-    {
-      key: "7",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "hp",
-    },
-    {
-      key: "8",
-      uploader: "Tony Reichert",
-      company: "microsoft",
-      type: "document",
-      name: "masothue.pdf",
-      time: "5:00 12/12/2024",
-      category: "hp",
-    },
-  ];
 
-  const columns = [
-    {
-      key: "uploader",
-      label: "Người tải lên",
-    },
-    {
-      key: "company",
-      label: "Công ty",
-    },
-    {
-      key: "type",
-      label: "Loại hình",
-    },
-    {
-      key: "name",
-      label: "Tên tri thức",
-    },
-    {
-      key: "time",
-      label: "Thời gian",
-    },
-    {
-      key: "category",
-      label: "Hạng mục",
-    },
-  ];
-
-  const categoryColor = {
-    hp: "danger",
-    mp: "secondary",
-    np: "success",
-    npr: "default",
-    cr: "primary",
-    uncat: "warning",
-  };
-
-  const renderCell = (item, columnKey) => {
-    const cellValue = item[columnKey];
-    if (columnKey === "category") {
-      return (
-        <Select
-          aria-label="Select category"
-          color={categoryColor[cellValue]}
-          defaultSelectedKeys={[cellValue]}
-          size="sm"
-          className="w-full"
-        >
-          <SelectItem key="hp">HP</SelectItem>
-          <SelectItem key="mp">MP</SelectItem>
-          <SelectItem key="np">NP</SelectItem>
-          <SelectItem key="npr">NPR</SelectItem>
-          <SelectItem key="cr">CR</SelectItem>
-          <SelectItem key="uncat">Uncat</SelectItem>
-        </Select>
-      );
-    } else {
-      return cellValue;
-    }
-  };
 
   return (
     <DashboardLayout page="chatbot-training">
@@ -226,80 +83,7 @@ function ChatbotTraining() {
           {isLabel ? <CiSquareMinus size={20} /> : <CiSquarePlus size={20} />}
         </Button>
         {isLabel && (
-          <>
-            <div className="bg-white px-5 py-8 rounded-xl mb-8">
-              <div className="flex flex-col lg:flex-row w-full justify-between mb-5 gap-5">
-                <div>
-                  <div className="font-semibold text-lg">
-                    Tất cả nguồn tri thức
-                  </div>
-                  <div className="text-sm text-[#16C098]">
-                    Cập nhật 1 phút trước, 5 tri thức mới
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-between lg:justify-center items-center">
-                  <Input
-                    isClearable
-                    radius="lg"
-                    placeholder="Tìm kiếm..."
-                    variant="bordered"
-                    className="w-full sm:w-72"
-                    size="lg"
-                    startContent={<MdSearch size={25} />}
-                  />
-                  <Select
-                    aria-label="sort-training"
-                    variant="bordered"
-                    label="Sắp xếp theo"
-                    defaultSelectedKeys={["newest"]}
-                    size="sm"
-                    className="w-[120px]"
-                  >
-                    <SelectItem key="newest">Mới nhất</SelectItem>
-                    <SelectItem key="oldest">Cũ nhất</SelectItem>
-                  </Select>
-                </div>
-              </div>
-              <Table
-                removeWrapper
-                aria-label="Chatbot training"
-                className="w-full overflow-x-scroll md:overflow-auto"
-              >
-                <TableHeader columns={columns}>
-                  {(column) => (
-                    <TableColumn key={column.key}>{column.label}</TableColumn>
-                  )}
-                </TableHeader>
-                <TableBody items={rows}>
-                  {(item) => (
-                    <TableRow key={item.key}>
-                      {(columnKey) => (
-                        <TableCell>{renderCell(item, columnKey)}</TableCell>
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-              <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">
-                <div className="text-sm text-neutral-500">
-                  Hiển thị 1 đến 8 trong 256K dữ liệu
-                </div>
-                <Pagination showControls total={10} initialPage={1} />
-              </div>
-            </div>
-            <div className="flex gap-5 justify-end mb-5">
-              <Button color="primary" onClick={() => navigate("comparison")}>
-                SO SÁNH CHATBOT
-              </Button>
-              <Button color="success">LƯU VÀ ĐÀO TẠO</Button>
-            </div>
-            <div className="font-semibold text-lg">Chú thích</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-5 py-5 mb-5">
-              {trainingLegends.map((legend, index) => (
-                <LegendItem key={legend.id || index} legend={legend} />
-              ))}
-            </div>
-          </>
+          <DocumentList/>
         )}
         <Button
           className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
