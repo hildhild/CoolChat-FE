@@ -49,7 +49,13 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { trainingLegends } from "../../../constants/trainingLegend";
 import { DocumentList } from "./DocumentList";
-
+import { DocumentFile } from "./DocumentFile";
+import { DocumentText } from "./DocumentText";
+import { DocumentUrl } from "./DocumentUrl";
+import { useQuery } from "@tanstack/react-query";
+import { LoadingProcess } from "../../../components";
+import useDebounce from "../../../hooks/useDebounce";
+import { getDocumentsApi } from "../../../services/documentApi";
 
 function ChatbotTraining() {
   const { t } = useTranslation();
@@ -57,6 +63,50 @@ function ChatbotTraining() {
   const [isUpdate, setIsUpdate] = useState(false);
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [documentType, setDocumentType] = useState("");
+  const [priority, setPriority] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearchInput = useDebounce(searchInput, 500);
+  const [total, setTotal] = useState(0);
+  const [documentPages, setDocumentPages] = useState(0);
+  const [documentOfPage, setDocumentOfPage] = useState(0);
+
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: [
+      "document",
+      page,
+      pageSize,
+      documentType,
+      priority,
+      debouncedSearchInput,
+    ],
+    queryFn: async () => {
+      try {
+        const res = await getDocumentsApi(
+          documentType,
+          page,
+          pageSize,
+          priority,
+          debouncedSearchInput
+        );
+        console.log(44, res);
+        if (res.status === 200) {
+          setTotal(res.data.count);
+          setDocumentOfPage(res.data.results.length);
+          setDocumentPages(Math.ceil(res.data.count / pageSize));
+          console.log(Math.ceil(res.data.count / pageSize));
+          return res.data.results;
+        } else {
+          // toast.error(res.data.detail);
+          return [];
+        }
+      } catch (e) {
+        throw new Error("Failed to fetch invitations.");
+      }
+    },
+  });
 
   useEffect(() => {
     if (!accessToken) {
@@ -64,10 +114,9 @@ function ChatbotTraining() {
     }
   }, []);
 
-
-
   return (
     <DashboardLayout page="chatbot-training">
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">ĐÀO TẠO CHATBOT</div>
         <Button
@@ -83,7 +132,19 @@ function ChatbotTraining() {
           {isLabel ? <CiSquareMinus size={20} /> : <CiSquarePlus size={20} />}
         </Button>
         {isLabel && (
-          <DocumentList/>
+          <DocumentList
+            documentList={data}
+            page={page}
+            setPage={setPage}
+            pageSize={pageSize}
+            setPageSize={setPageSize}
+            setDocumentType={setDocumentType}
+            setPriority={setPriority}
+            setSearchInput={setSearchInput}
+            total={total}
+            documentPages={documentPages}
+            documentOfPage={documentOfPage}
+          />
         )}
         <Button
           className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
@@ -121,85 +182,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <div className="font-semibold text-lg mb-3 block lg:hidden">
-                  Tải lên phương tiện
-                </div>
-                <div className="mb-5">Thêm tài liệu của bạn ở đây</div>
-                <div className="flex flex-col justify-center items-center border-2 border-dashed border-coolchat rounded-2xl p-6 mb-5">
-                  <FaFileUpload size={50} className="text-coolchat mb-3" />
-                  <div>Kéo thả các tệp để bắt đầu tải lên</div>
-                  <div className="flex justify-center items-center py-4">
-                    <div className="h-[1px] w-12 bg-slate-200"></div>
-                    <div className="mx-3 uppercase">{t("or")}</div>
-                    <div className="h-[1px] w-12 bg-slate-200"></div>
-                  </div>
-                  <Button variant="bordered" color="primary">
-                    Chọn từ máy tính
-                  </Button>
-                </div>
-                <div className="text-sm text-neutral-600 mb-5">
-                  Chỉ hỗ trợ .pdf, .doc, .docx và .txt
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <div className="mb-4">Các file vừa upload</div>
-                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                      <div className="flex items-center justify-between gap-5">
-                        <FaFilePdf className="text-[#F15B48]" size={25} />
-                        <div>
-                          <div className="text-sm font-semibold">
-                            document.pdf
-                          </div>
-                          <div className="text-sm text-gray-400">5.3MB</div>
-                        </div>
-                      </div>
-                      <MdOutlineCancel className="text-red-500" size={20} />
-                    </div>
-                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                      <div className="flex items-center justify-between gap-5">
-                        <FaFilePdf className="text-[#F15B48]" size={25} />
-                        <div>
-                          <div className="text-sm font-semibold">
-                            document.pdf
-                          </div>
-                          <div className="text-sm text-gray-400">5.3MB</div>
-                        </div>
-                      </div>
-                      <MdOutlineCancel className="text-red-500" size={20} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mb-4">Các file hiện có</div>
-                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                      <div className="flex items-center justify-between gap-5">
-                        <FaFilePdf className="text-[#F15B48]" size={25} />
-                        <div>
-                          <div className="text-sm font-semibold">
-                            document.pdf
-                          </div>
-                          <div className="text-sm text-gray-400">5.3MB</div>
-                        </div>
-                      </div>
-                      <MdOutlineCancel className="text-red-500" size={20} />
-                    </div>
-                    <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                      <div className="flex items-center justify-between gap-5">
-                        <FaFilePdf className="text-[#F15B48]" size={25} />
-                        <div>
-                          <div className="text-sm font-semibold">
-                            document.pdf
-                          </div>
-                          <div className="text-sm text-gray-400">5.3MB</div>
-                        </div>
-                      </div>
-                      <MdOutlineCancel className="text-red-500" size={20} />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex justify-end gap-5 mt-3">
-                  <Button color="default">Hủy</Button>
-                  <Button color="primary">Lưu</Button>
-                </div>
+                <DocumentFile refetch={refetch} />
               </Tab>
               <Tab
                 key="text"
@@ -212,60 +195,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <div className="font-semibold text-lg mb-3 block lg:hidden">
-                  Nhập tri thức
-                </div>
-                <div className="mb-5">
-                  Nhập hướng dẫn cho AI dưới dạng viết tay
-                </div>
-                <Textarea
-                  variant="bordered"
-                  disableAnimation
-                  disableAutosize
-                  className="w-full bg-white rounded-xl mb-4"
-                  classNames={{
-                    input: "resize-y min-h-[120px]",
-                  }}
-                />
-                <div className="mb-3">
-                  Các hướng dẫn hiện có (double-tap để đổi tên)
-                </div>
-                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                  <div className="flex items-center justify-between gap-5">
-                    <MdOutlineTextSnippet
-                      className="text-yellow-500"
-                      size={30}
-                    />
-                    <div>
-                      <div className="text-sm font-semibold">note1</div>
-                      <div className="text-sm text-gray-400">2590 từ</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <FaEdit size={20} />
-                    <MdOutlineCancel className="text-red-500" size={20} />
-                  </div>
-                </div>
-                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                  <div className="flex items-center justify-between gap-5">
-                    <MdOutlineTextSnippet
-                      className="text-yellow-500"
-                      size={30}
-                    />
-                    <div>
-                      <div className="text-sm font-semibold">note2</div>
-                      <div className="text-sm text-gray-400">1097 từ</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <FaEdit size={20} />
-                    <MdOutlineCancel className="text-red-500" size={20} />
-                  </div>
-                </div>
-                <div className="flex justify-end gap-5 mt-5">
-                  <Button color="default">Hủy</Button>
-                  <Button color="primary">Lưu</Button>
-                </div>
+                <DocumentText />
               </Tab>
               <Tab
                 key="web"
@@ -278,43 +208,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <div className="font-semibold text-lg mb-3 block lg:hidden">
-                  Nhập tri thức web
-                </div>
-                <div className="mb-5">Nhập các website để AI crawl</div>
-                <div className="grid grid-cols-12 gap-4 mb-10">
-                  <Input
-                    type="text"
-                    variant="bordered"
-                    placeholder="Nhập đường dẫn đến website"
-                    className="col-span-12 md:col-span-10"
-                  />
-                  <Button color="primary" className="col-span-12 md:col-span-2">
-                    Thêm
-                  </Button>
-                </div>
-                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                  <div className="flex items-center justify-between gap-5">
-                    <TbWorld className="text-coolchat" size={30} />
-                    <div className="text-sm font-semibold">
-                      coolchat.software
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <FaEdit size={20} />
-                    <FaTrash className="text-red-500" size={20} />
-                  </div>
-                </div>
-                <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">
-                  <div className="flex items-center justify-between gap-5">
-                    <TbWorld className="text-coolchat" size={30} />
-                    <div className="text-sm font-semibold">coolchat.com</div>
-                  </div>
-                  <div className="flex gap-3">
-                    <FaEdit size={20} />
-                    <FaTrash className="text-red-500" size={20} />
-                  </div>
-                </div>
+                <DocumentUrl />
               </Tab>
             </Tabs>
           </div>

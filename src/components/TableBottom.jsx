@@ -10,7 +10,7 @@ export const TableBottom = ({
   totalCount,
   numOfPages,
 }) => {
-  useEffect(() => console.log(12, page, numOfPages), []);
+  useEffect(() => console.log(12, page, numOfPages), [page, pageSize, numOfPages]);
 
   return (
     <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">

@@ -23,53 +23,22 @@ import { LoadingProcess, TableBottom } from "../../../components";
 import { dateTimeToString } from "../../../utils";
 import useDebounce from "../../../hooks/useDebounce";
 
-export const DocumentList = () => {
+export const DocumentList = ({
+  documentList,
+  page,
+  setPage,
+  pageSize,
+  setPageSize,
+  setDocumentType,
+  setPriority,
+  setSearchInput,
+  total,
+  documentPages,
+  documentOfPage,
+}) => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [documentPages, setDocumentPages] = useState(0);
-  const [documentOfPage, setDocumentOfPage] = useState(0);
-
-  const [documentType, setDocumentType] = useState("");
-  const [priority, setPriority] = useState("");
-  const [searchInput, setSearchInput] = useState("");
-  const debouncedSearchInput = useDebounce(searchInput, 500);
 
   const [isEditted, setIsEditted] = useState(false);
-
-  const { data, refetch, isLoading } = useQuery({
-    queryKey: [
-      "document",
-      page,
-      pageSize,
-      documentType,
-      priority,
-      debouncedSearchInput,
-    ],
-    queryFn: async () => {
-      try {
-        const res = await getDocumentsApi(
-          documentType,
-          page,
-          pageSize,
-          priority,
-          debouncedSearchInput
-        );
-        if (res.status === 200) {
-          setTotal(res.data.count);
-          setDocumentOfPage(res.data.results.length);
-          setDocumentPages(Math.ceil(res.data.count / pageSize));
-          return res.data.results;
-        } else {
-          // toast.error(res.data.detail);
-          return [];
-        }
-      } catch (e) {
-        throw new Error("Failed to fetch invitations.");
-      }
-    },
-  });
 
   const columns = [
     {
@@ -131,8 +100,8 @@ export const DocumentList = () => {
     } else if (columnKey === "id") {
       return (
         <div className="flex gap-3">
-          <FaDownload className="text-blue-500"/>
-          <FaTrash className="text-red-500"/>
+          <FaDownload className="text-blue-500" />
+          <FaTrash className="text-red-500" />
         </div>
       );
     } else {
@@ -142,7 +111,6 @@ export const DocumentList = () => {
 
   return (
     <>
-      <LoadingProcess isLoading={isLoading} />
       <div className="bg-white px-5 py-8 rounded-xl mb-8">
         <div className="flex flex-col lg:flex-row w-full justify-between md:items-center mb-5 gap-5">
           <div>
@@ -203,7 +171,7 @@ export const DocumentList = () => {
               <TableColumn key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
-          <TableBody items={data ? data : []}>
+          <TableBody items={documentList ? documentList : []}>
             {(item) => (
               <TableRow key={item.key}>
                 {(columnKey) => (
