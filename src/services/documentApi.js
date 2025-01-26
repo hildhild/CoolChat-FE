@@ -38,3 +38,7 @@ export const addDocumentUrlApi = (url, title, des) => {
         "description": des
     });
 }
+
+export const downloadDocumentApi = (id) => {
+    return axios.get(`/documents/${id}/download/`);
+}

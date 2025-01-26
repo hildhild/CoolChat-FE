@@ -9,19 +9,26 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination,
+  Chip,
 } from "@nextui-org/react";
-import { FaDownload, FaEdit, FaInfo, FaInfoCircle, FaTrash } from "react-icons/fa";
+import { FaDownload, FaEdit, FaInfoCircle, FaTrash } from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { trainingLegends } from "../../../constants/trainingLegend";
 import { LegendItem } from "./LegendItem";
-import { useQuery } from "@tanstack/react-query";
-import { getDocumentsApi } from "../../../services/documentApi";
 import { LoadingProcess, TableBottom } from "../../../components";
 import { dateTimeToString } from "../../../utils";
-import useDebounce from "../../../hooks/useDebounce";
+import { downloadDocumentApi } from "../../../services/documentApi";
+
+const documentType = (type) => {
+  return {
+    value:
+      type === "FILE" ? "Tập tin" : type === "TEXT" ? "Văn bản" : "Website",
+    color:
+      type === "FILE" ? "success" : type === "TEXT" ? "warning" : "primary",
+  };
+};
 
 export const DocumentList = ({
   documentList,
@@ -37,6 +44,7 @@ export const DocumentList = ({
   documentOfPage,
 }) => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
   const data = documentList?.map((document) => {
     return {
@@ -46,6 +54,26 @@ export const DocumentList = ({
   });
 
   const [isEditted, setIsEditted] = useState(false);
+
+  const handleDownloadDocument = async (id, name) => {
+    setIsLoading(true);
+    await downloadDocumentApi(id)
+      .then((response) => {
+        console.log(response);
+        if (response.status === 200) {
+          const link = document.createElement("a");
+          link.href = response.download_url;
+          link.download = name; 
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    setIsLoading(false);
+  };
 
   const columns = [
     {
@@ -112,10 +140,22 @@ export const DocumentList = ({
             <FaEdit className="text-black" />
           )}
           {cellValue.document_type !== "URL" && (
-            <FaDownload className="text-green-500" />
+            <button onClick={()=>handleDownloadDocument(cellValue.id, cellValue.filename)}>
+              <FaDownload className="text-green-500" />
+            </button>
           )}
           <FaTrash className="text-red-500" />
         </div>
+      );
+    } else if (columnKey === "document_type") {
+      return (
+        <Chip
+          size="sm"
+          variant="bordered"
+          color={documentType(cellValue).color}
+        >
+          {documentType(cellValue).value}
+        </Chip>
       );
     } else {
       return cellValue;
@@ -124,6 +164,7 @@ export const DocumentList = ({
 
   return (
     <>
+      <LoadingProcess isLoading={isLoading} />
       <div className="bg-white px-5 py-8 rounded-xl mb-8">
         <div className="flex flex-col lg:flex-row w-full justify-between md:items-center mb-5 gap-5">
           <div>
