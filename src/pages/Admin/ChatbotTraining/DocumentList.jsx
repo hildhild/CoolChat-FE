@@ -11,7 +11,7 @@ import {
   TableCell,
   Pagination,
 } from "@nextui-org/react";
-import { FaDownload, FaTrash } from "react-icons/fa";
+import { FaDownload, FaEdit, FaInfo, FaInfoCircle, FaTrash } from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +37,13 @@ export const DocumentList = ({
   documentOfPage,
 }) => {
   const navigate = useNavigate();
+
+  const data = documentList?.map((document) => {
+    return {
+      ...document,
+      operation: document,
+    };
+  });
 
   const [isEditted, setIsEditted] = useState(false);
 
@@ -66,7 +73,7 @@ export const DocumentList = ({
       label: "Độ ưu tiên",
     },
     {
-      key: "id",
+      key: "operation",
       label: "Thao tác",
     },
   ];
@@ -97,10 +104,16 @@ export const DocumentList = ({
       );
     } else if (columnKey === "uploaded_at" || columnKey === "updated_at") {
       return dateTimeToString(new Date(cellValue));
-    } else if (columnKey === "id") {
+    } else if (columnKey === "operation") {
       return (
         <div className="flex gap-3">
-          <FaDownload className="text-blue-500" />
+          <FaInfoCircle className="text-blue-500" />
+          {cellValue.document_type !== "FILE" && (
+            <FaEdit className="text-black" />
+          )}
+          {cellValue.document_type !== "URL" && (
+            <FaDownload className="text-green-500" />
+          )}
           <FaTrash className="text-red-500" />
         </div>
       );
@@ -171,7 +184,7 @@ export const DocumentList = ({
               <TableColumn key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
-          <TableBody items={documentList ? documentList : []}>
+          <TableBody items={data ? data : []}>
             {(item) => (
               <TableRow key={item.key}>
                 {(columnKey) => (

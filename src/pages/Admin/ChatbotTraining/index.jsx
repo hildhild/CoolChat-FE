@@ -1,53 +1,23 @@
 import {
-  Avatar,
   Button,
-  Checkbox,
-  Input,
-  Select,
-  SelectItem,
-  Switch,
   Tab,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  getKeyValue,
   Tabs,
-  Pagination,
-  Chip,
-  Textarea,
   Tooltip,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../../layouts";
 import {
-  FaUserCircle,
   FaBook,
-  FaFacebookSquare,
-  FaCode,
   FaFile,
   FaEdit,
-  FaFileUpload,
-  FaTrash,
 } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import {
-  MdOutlineAddPhotoAlternate,
   MdLabel,
-  MdSearch,
-  MdOutlineCancel,
-  MdOutlineTextSnippet,
 } from "react-icons/md";
-import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { GiNightSleep } from "react-icons/gi";
-import { CiEdit } from "react-icons/ci";
 import { TbWorld } from "react-icons/tb";
-import { FaFilePdf } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { trainingLegends } from "../../../constants/trainingLegend";
 import { DocumentList } from "./DocumentList";
 import { DocumentFile } from "./DocumentFile";
 import { DocumentText } from "./DocumentText";
@@ -58,7 +28,6 @@ import useDebounce from "../../../hooks/useDebounce";
 import { getDocumentsApi } from "../../../services/documentApi";
 
 function ChatbotTraining() {
-  const { t } = useTranslation();
   const [isLabel, setIsLabel] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
   const accessToken = useSelector((state) => state.user.accessToken);
@@ -195,7 +164,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentText />
+                <DocumentText refetch={refetch} />
               </Tab>
               <Tab
                 key="web"
@@ -208,7 +177,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentUrl />
+                <DocumentUrl refetch={refetch} />
               </Tab>
             </Tabs>
           </div>

@@ -32,7 +32,7 @@ export const addDocumentTextApi = (content) => {
 }
 
 export const addDocumentUrlApi = (url, title, des) => {
-    return axios.post(`/documents/upload/text/`, {
+    return axios.post(`/documents/upload/url/`, {
         "url": url,
         "title": title,
         "description": des
