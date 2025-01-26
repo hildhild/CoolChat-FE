@@ -35,11 +35,10 @@ export const DocumentFile = ({refetch}) => {
       toast.error("Chỉ được tải lên tối đa 5 tệp");
       return;
     }
-    if (!newFiles.every((file) => file.size <= 20000000)) {
-      toast.error("Kích thước mỗi tệp chỉ tối đa 20 MB");
-      return;
+    if (!newFiles.every((file) => file.size <= 20000000 && file.size > 0)) {
+      toast.error("Chỉ tải lên các tệp có kích thước không quá 20 MB và không được rỗng");
     }
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setFiles((prevFiles) => [...prevFiles, ...newFiles.filter(file => file.size > 0 && file.size <= 20000000)]);
   };
 
   const removeFile = (fileName) => {
