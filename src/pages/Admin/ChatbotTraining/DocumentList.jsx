@@ -13,13 +13,15 @@ import {
 } from "@nextui-org/react";
 import { FaDownload, FaEdit, FaInfoCircle, FaTrash } from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { trainingLegends } from "../../../constants/trainingLegend";
 import { LegendItem } from "./LegendItem";
 import { LoadingProcess, TableBottom } from "../../../components";
 import { dateTimeToString } from "../../../utils";
-import { downloadDocumentApi } from "../../../services/documentApi";
+import { downloadDocumentApi, updatePrioritiesApi } from "../../../services/documentApi";
+import { SelectPriority } from "./SelectPriority";
+import { toast } from "react-toastify";
 
 const documentType = (type) => {
   return {
@@ -42,14 +44,24 @@ export const DocumentList = ({
   total,
   documentPages,
   documentOfPage,
+  refetch
 }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [updatePriorities, setUpdatePriorities] = useState([]);
+
+  useEffect(() => {
+    console.log(updatePriorities);
+  }, [updatePriorities]);
 
   const data = documentList?.map((document) => {
     return {
       ...document,
       operation: document,
+      priorityColumn: {
+        id: document.id,
+        priority: document.priority,
+      },
     };
   });
 
@@ -63,7 +75,7 @@ export const DocumentList = ({
         if (response.status === 200) {
           const link = document.createElement("a");
           link.href = response.download_url;
-          link.download = name; 
+          link.download = name;
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -97,7 +109,7 @@ export const DocumentList = ({
       label: "Cập nhật lần cuối",
     },
     {
-      key: "priority",
+      key: "priorityColumn",
       label: "Độ ưu tiên",
     },
     {
@@ -106,29 +118,15 @@ export const DocumentList = ({
     },
   ];
 
-  const categoryColor = {
-    HIGH: "danger",
-    MEDIUM: "warning",
-    LOW: "primary",
-    NONE: "default",
-  };
-
   const renderCell = (item, columnKey) => {
     const cellValue = item[columnKey];
-    if (columnKey === "priority") {
+    if (columnKey === "priorityColumn") {
       return (
-        <Select
-          aria-label="Select priority"
-          color={categoryColor[cellValue]}
-          defaultSelectedKeys={[cellValue]}
-          size="sm"
-          className="w-full"
-        >
-          <SelectItem key="HIGH">HIGH</SelectItem>
-          <SelectItem key="MEDIUM">MEDIUM</SelectItem>
-          <SelectItem key="LOW">LOW</SelectItem>
-          <SelectItem key="NONE">NONE</SelectItem>
-        </Select>
+        <SelectPriority
+          id={cellValue.id}
+          value={cellValue.priority}
+          setUpdatePriorities={setUpdatePriorities}
+        />
       );
     } else if (columnKey === "uploaded_at" || columnKey === "updated_at") {
       return dateTimeToString(new Date(cellValue));
@@ -140,7 +138,11 @@ export const DocumentList = ({
             <FaEdit className="text-black" />
           )}
           {cellValue.document_type !== "URL" && (
-            <button onClick={()=>handleDownloadDocument(cellValue.id, cellValue.filename)}>
+            <button
+              onClick={() =>
+                handleDownloadDocument(cellValue.id, cellValue.filename)
+              }
+            >
               <FaDownload className="text-green-500" />
             </button>
           )}
@@ -160,6 +162,22 @@ export const DocumentList = ({
     } else {
       return cellValue;
     }
+  };
+
+  const handleUpdatePriority = async () => {
+    setIsLoading(true);
+    await updatePrioritiesApi(updatePriorities)
+      .then((res) => {
+        console.log(12, res);
+        if (res.status === 200) {
+          refetch();
+          toast.success("Cập nhật thành công");
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    setIsLoading(false);
   };
 
   return (
@@ -253,7 +271,11 @@ export const DocumentList = ({
         >
           SO SÁNH CHATBOT
         </Button>
-        <Button color="success" isDisabled={!isEditted}>
+        <Button
+          color="success"
+          isDisabled={updatePriorities.length <= 0}
+          onClick={handleUpdatePriority}
+        >
           LƯU VÀ ĐÀO TẠO
         </Button>
       </div>

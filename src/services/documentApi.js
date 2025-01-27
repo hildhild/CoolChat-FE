@@ -42,3 +42,9 @@ export const addDocumentUrlApi = (url, title, des) => {
 export const downloadDocumentApi = (id) => {
     return axios.get(`/documents/${id}/download/`);
 }
+
+export const updatePrioritiesApi = (updatePriorities) => {
+    return axios.patch(`/documents/bulk-update/`, {
+        "updates": updatePriorities
+    });
+}

@@ -113,6 +113,7 @@ function ChatbotTraining() {
             total={total}
             documentPages={documentPages}
             documentOfPage={documentOfPage}
+            refetch={refetch}
           />
         )}
         <Button
