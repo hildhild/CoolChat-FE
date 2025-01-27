@@ -65,7 +65,6 @@ function ChatbotTraining() {
           setTotal(res.data.count);
           setDocumentOfPage(res.data.results.length);
           setDocumentPages(Math.ceil(res.data.count / pageSize));
-          console.log(Math.ceil(res.data.count / pageSize));
           return res.data.results;
         } else {
           // toast.error(res.data.detail);

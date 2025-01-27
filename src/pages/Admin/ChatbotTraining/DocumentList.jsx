@@ -50,10 +50,6 @@ export const DocumentList = ({
   const [isLoading, setIsLoading] = useState(false);
   const [updatePriorities, setUpdatePriorities] = useState([]);
 
-  useEffect(() => {
-    console.log(updatePriorities);
-  }, [updatePriorities]);
-
   const data = documentList?.map((document) => {
     return {
       ...document,

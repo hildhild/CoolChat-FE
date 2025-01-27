@@ -58,6 +58,10 @@ export const DocumentFile = ({refetch}) => {
   });
 
   const handleUploadFiles = async () => {
+    if (files.length <= 0) {
+      toast.error("Vui lòng chọn tệp để tải lên");
+      return;
+    }
     setIsLoading(true);
     await addDocumentFileApi(files)
       .then((res) => {

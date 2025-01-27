@@ -10,8 +10,7 @@ export const TableBottom = ({
   totalCount,
   numOfPages,
 }) => {
-  useEffect(() => console.log(12, page, numOfPages), [page, pageSize, numOfPages]);
-
+  
   return (
     <div className="flex flex-col md:flex-row gap-5 justify-between items-center mt-4">
       <div className="flex justify-between items-center gap-3">
@@ -22,7 +21,10 @@ export const TableBottom = ({
           size="sm"
           labelPlacement="outside-left"
           className="w-24"
-          onChange={(e) => setPageSize(e.target.value)}
+          onChange={(e) => {
+            setPageSize(e.target.value);
+            setPage(1);
+          }}
         >
           <SelectItem key="5">5</SelectItem>
           <SelectItem key="10">10</SelectItem>
@@ -37,15 +39,17 @@ export const TableBottom = ({
               } trong tổng ${totalCount} dữ liệu`}
         </div>
       </div>
-      <Pagination
-        isCompact
-        showControls
-        showShadow
-        color="primary"
-        page={page}
-        total={numOfPages}
-        onChange={(page) => setPage(page)}
-      />
+      {totalCount > 0 && (
+        <Pagination
+          isCompact
+          showControls
+          showShadow
+          color="primary"
+          page={page}
+          total={numOfPages}
+          onChange={(page) => setPage(page)}
+        />
+      )}
     </div>
   );
 };
