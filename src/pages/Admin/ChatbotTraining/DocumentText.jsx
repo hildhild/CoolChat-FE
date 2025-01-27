@@ -80,7 +80,7 @@ export const DocumentText = ({ refetch }) => {
         <div className="text-sm text-neutral-600">
           Văn bản khi nhập sẽ được lưu dưới dạng tệp txt. Tối đa 100,000 ký tự.
         </div>
-        <div>{watch("text").length} từ</div>
+        <div>{watch("text").length} ký tự</div>
       </div>
       {/* <div className="mb-3">Các hướng dẫn hiện có (double-tap để đổi tên)</div> */}
       {/* <div className="border-2 rounded-xl flex items-center justify-between px-4 py-2 mb-3">

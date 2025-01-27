@@ -63,15 +63,15 @@ export const DocumentList = ({
 
   const [isEditted, setIsEditted] = useState(false);
 
-  const handleDownloadDocument = async (id, name) => {
+  const handleDownloadDocument = async (id) => {
     setIsLoading(true);
     await downloadDocumentApi(id)
       .then((response) => {
         console.log(response);
         if (response.status === 200) {
           const link = document.createElement("a");
-          link.href = response.download_url;
-          link.download = name;
+          link.href = response.data.download_url;
+          link.target = "_blank"; 
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -136,7 +136,7 @@ export const DocumentList = ({
           {cellValue.document_type !== "URL" && (
             <button
               onClick={() =>
-                handleDownloadDocument(cellValue.id, cellValue.filename)
+                handleDownloadDocument(cellValue.id)
               }
             >
               <FaDownload className="text-green-500" />
