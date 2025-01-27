@@ -165,6 +165,10 @@ export const DocumentList = ({
   };
 
   const handleUpdatePriority = async () => {
+    if (!updatePriorities.every(item => item.priority)) {
+      toast.error("Vui lòng chọn độ ưu tiên cho tài liệu");
+      return;
+    }
     setIsLoading(true);
     await updatePrioritiesApi(updatePriorities)
       .then((res) => {
