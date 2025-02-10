@@ -8,12 +8,15 @@ import { RiComputerLine } from "react-icons/ri";
 import { FaFacebookSquare } from "react-icons/fa";
 import { GrIntegration } from "react-icons/gr";
 import { GiNightSleep } from "react-icons/gi";
-import { CopyBlock, dracula } from "react-code-blocks";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ChatBox from "../../../components/ChatBox";
 import { EditChatbotInterface } from "./EditChatbotInterface";
 import { EditChatbotStyle } from "./EditChatbotStyle";
+import { getChatbotConfigApi, getEmbedCodeApi } from "../../../services/chatbotConfigApi";
+import { LoadingProcess } from "../../../components";
+import { EmbedCode } from "./EmbedCode";
+import { useQuery } from "@tanstack/react-query";
 
 function ChatbotEditting() {
   const { t } = useTranslation();
@@ -24,22 +27,52 @@ function ChatbotEditting() {
   const [toggleOpenChatbox, setToggleOpenChatbox] = useState(false);
   const [chatboxConfig, setChatboxConfig] = useState(null);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [allowedDomains, setAllowedDomains] = useState([]);
+
+  const { data, refetch, isLoading: getConfigLoading } = useQuery({
+    queryKey: [
+      "chatbotConfig"
+    ],
+    queryFn: async () => {
+      try {
+        const res = await getChatbotConfigApi();
+        if (res.status === 200) {
+          setAllowedDomains(res.data.allowed_domains.split(",").filter((item) => item !== ""));
+          return res.data;
+        } else {
+          // toast.error(res.data.detail);
+          return [];
+        }
+      } catch (e) {
+        throw new Error("Failed to fetch invitations.");
+      }
+    },
+  });
+
+
+  // const getChatbotConfig = async () => {
+  //   setIsLoading(true);
+  //   await getChatbotConfigApi().then((res) => {
+  //     console.log(res);
+  //     setAllowedDomains(res.data.allowed_domains.split(",").filter((item) => item !== ""));
+  //   });
+  //   setIsLoading(false);
+  // };
+
+  // useEffect(() => {
+  //   getChatbotConfig();
+  // }, []);
+
   useEffect(() => {
     if (!accessToken) {
       navigate("/login");
     }
   }, []);
 
-  const embedCode = `
-<script src="https://coolchat.vn/js/chatbox.js"></script>
-<script>
-  const coolchat_box = new CoolChat('WYVms6uOzriKKKNPKJ-oW');
-  coolchat_box.initial();
-</script>
-`;
-
   return (
     <DashboardLayout page="chatbot-editting">
+      <LoadingProcess isLoading={isLoading || getConfigLoading} />
       <ChatBox toggleOpenChatbox={toggleOpenChatbox} config={chatboxConfig} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
@@ -144,17 +177,7 @@ function ChatbotEditting() {
                   </Tooltip>
                 }
               >
-                <div className="font-semibold text-lg mb-3 block lg:hidden">
-                  Mã nhúng
-                </div>
-                <CopyBlock
-                  text={embedCode}
-                  language="html"
-                  wrapLines
-                  showLineNumbers={true}
-                  theme={dracula}
-                  codeBlock
-                />
+                <EmbedCode allowedDomains={allowedDomains} refetch={refetch}/>
               </Tab>
             </Tabs>
           </div>

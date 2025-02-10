@@ -64,11 +64,7 @@ export default function ChatBox({ toggleOpenChatbox, config = null }) {
             </button>
           </div>
         </div>
-        <div
-          className={`flex-grow overflow-y-scroll ${
-            config ? config.font_family : chatbotInterfaceConfig.font_family
-          }`}
-        >
+        <div className={`flex-grow overflow-y-scroll font-[Times_New_Roman]`}>
           <div className="flex gap-3 items-end justify-start p-3 mb-3">
             <div
               className={`w-7 h-7 flex justify-center items-center rounded-full`}
@@ -253,7 +249,6 @@ export default function ChatBox({ toggleOpenChatbox, config = null }) {
               color: config
                 ? config.message_text_color_me
                 : chatbotInterfaceConfig.message_text_color_me,
-              
             }}
           >
             Gửi
