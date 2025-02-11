@@ -10,6 +10,12 @@ import {
   TableRow,
   TableCell,
   Chip,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@nextui-org/react";
 import { FaDownload, FaEdit, FaInfoCircle, FaTrash } from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
@@ -19,7 +25,10 @@ import { trainingLegends } from "../../../constants/trainingLegend";
 import { LegendItem } from "./LegendItem";
 import { LoadingProcess, TableBottom } from "../../../components";
 import { dateTimeToString } from "../../../utils";
-import { downloadDocumentApi, updatePrioritiesApi } from "../../../services/documentApi";
+import {
+  downloadDocumentApi,
+  updatePrioritiesApi,
+} from "../../../services/documentApi";
 import { SelectPriority } from "./SelectPriority";
 import { toast } from "react-toastify";
 
@@ -44,11 +53,13 @@ export const DocumentList = ({
   total,
   documentPages,
   documentOfPage,
-  refetch
+  refetch,
 }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [updatePriorities, setUpdatePriorities] = useState([]);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [curDoc, setCurDoc] = useState(null);
 
   const data = documentList?.map((document) => {
     return {
@@ -71,7 +82,7 @@ export const DocumentList = ({
         if (response.status === 200) {
           const link = document.createElement("a");
           link.href = response.data.download_url;
-          link.target = "_blank"; 
+          link.target = "_blank";
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
@@ -95,6 +106,10 @@ export const DocumentList = ({
     {
       key: "filename",
       label: "Tên tri thức",
+    },
+    {
+      key: "file_size_display",
+      label: "Kích thước tệp",
     },
     {
       key: "uploaded_at",
@@ -129,15 +144,24 @@ export const DocumentList = ({
     } else if (columnKey === "operation") {
       return (
         <div className="flex gap-3">
-          <FaInfoCircle className="text-blue-500" />
+          {cellValue.document_type === "URL" && (
+            <button
+              onClick={() => {
+                onOpen();
+                setCurDoc(cellValue);
+              }}
+              className="hover:opacity-70"
+            >
+              <FaInfoCircle className="text-blue-500" />
+            </button>
+          )}
           {cellValue.document_type !== "FILE" && (
             <FaEdit className="text-black" />
           )}
           {cellValue.document_type !== "URL" && (
             <button
-              onClick={() =>
-                handleDownloadDocument(cellValue.id)
-              }
+              onClick={() => handleDownloadDocument(cellValue.id)}
+              className="hover:opacity-70"
             >
               <FaDownload className="text-green-500" />
             </button>
@@ -161,7 +185,7 @@ export const DocumentList = ({
   };
 
   const handleUpdatePriority = async () => {
-    if (!updatePriorities.every(item => item.priority)) {
+    if (!updatePriorities.every((item) => item.priority)) {
       toast.error("Vui lòng chọn độ ưu tiên cho tài liệu");
       return;
     }
@@ -182,6 +206,44 @@ export const DocumentList = ({
 
   return (
     <>
+      {curDoc && (
+        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  {curDoc.url_title}
+                </ModalHeader>
+                <ModalBody>
+                  <div className="grid grid-cols-6">
+                    <div className="col-span-2">Tiêu đề:</div>{" "}
+                    <div className="col-span-4">
+                      {curDoc.url_title}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-6">
+                    <div className="col-span-2">Đường dẫn:</div>{" "}
+                    <div className="col-span-4">
+                      <a href={curDoc.url} className="text-coolchat hover:opacity-70" target="_blank">{curDoc.url}</a>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-6">
+                    <div className="col-span-2">Mô tả:</div>{" "}
+                    <div className="col-span-4">
+                      {curDoc.url_description}
+                    </div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="default" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
       <LoadingProcess isLoading={isLoading} />
       <div className="bg-white px-5 py-8 rounded-xl mb-8">
         <div className="flex flex-col lg:flex-row w-full justify-between md:items-center mb-5 gap-5">

@@ -13,7 +13,10 @@ import { useNavigate } from "react-router-dom";
 import ChatBox from "../../../components/ChatBox";
 import { EditChatbotInterface } from "./EditChatbotInterface";
 import { EditChatbotStyle } from "./EditChatbotStyle";
-import { getChatbotConfigApi, getEmbedCodeApi } from "../../../services/chatbotConfigApi";
+import {
+  getChatbotConfigApi,
+  getEmbedCodeApi,
+} from "../../../services/chatbotConfigApi";
 import { LoadingProcess } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
 import { useQuery } from "@tanstack/react-query";
@@ -30,15 +33,19 @@ function ChatbotEditting() {
   const [isLoading, setIsLoading] = useState(false);
   const [allowedDomains, setAllowedDomains] = useState([]);
 
-  const { data, refetch, isLoading: getConfigLoading } = useQuery({
-    queryKey: [
-      "chatbotConfig"
-    ],
+  const {
+    data,
+    refetch,
+    isLoading: getConfigLoading,
+  } = useQuery({
+    queryKey: ["chatbotConfig"],
     queryFn: async () => {
       try {
         const res = await getChatbotConfigApi();
         if (res.status === 200) {
-          setAllowedDomains(res.data.allowed_domains.split(",").filter((item) => item !== ""));
+          setAllowedDomains(
+            res.data.allowed_domains.split(",").filter((item) => item !== "")
+          );
           return res.data;
         } else {
           // toast.error(res.data.detail);
@@ -49,7 +56,6 @@ function ChatbotEditting() {
       }
     },
   });
-
 
   // const getChatbotConfig = async () => {
   //   setIsLoading(true);
@@ -144,6 +150,19 @@ function ChatbotEditting() {
               }}
             >
               <Tab
+                key="embedCode"
+                title={
+                  <Tooltip content="Mã nhúng">
+                    <div className="flex gap-3 items-center px-5">
+                      <FaCode size={25} />
+                      <span className="hidden md:block">Mã nhúng</span>
+                    </div>
+                  </Tooltip>
+                }
+              >
+                <EmbedCode allowedDomains={allowedDomains} refetch={refetch} />
+              </Tab>
+              <Tab
                 key="facebook"
                 title={
                   <Tooltip content="Facebook">
@@ -165,19 +184,6 @@ function ChatbotEditting() {
                     Kết nối tới Facebook
                   </Button>
                 </div>
-              </Tab>
-              <Tab
-                key="embedCode"
-                title={
-                  <Tooltip content="Mã nhúng">
-                    <div className="flex gap-3 items-center px-5">
-                      <FaCode size={25} />
-                      <span className="hidden md:block">Mã nhúng</span>
-                    </div>
-                  </Tooltip>
-                }
-              >
-                <EmbedCode allowedDomains={allowedDomains} refetch={refetch}/>
               </Tab>
             </Tabs>
           </div>
