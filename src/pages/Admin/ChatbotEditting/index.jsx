@@ -43,9 +43,11 @@ function ChatbotEditting() {
       try {
         const res = await getChatbotConfigApi();
         if (res.status === 200) {
+          console.log(res.data);
           setAllowedDomains(
             res.data.allowed_domains.split(",").filter((item) => item !== "")
           );
+          setChatboxConfig(res.data);
           return res.data;
         } else {
           // toast.error(res.data.detail);
@@ -117,7 +119,7 @@ function ChatbotEditting() {
                 />
               </Tab>
               <Tab key="style" title="Phong cách">
-                <EditChatbotStyle />
+                <EditChatbotStyle config={chatboxConfig} refetch={refetch}/>
               </Tab>
             </Tabs>
           </div>
