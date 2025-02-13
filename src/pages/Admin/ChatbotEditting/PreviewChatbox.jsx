@@ -1,8 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const PreviewChatBox = ({ config, onClose }) => {
+  const containerRef = useRef(null);
+
   useEffect(() => {
     if (!config) return;
+
+    if (!containerRef.current) {
+      containerRef.current = document.createElement('div');
+      containerRef.current.id = 'coolchat-widget-container';
+      document.body.appendChild(containerRef.current);
+    }
 
     const script = document.createElement('script');
     script.src = 'https://api.coolchat.software/static/js/chatbot-widget.min.js';
@@ -23,10 +31,6 @@ const PreviewChatBox = ({ config, onClose }) => {
     return () => {
       document.head.removeChild(link);
       document.head.removeChild(script);
-      const container = document.getElementById('coolchat-widget-container');
-      if (container) {
-        container.remove();
-      }
     };
   }, [config]);
 
