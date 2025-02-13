@@ -3,14 +3,18 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { BiBorderRadius } from "react-icons/bi";
 import { ChromePicker } from "react-color";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { setChatbotInterface } from "../../../store/slices/ChatbotInterfaceSlice";
 import { toast } from "react-toastify";
 import { ConfirmModal } from "../../../components/ConfirmModal";
 import { LoadingProcess } from "../../../components";
 import { getChatbotConfigApi } from "../../../services/chatbotConfigApi";
+import LogoOnly from "@/assets/CoolChat Logo/3.png";
+import WhiteBg from "@/assets/whitebg.png";
 import PreviewChatBox from "./PreviewChatbox"
+
 export const EditChatbotInterface = ({
+  chatbotConfig,
   toggleOpenChatbox,
   setToggleOpenChatbox,
   setChatboxConfig,
@@ -18,7 +22,10 @@ export const EditChatbotInterface = ({
   const chatbotInterfaceConfig = useSelector((state) => state.chatbotInterface);
   const [editConfigData, setEditConfigData] = useState(chatbotInterfaceConfig);
   const dispatch = useDispatch();
+
   const [isSelectBgColor, setIsSelectBgColor] = useState(false);
+  const [isSelectMainColor, setIsSelectMainColor] = useState(false);
+  const [isSelectMainTextColor, setIsSelectMainTextColor] = useState(false);
   const [isSelectMessageBgColor, setIsSelectMessageBgColor] = useState(false);
   const [isSelectMessageTextColor, setIsSelectMessageTextColor] =
     useState(false);
@@ -26,12 +33,19 @@ export const EditChatbotInterface = ({
     useState(false);
   const [isSelectMessageTextColorMe, setIsSelectMessageTextColorMe] =
     useState(false);
+
   const [isEditable, setIsEditable] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
 
-  const [configType, setConfigType] = useState("color");
+  const [configType, setConfigType] = useState(chatbotConfig?.background_image ? "image" : "color");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [avatar, setAvatar] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const inputAvatarFileRef = useRef(null);
+  const [background, setBackground] = useState(null);
+  const [backgroundFile, setBackgroundFile] = useState(null);
+  const inputBackgroundFileRef = useRef(null);
 
   const handleResetDefault = () => {
     const defaultConfig = {
@@ -116,6 +130,42 @@ export const EditChatbotInterface = ({
     setIsEditable(false);
   };
 
+  const handleAvatarClick = () => {
+    if (isEditable) {
+      inputAvatarFileRef.current.click();
+    }
+  };
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files[0];
+    setAvatarFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleBackgroundClick = () => {
+    if (isEditable) {
+      inputBackgroundFileRef.current.click();
+    }
+  };
+
+  const handleBackgroundChange = (event) => {
+    const file = event.target.files[0];
+    setBackgroundFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBackground(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div>
       <LoadingProcess isLoading={isLoading} />
@@ -129,10 +179,45 @@ export const EditChatbotInterface = ({
       <div className="flex gap-8 mb-5">
         <div>
           <div className="mb-2 text-center py-1">Ảnh đại diện</div>
-          <div className="bg-[#EDF2F6] border-[2px] border-[#8D98AA] text-[#8D98AA] border-dashed flex flex-col gap-2 rounded-2xl items-center justify-center size-[120px] p-3">
+          {isEditable && (
+            <input
+              type="file"
+              accept="image/*"
+              ref={inputAvatarFileRef}
+              style={{ display: "none" }}
+              onChange={handleAvatarChange}
+            />
+          )}
+          <button
+            onClick={handleAvatarClick}
+            className="overflow-hidden group rounded-2xl aspect-square relative max-w-28 max-h-28 h-28 w-28 border-gray-300 border-2"
+          >
+            <img
+              className={`${
+                isEditable
+                  ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
+                  : "cursor-default"
+              } w-full h-full object-contain`}
+              alt="avatar"
+              src={
+                avatar
+                  ? avatar
+                  : chatbotConfig?.avatar
+                  ? chatbotConfig?.avatar
+                  : LogoOnly
+              }
+            />
+            {isEditable && (
+              <>
+                <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
+                <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+              </>
+            )}
+          </button>
+          {/* <button onClick={handleAvatarClick} className="hover:opacity-70 bg-[#EDF2F6] border-[2px] border-[#8D98AA] text-[#8D98AA] border-dashed flex flex-col gap-2 rounded-2xl items-center justify-center size-[120px] p-3">
             <MdOutlineAddPhotoAlternate size={40} />
             <div className="text-[12px] text-center">Tải hình ảnh lên</div>
-          </div>
+            </button> */}
         </div>
         <div className="w-[160px]">
           {/* <div className="mb-2 text-center">Ảnh nền</div> */}
@@ -141,7 +226,11 @@ export const EditChatbotInterface = ({
             defaultSelectedKeys={[configType]}
             size="sm"
             className="w-full mb-2"
-            onChange={(e) => setConfigType(e.target.value)}
+            onChange={(e) => {
+              setConfigType(e.target.value);
+              setBackground(null);
+              setBackgroundFile(null);
+            }}
             isRequired
             isDisabled={!isEditable}
           >
@@ -154,7 +243,7 @@ export const EditChatbotInterface = ({
                 isDisabled={!isEditable}
                 className="border-[1px] border-gray-300"
                 style={{
-                  backgroundColor: editConfigData.message_background_color,
+                  backgroundColor: chatbotConfig?.primary_background_color,
                 }}
                 onClick={() => setIsSelectBgColor(!isSelectBgColor)}
               ></Button>
@@ -166,7 +255,7 @@ export const EditChatbotInterface = ({
                   />
                   <ChromePicker
                     className="z-20 absolute"
-                    color={editConfigData.message_text_color}
+                    color={chatbotConfig?.primary_background_color}
                     onChange={(color) => {
                       setEditConfigData({
                         ...editConfigData,
@@ -178,9 +267,46 @@ export const EditChatbotInterface = ({
               )}
             </div>
           ) : (
-            <div className="bg-[#EDF2F6] border-[2px] border-[#8D98AA] text-[#8D98AA] border-dashed flex flex-col gap-2 rounded-2xl items-center justify-center size-[120px] p-3">
-              <MdOutlineAddPhotoAlternate size={40} />
-              <div className="text-[12px] text-center">Tải hình ảnh lên</div>
+            <div>
+              {isEditable && (
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={inputBackgroundFileRef}
+                  style={{ display: "none" }}
+                  onChange={handleBackgroundChange}
+                />
+              )}
+              <button
+                onClick={handleBackgroundClick}
+                className="overflow-hidden group rounded-2xl aspect-square relative max-w-28 max-h-28 h-28 w-28 border-gray-300 border-2"
+              >
+                <img
+                  className={`${
+                    isEditable
+                      ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
+                      : "cursor-default"
+                  } w-full h-full object-contain`}
+                  alt="background"
+                  src={
+                    background
+                      ? background
+                      : chatbotConfig?.background_image
+                      ? chatbotConfig?.background_image
+                      : WhiteBg
+                  }
+                />
+                {isEditable && (
+                  <>
+                    <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
+                    <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  </>
+                )}
+              </button>
+              {/* <div className="bg-[#EDF2F6] border-[2px] border-[#8D98AA] text-[#8D98AA] border-dashed flex flex-col gap-2 rounded-2xl items-center justify-center size-[120px] p-3">
+                <MdOutlineAddPhotoAlternate size={40} />
+                <div className="text-[12px] text-center">Tải hình ảnh lên</div>
+              </div> */}
             </div>
           )}
         </div>
@@ -190,19 +316,19 @@ export const EditChatbotInterface = ({
             isDisabled={!isEditable}
             className="border-[1px] border-gray-300"
             style={{
-              backgroundColor: editConfigData.message_background_color,
+              backgroundColor: chatbotConfig?.secondary_background_color,
             }}
-            onClick={() => setIsSelectBgColor(!isSelectBgColor)}
+            onClick={() => setIsSelectMainColor(!isSelectMainColor)}
           ></Button>
-          {isSelectBgColor && (
+          {isSelectMainColor && (
             <div>
               <div
                 className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectBgColor(false)}
+                onClick={() => setIsSelectMainColor(false)}
               />
               <ChromePicker
                 className="z-20 absolute"
-                color={editConfigData.message_text_color}
+                color={chatbotConfig?.secondary_background_color}
                 onChange={(color) => {
                   setEditConfigData({
                     ...editConfigData,
@@ -219,19 +345,19 @@ export const EditChatbotInterface = ({
             isDisabled={!isEditable}
             className="border-[1px] border-gray-300"
             style={{
-              backgroundColor: editConfigData.message_background_color,
+              backgroundColor: chatbotConfig?.primary_font_color,
             }}
-            onClick={() => setIsSelectBgColor(!isSelectBgColor)}
+            onClick={() => setIsSelectMainTextColor(!isSelectMainTextColor)}
           ></Button>
-          {isSelectBgColor && (
+          {isSelectMainTextColor && (
             <div>
               <div
                 className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectBgColor(false)}
+                onClick={() => setIsSelectMainTextColor(false)}
               />
               <ChromePicker
                 className="z-20 absolute"
-                color={editConfigData.message_text_color}
+                color={chatbotConfig?.primary_font_color}
                 onChange={(color) => {
                   setEditConfigData({
                     ...editConfigData,
@@ -251,7 +377,7 @@ export const EditChatbotInterface = ({
           variant="bordered"
           label="Tên hiển thị"
           placeholder="Điền tên hiển thị"
-          value={editConfigData.main_name}
+          value={chatbotConfig?.display_name}
           onChange={handleChangeInput}
         />
         <Input
@@ -261,7 +387,7 @@ export const EditChatbotInterface = ({
           variant="bordered"
           label="Tiêu đề phụ"
           placeholder="Điền tiêu đề phụ"
-          value={editConfigData.sub_name}
+          value={chatbotConfig?.description}
           onChange={handleChangeInput}
         />
         <Select
@@ -306,7 +432,7 @@ export const EditChatbotInterface = ({
           label="Độ bo góc tin nhắn (px)"
           placeholder="Điền độ bo góc tin nhắn"
           startContent={<BiBorderRadius size={20} />}
-          value={editConfigData.message_border_radius}
+          value={chatbotConfig?.border_radius}
           onChange={handleChangeInput}
         />
       </div>
@@ -316,7 +442,7 @@ export const EditChatbotInterface = ({
           <Button
             isDisabled={!isEditable}
             className="border-[1px] border-gray-300"
-            style={{ backgroundColor: editConfigData.message_background_color }}
+            style={{ backgroundColor: chatbotConfig?.receiving_message_background_color }}
             onClick={() => setIsSelectMessageBgColor(!isSelectMessageBgColor)}
           ></Button>
           {isSelectMessageBgColor && (
@@ -327,7 +453,7 @@ export const EditChatbotInterface = ({
               />
               <ChromePicker
                 className="z-20 absolute"
-                color={editConfigData.message_background_color}
+                color={chatbotConfig?.receiving_message_background_color}
                 onChange={(color) => {
                   setEditConfigData({
                     ...editConfigData,
@@ -343,7 +469,7 @@ export const EditChatbotInterface = ({
           <Button
             isDisabled={!isEditable}
             className="border-[1px] border-gray-300"
-            style={{ backgroundColor: editConfigData.message_text_color }}
+            style={{ backgroundColor: chatbotConfig?.receiving_message_font_color }}
             onClick={() =>
               setIsSelectMessageTextColor(!isSelectMessageTextColor)
             }
@@ -356,7 +482,7 @@ export const EditChatbotInterface = ({
               />
               <ChromePicker
                 className="z-20 absolute"
-                color={editConfigData.message_text_color}
+                color={chatbotConfig?.receiving_message_font_color}
                 onChange={(color) => {
                   setEditConfigData({
                     ...editConfigData,
@@ -373,7 +499,7 @@ export const EditChatbotInterface = ({
             isDisabled={!isEditable}
             className="border-[1px] border-gray-300"
             style={{
-              backgroundColor: editConfigData.message_background_color_me,
+              backgroundColor: chatbotConfig?.sending_message_background_color,
             }}
             onClick={() =>
               setIsSelectMessageBgColorMe(!isSelectMessageBgColorMe)
@@ -387,7 +513,7 @@ export const EditChatbotInterface = ({
               />
               <ChromePicker
                 className="z-20 absolute"
-                color={editConfigData.message_background_color_me}
+                color={chatbotConfig?.sending_message_background_color}
                 onChange={(color) => {
                   setEditConfigData({
                     ...editConfigData,
@@ -403,7 +529,7 @@ export const EditChatbotInterface = ({
           <Button
             isDisabled={!isEditable}
             className="border-[1px] border-gray-300"
-            style={{ backgroundColor: editConfigData.message_text_color_me }}
+            style={{ backgroundColor: chatbotConfig?.sending_message_font_color }}
             onClick={() =>
               setIsSelectMessageTextColorMe(!isSelectMessageTextColorMe)
             }
@@ -416,7 +542,7 @@ export const EditChatbotInterface = ({
               />
               <ChromePicker
                 className="z-20 absolute"
-                color={editConfigData.message_text_color_me}
+                color={chatbotConfig?.sending_message_font_color}
                 onChange={(color) => {
                   setEditConfigData({
                     ...editConfigData,
