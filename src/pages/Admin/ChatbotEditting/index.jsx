@@ -8,7 +8,7 @@ import { RiComputerLine } from "react-icons/ri";
 import { FaFacebookSquare } from "react-icons/fa";
 import { GrIntegration } from "react-icons/gr";
 import { GiNightSleep } from "react-icons/gi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ChatBox from "../../../components/ChatBox";
 import { EditChatbotInterface } from "./EditChatbotInterface";
@@ -20,6 +20,7 @@ import {
 import { LoadingProcess } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
 import { useQuery } from "@tanstack/react-query";
+import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
 
 function ChatbotEditting() {
   const { t } = useTranslation();
@@ -28,10 +29,9 @@ function ChatbotEditting() {
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
   const [toggleOpenChatbox, setToggleOpenChatbox] = useState(false);
-  const [chatboxConfig, setChatboxConfig] = useState(null);
-
-  const [isLoading, setIsLoading] = useState(false);
   const [allowedDomains, setAllowedDomains] = useState([]);
+
+  const dispatch = useDispatch();
 
   const {
     data,
@@ -47,7 +47,7 @@ function ChatbotEditting() {
           setAllowedDomains(
             res.data.allowed_domains.split(",").filter((item) => item !== "")
           );
-          setChatboxConfig(res.data);
+          dispatch(setChatbotConfig(res.data));
           return res.data;
         } else {
           // toast.error(res.data.detail);
@@ -58,19 +58,7 @@ function ChatbotEditting() {
       }
     },
   });
-
-  // const getChatbotConfig = async () => {
-  //   setIsLoading(true);
-  //   await getChatbotConfigApi().then((res) => {
-  //     console.log(res);
-  //     setAllowedDomains(res.data.allowed_domains.split(",").filter((item) => item !== ""));
-  //   });
-  //   setIsLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   getChatbotConfig();
-  // }, []);
+  const [chatboxConfig, setChatboxConfig] = useState(data);
 
   useEffect(() => {
     if (!accessToken) {
@@ -80,7 +68,7 @@ function ChatbotEditting() {
 
   return (
     <DashboardLayout page="chatbot-editting">
-      <LoadingProcess isLoading={isLoading || getConfigLoading} />
+      <LoadingProcess isLoading={getConfigLoading} />
       <ChatBox toggleOpenChatbox={toggleOpenChatbox} config={chatboxConfig} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
@@ -113,6 +101,7 @@ function ChatbotEditting() {
             >
               <Tab key="interface" title="Giao diện">
                 <EditChatbotInterface
+                  chatbotConfig={chatboxConfig}
                   toggleOpenChatbox={toggleOpenChatbox}
                   setToggleOpenChatbox={setToggleOpenChatbox}
                   setChatboxConfig={setChatboxConfig}
