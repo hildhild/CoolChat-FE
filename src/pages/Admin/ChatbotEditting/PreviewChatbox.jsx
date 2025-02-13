@@ -8,7 +8,7 @@ const PreviewChatBox = ({ config, onClose }) => {
     script.src = 'https://api.coolchat.software/static/js/chatbot-widget.min.js';
     script.async = true;
     script.defer = true;
-    script.setAttribute('data-base-url', 'http://localhost:8000');
+    script.setAttribute('data-base-url', 'https://api.coolchat.software');
     script.setAttribute('data-preview', 'true');
     script.setAttribute('data-config', JSON.stringify(config));
 
