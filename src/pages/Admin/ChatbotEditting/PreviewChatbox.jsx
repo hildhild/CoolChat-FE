@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 
-const PreviewChatBox = ({ config, onClose }) => {
+const PreviewChatBox = ({ config }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
     if (!config) return;
+
+    console.log(77, config);
 
     if (!containerRef.current) {
       containerRef.current = document.createElement('div');
