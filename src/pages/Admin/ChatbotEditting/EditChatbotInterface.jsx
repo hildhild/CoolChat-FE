@@ -11,6 +11,7 @@ import { LoadingProcess } from "../../../components";
 import { getChatbotConfigApi } from "../../../services/chatbotConfigApi";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import WhiteBg from "@/assets/whitebg.png";
+import PreviewChatBox from "./PreviewChatbox"
 
 export const EditChatbotInterface = ({
   chatbotConfig,
@@ -100,6 +101,27 @@ export const EditChatbotInterface = ({
   const handlePreviewConfig = () => {
     setChatboxConfig(editConfigData);
     setToggleOpenChatbox(!toggleOpenChatbox);
+  }
+
+  const examplePreviewConfig = {
+    avatar_url: null, // use createObjectURL to preview image
+    background_image_url: null, // use createObjectURL to preview image
+    primary_background_color: '#FFFFFF',
+    secondary_background_color: '#F0F0F0',
+    primary_font_color: '#000000',
+    display_name: 'Test Chatbot',
+    font: 'ARIAL',
+    font_size: 'MEDIUM',
+    description: "I'm here to help you test the UI",
+    border_radius: 12,
+    sending_message_font_color: '#FFFFFF',
+    sending_message_background_color: '#2563EB',
+    receiving_message_font_color: '#000000',
+    receiving_message_background_color: '#E5E7EB',
+    welcome_message: '👋 Hello! How can I assist you today?',
+    goodbye_message: 'Thank you for chatting. Have a great day!',
+    human_switch_message:
+      "I'll connect you with a human agent. Please wait a moment.",
   };
 
   const handleCancel = () => {
@@ -532,6 +554,9 @@ export const EditChatbotInterface = ({
           )}
         </div>
       </div>
+        <PreviewChatBox
+          config={examplePreviewConfig}
+        />
       {isEditable ? (
         <div className="flex gap-5">
           <Button color="danger" onClick={handleCancel}>
