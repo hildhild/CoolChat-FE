@@ -4,7 +4,7 @@ export const getChatbotConfigApi = () => {
     return axios.get(`/chatbot/config/`);
 }
 
-export const resetChatbotConfigApi = () => {
+export const resetChatbotInterfaceApi = () => {
     return axios.post(`/chatbot/config/reset/`);
 }
 

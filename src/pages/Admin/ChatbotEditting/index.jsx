@@ -10,12 +10,10 @@ import { GrIntegration } from "react-icons/gr";
 import { GiNightSleep } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import ChatBox from "../../../components/ChatBox";
 import { EditChatbotInterface } from "./EditChatbotInterface";
 import { EditChatbotStyle } from "./EditChatbotStyle";
 import {
   getChatbotConfigApi,
-  getEmbedCodeApi,
 } from "../../../services/chatbotConfigApi";
 import { LoadingProcess } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
@@ -30,35 +28,25 @@ function ChatbotEditting() {
   const navigate = useNavigate();
   const [toggleOpenChatbox, setToggleOpenChatbox] = useState(false);
   const [allowedDomains, setAllowedDomains] = useState([]);
-
   const dispatch = useDispatch();
-
-  const {
-    data,
-    refetch,
-    isLoading: getConfigLoading,
-  } = useQuery({
-    queryKey: ["chatbotConfig"],
-    queryFn: async () => {
-      try {
-        const res = await getChatbotConfigApi();
+  const [isLoading, setIsLoading] = useState(false);
+  const handleGetChatbotConfig = async () => {
+    setIsLoading(true);
+    await getChatbotConfigApi()
+      .then((res) => {
+        console.log(12, res);
         if (res.status === 200) {
-          console.log(res.data);
           setAllowedDomains(
             res.data.allowed_domains.split(",").filter((item) => item !== "")
           );
           dispatch(setChatbotConfig(res.data));
-          return res.data;
-        } else {
-          // toast.error(res.data.detail);
-          return [];
         }
-      } catch (e) {
-        throw new Error("Failed to fetch invitations.");
-      }
-    },
-  });
-  const [chatboxConfig, setChatboxConfig] = useState(data);
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    setIsLoading(false);
+  }
 
   useEffect(() => {
     if (!accessToken) {
@@ -68,8 +56,7 @@ function ChatbotEditting() {
 
   return (
     <DashboardLayout page="chatbot-editting">
-      <LoadingProcess isLoading={getConfigLoading} />
-      {/* <ChatBox toggleOpenChatbox={toggleOpenChatbox} config={chatboxConfig} /> */}
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
         <Button
@@ -100,15 +87,10 @@ function ChatbotEditting() {
               }}
             >
               <Tab key="interface" title="Giao diện">
-                <EditChatbotInterface
-                  chatbotConfig={chatboxConfig}
-                  toggleOpenChatbox={toggleOpenChatbox}
-                  setToggleOpenChatbox={setToggleOpenChatbox}
-                  setChatboxConfig={setChatboxConfig}
-                />
+                <EditChatbotInterface/>
               </Tab>
               <Tab key="style" title="Phong cách">
-                <EditChatbotStyle config={chatboxConfig} refetch={refetch}/>
+                <EditChatbotStyle refetch={handleGetChatbotConfig}/>
               </Tab>
             </Tabs>
           </div>
@@ -151,7 +133,7 @@ function ChatbotEditting() {
                   </Tooltip>
                 }
               >
-                <EmbedCode allowedDomains={allowedDomains} refetch={refetch} />
+                <EmbedCode allowedDomains={allowedDomains} refetch={handleGetChatbotConfig} />
               </Tab>
               <Tab
                 key="facebook"

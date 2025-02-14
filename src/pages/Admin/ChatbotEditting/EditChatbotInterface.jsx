@@ -1,132 +1,77 @@
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { BiBorderRadius } from "react-icons/bi";
-import { ChromePicker } from "react-color";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { setChatbotInterface } from "../../../store/slices/ChatbotInterfaceSlice";
 import { toast } from "react-toastify";
 import { ConfirmModal } from "../../../components/ConfirmModal";
 import { LoadingProcess } from "../../../components";
-import { getChatbotConfigApi } from "../../../services/chatbotConfigApi";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import WhiteBg from "@/assets/whitebg.png";
-import PreviewChatBox from "./PreviewChatbox"
+import PreviewChatBox from "./PreviewChatbox";
+import { SelectColor } from "./SelectColor";
+import { resetChatbotInterfaceApi } from "../../../services/chatbotConfigApi";
+import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
+import { Controller, useForm } from "react-hook-form";
 
-export const EditChatbotInterface = ({
-  chatbotConfig,
-  toggleOpenChatbox,
-  setToggleOpenChatbox,
-  setChatboxConfig,
-}) => {
-  const chatbotInterfaceConfig = useSelector((state) => state.chatbotInterface);
-  const [editConfigData, setEditConfigData] = useState(chatbotInterfaceConfig);
+export const EditChatbotInterface = ({}) => {
+  const chatbotConfig = useSelector((state) => state.chatbotConfig.config);
+  const [previewConfig, setPreviewConfig] = useState(chatbotConfig);
   const dispatch = useDispatch();
-
-  const [isSelectBgColor, setIsSelectBgColor] = useState(false);
-  const [isSelectMainColor, setIsSelectMainColor] = useState(false);
-  const [isSelectMainTextColor, setIsSelectMainTextColor] = useState(false);
-  const [isSelectMessageBgColor, setIsSelectMessageBgColor] = useState(false);
-  const [isSelectMessageTextColor, setIsSelectMessageTextColor] =
-    useState(false);
-  const [isSelectMessageBgColorMe, setIsSelectMessageBgColorMe] =
-    useState(false);
-  const [isSelectMessageTextColorMe, setIsSelectMessageTextColorMe] =
-    useState(false);
-
   const [isEditable, setIsEditable] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
-
-  const [configType, setConfigType] = useState(chatbotConfig?.background_image ? "image" : "color");
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [configType, setConfigType] = useState(
+    chatbotConfig?.background_image ? "image" : "color"
+  );
   const [avatar, setAvatar] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const inputAvatarFileRef = useRef(null);
   const [background, setBackground] = useState(null);
   const [backgroundFile, setBackgroundFile] = useState(null);
   const inputBackgroundFileRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleResetDefault = () => {
-    const defaultConfig = {
-      main_name: "CoolChat",
-      sub_name: "Luôn sẵn sàng hỗ trợ bạn",
-      font_family: "font-sans",
-      message_border_radius: "12",
-      message_background_color: "#EAF2F6",
-      message_text_color: "#000000",
-      message_background_color_me: "#4880FF",
-      message_text_color_me: "#ffffff",
-    };
-    dispatch(setChatbotInterface(defaultConfig));
-    setEditConfigData(defaultConfig);
-    setChatboxConfig(defaultConfig);
-    toast.success("Khôi phục thành công");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    getValues,
+    watch,
+    setValue
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: chatbotConfig,
+  });
+
+  const handleResetDefault = async () => {
     setIsOpenConfirm(false);
+    setIsLoading(true);
+    await resetChatbotInterfaceApi().then((res) => {
+      if (res.status === 200) {
+        dispatch(setChatbotConfig(res.data));
+        reset;
+        toast.success("Khôi phục thành công");
+      }
+    });
+    setIsEditable(false);
+    setIsLoading(false);
   };
 
-  const handleChangeInput = (e) => {
-    console.log(e);
-    const name = e.target.name;
-    if (name === "main_name") {
-      setEditConfigData({ ...editConfigData, main_name: e.target.value });
-    } else if (name === "sub_name") {
-      setEditConfigData({ ...editConfigData, sub_name: e.target.value });
-    } else if (name === "font_family") {
-      setEditConfigData({ ...editConfigData, font_family: e.target.value });
-    } else if (name === "message_border_radius") {
-      setEditConfigData({
-        ...editConfigData,
-        message_border_radius: e.target.value,
-      });
-    } else if (name === "message_background_color") {
-      setEditConfigData({
-        ...editConfigData,
-        message_background_color: e.target.value,
-      });
-    } else if (name === "message_text_color") {
-      setEditConfigData({
-        ...editConfigData,
-        message_text_color: e.target.value,
-      });
-    }
-  };
-
-  const handleChangeConfig = () => {
-    dispatch(setChatbotInterface(editConfigData));
+  const handleChangeConfig = (data) => {
+    dispatch(setChatbotInterface(data));
     setIsEditable(false);
     toast.success("Chỉnh sửa thành công");
   };
 
   const handlePreviewConfig = () => {
-    setChatboxConfig(editConfigData);
-    setToggleOpenChatbox(!toggleOpenChatbox);
-  }
-
-  const examplePreviewConfig = {
-    avatar_url: null, // use createObjectURL to preview image
-    background_image_url: null, // use createObjectURL to preview image
-    primary_background_color: '#FFFFFF',
-    secondary_background_color: '#F0F0F0',
-    primary_font_color: '#000000',
-    display_name: 'Test Chatbot',
-    font: 'ARIAL',
-    font_size: 'MEDIUM',
-    description: "I'm here to help you test the UI",
-    border_radius: 12,
-    sending_message_font_color: '#FFFFFF',
-    sending_message_background_color: '#2563EB',
-    receiving_message_font_color: '#000000',
-    receiving_message_background_color: '#E5E7EB',
-    welcome_message: '👋 Hello! How can I assist you today?',
-    goodbye_message: 'Thank you for chatting. Have a great day!',
-    human_switch_message:
-      "I'll connect you with a human agent. Please wait a moment.",
+    setPreviewConfig(getValues());
   };
 
   const handleCancel = () => {
-    setEditConfigData(chatbotInterfaceConfig);
-    setChatboxConfig(null);
+    reset();
+    setPreviewConfig(chatbotConfig);
     setIsEditable(false);
   };
 
@@ -169,6 +114,7 @@ export const EditChatbotInterface = ({
   return (
     <div>
       <LoadingProcess isLoading={isLoading} />
+      <PreviewChatBox config={previewConfig} />
       <ConfirmModal
         isOpen={isOpenConfirm}
         onClose={() => setIsOpenConfirm(false)}
@@ -214,13 +160,8 @@ export const EditChatbotInterface = ({
               </>
             )}
           </button>
-          {/* <button onClick={handleAvatarClick} className="hover:opacity-70 bg-[#EDF2F6] border-[2px] border-[#8D98AA] text-[#8D98AA] border-dashed flex flex-col gap-2 rounded-2xl items-center justify-center size-[120px] p-3">
-            <MdOutlineAddPhotoAlternate size={40} />
-            <div className="text-[12px] text-center">Tải hình ảnh lên</div>
-            </button> */}
         </div>
         <div className="w-[160px]">
-          {/* <div className="mb-2 text-center">Ảnh nền</div> */}
           <Select
             aria-label="Select background image or color"
             defaultSelectedKeys={[configType]}
@@ -238,34 +179,13 @@ export const EditChatbotInterface = ({
             <SelectItem key="image">Ảnh nền trung tâm</SelectItem>
           </Select>
           {configType === "color" ? (
-            <div>
-              <Button
-                isDisabled={!isEditable}
-                className="border-[1px] border-gray-300"
-                style={{
-                  backgroundColor: chatbotConfig?.primary_background_color,
-                }}
-                onClick={() => setIsSelectBgColor(!isSelectBgColor)}
-              ></Button>
-              {isSelectBgColor && (
-                <div>
-                  <div
-                    className="fixed top-0 left-0 right-0 bottom-0"
-                    onClick={() => setIsSelectBgColor(false)}
-                  />
-                  <ChromePicker
-                    className="z-20 absolute"
-                    color={chatbotConfig?.primary_background_color}
-                    onChange={(color) => {
-                      setEditConfigData({
-                        ...editConfigData,
-                        message_text_color: color.hex,
-                      });
-                    }}
-                  />
-                </div>
-              )}
-            </div>
+            <SelectColor
+              color={watch("primary_background_color")}
+              isEditable={isEditable}
+              handleChangeColor={(color) => {
+                setValue("primary_background_color", color);
+              }}
+            />
           ) : (
             <div>
               {isEditable && (
@@ -291,8 +211,8 @@ export const EditChatbotInterface = ({
                   src={
                     background
                       ? background
-                      : chatbotConfig?.background_image
-                      ? chatbotConfig?.background_image
+                      : watch("background_image")
+                      ? watch("background_image")
                       : WhiteBg
                   }
                 />
@@ -303,260 +223,210 @@ export const EditChatbotInterface = ({
                   </>
                 )}
               </button>
-              {/* <div className="bg-[#EDF2F6] border-[2px] border-[#8D98AA] text-[#8D98AA] border-dashed flex flex-col gap-2 rounded-2xl items-center justify-center size-[120px] p-3">
-                <MdOutlineAddPhotoAlternate size={40} />
-                <div className="text-[12px] text-center">Tải hình ảnh lên</div>
-              </div> */}
             </div>
           )}
         </div>
-        <div>
-          <div className="mb-2 text-center py-1">Màu nền chủ đạo</div>
-          <Button
-            isDisabled={!isEditable}
-            className="border-[1px] border-gray-300"
-            style={{
-              backgroundColor: chatbotConfig?.secondary_background_color,
-            }}
-            onClick={() => setIsSelectMainColor(!isSelectMainColor)}
-          ></Button>
-          {isSelectMainColor && (
-            <div>
-              <div
-                className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectMainColor(false)}
-              />
-              <ChromePicker
-                className="z-20 absolute"
-                color={chatbotConfig?.secondary_background_color}
-                onChange={(color) => {
-                  setEditConfigData({
-                    ...editConfigData,
-                    message_text_color: color.hex,
-                  });
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <div>
-          <div className="mb-2 text-center py-1">Màu chữ chủ đạo</div>
-          <Button
-            isDisabled={!isEditable}
-            className="border-[1px] border-gray-300"
-            style={{
-              backgroundColor: chatbotConfig?.primary_font_color,
-            }}
-            onClick={() => setIsSelectMainTextColor(!isSelectMainTextColor)}
-          ></Button>
-          {isSelectMainTextColor && (
-            <div>
-              <div
-                className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectMainTextColor(false)}
-              />
-              <ChromePicker
-                className="z-20 absolute"
-                color={chatbotConfig?.primary_font_color}
-                onChange={(color) => {
-                  setEditConfigData({
-                    ...editConfigData,
-                    message_text_color: color.hex,
-                  });
-                }}
-              />
-            </div>
-          )}
-        </div>
+        <SelectColor
+          title="Màu nền chủ đạo"
+          color={watch("secondary_background_color")}
+          isEditable={isEditable}
+          handleChangeColor={(color) => {
+            setValue("secondary_background_color", color);
+          }}
+        />
+        <SelectColor
+          title="Màu chữ chủ đạo"
+          color={watch("primary_font_color")}
+          isEditable={isEditable}
+          handleChangeColor={(color) => {
+            setValue("primary_font_color", color);
+          }}
+        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-        <Input
-          isDisabled={!isEditable}
-          name="main_name"
-          type="text"
-          variant="bordered"
-          label="Tên hiển thị"
-          placeholder="Điền tên hiển thị"
-          value={chatbotConfig?.display_name}
-          onChange={handleChangeInput}
-        />
-        <Input
-          isDisabled={!isEditable}
-          name="sub_name"
-          type="text"
-          variant="bordered"
-          label="Tiêu đề phụ"
-          placeholder="Điền tiêu đề phụ"
-          value={chatbotConfig?.description}
-          onChange={handleChangeInput}
-        />
-        <Select
-          isDisabled={!isEditable}
-          name="font_family"
-          variant="bordered"
-          label="Phông chữ"
-          placeholder="Chọn phông chữ"
-          selectedKeys={[editConfigData.font_family]}
-          onChange={handleChangeInput}
-        >
-          <SelectItem key="font-sans">Sans</SelectItem>
-          <SelectItem key="font-serif">Serif</SelectItem>
-          <SelectItem key="font-mono">Monospace</SelectItem>
-        </Select>
-        <Select
-          isDisabled={!isEditable}
-          name="font_family"
-          variant="bordered"
-          label="Kích thước chữ (px)"
-          placeholder="Chọn phông chữ"
-          selectedKeys={["16"]}
-          onChange={handleChangeInput}
-        >
-          <SelectItem key="12">12</SelectItem>
-          <SelectItem key="14">14</SelectItem>
-          <SelectItem key="16">16</SelectItem>
-          <SelectItem key="18">18</SelectItem>
-          <SelectItem key="20">20</SelectItem>
-          <SelectItem key="24">24</SelectItem>
-          <SelectItem key="30">30</SelectItem>
-          <SelectItem key="36">36</SelectItem>
-          <SelectItem key="48">48</SelectItem>
-          <SelectItem key="60">60</SelectItem>
-          <SelectItem key="72">72</SelectItem>
-        </Select>
-        <Input
-          isDisabled={!isEditable}
-          name="message_border_radius"
-          type="text"
-          variant="bordered"
-          label="Độ bo góc tin nhắn (px)"
-          placeholder="Điền độ bo góc tin nhắn"
-          startContent={<BiBorderRadius size={20} />}
-          value={chatbotConfig?.border_radius}
-          onChange={handleChangeInput}
-        />
+        <div>
+          <Controller
+            control={control}
+            name="display_name"
+            rules={{
+              required: "Bắt buộc",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                isDisabled={!isEditable}
+                type="text"
+                variant="bordered"
+                label="Tên hiển thị"
+                placeholder="Điền tên hiển thị"
+                value={value}
+                onChange={onChange}
+                isRequired
+              />
+            )}
+          />
+          {errors.display_name && (
+            <div className="text-red-500 text-xs mt-2">
+              {errors.display_name.message}
+            </div>
+          )}
+        </div>
+        <div>
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Bắt buộc",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                isDisabled={!isEditable}
+                type="text"
+                variant="bordered"
+                label="Tiêu đề phụ"
+                placeholder="Điền tiêu đề phụ"
+                value={value}
+                onChange={onChange}
+                isRequired
+              />
+            )}
+          />
+          {errors.description && (
+            <div className="text-red-500 text-xs mt-2">
+              {errors.description.message}
+            </div>
+          )}
+        </div>
+        <div>
+          <Controller
+            control={control}
+            name="font"
+            rules={{
+              required: "Bắt buộc",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Select
+                isDisabled={!isEditable}
+                name="font_family"
+                variant="bordered"
+                label="Phông chữ"
+                placeholder="Chọn phông chữ"
+                selectedKeys={[value]}
+                onChange={onChange}
+                isRequired
+              >
+                <SelectItem key="font-sans">Sans</SelectItem>
+                <SelectItem key="font-serif">Serif</SelectItem>
+                <SelectItem key="font-mono">Monospace</SelectItem>
+              </Select>
+            )}
+          />
+          {errors.font && (
+            <div className="text-red-500 text-xs mt-2">
+              {errors.font.message}
+            </div>
+          )}
+        </div>
+        <div>
+          <Controller
+            control={control}
+            name="font_size"
+            rules={{
+              required: "Bắt buộc",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Select
+                isDisabled={!isEditable}
+                name="font_size"
+                variant="bordered"
+                label="Kích thước chữ (px)"
+                placeholder="Chọn phông chữ"
+                selectedKeys={[value]}
+                onChange={onChange}
+                isRequired
+              >
+                <SelectItem key="12">12</SelectItem>
+                <SelectItem key="14">14</SelectItem>
+                <SelectItem key="16">16</SelectItem>
+                <SelectItem key="18">18</SelectItem>
+                <SelectItem key="20">20</SelectItem>
+                <SelectItem key="24">24</SelectItem>
+                <SelectItem key="30">30</SelectItem>
+                <SelectItem key="36">36</SelectItem>
+                <SelectItem key="48">48</SelectItem>
+                <SelectItem key="60">60</SelectItem>
+                <SelectItem key="72">72</SelectItem>
+              </Select>
+            )}
+          />
+          {errors.font_size && (
+            <div className="text-red-500 text-xs mt-2">
+              {errors.font_size.message}
+            </div>
+          )}
+        </div>
+        <div>
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Bắt buộc",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                isDisabled={!isEditable}
+                name="border_radius"
+                type="text"
+                variant="bordered"
+                label="Độ bo góc tin nhắn (px)"
+                placeholder="Điền độ bo góc tin nhắn"
+                startContent={<BiBorderRadius size={20} />}
+                value={value}
+                onChange={onChange}
+                isRequired
+              />
+            )}
+          />
+          {errors.border_radius && (
+            <div className="text-red-500 text-xs mt-2">
+              {errors.border_radius.message}
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex flex-col md:flex-row gap-8 mb-8">
-        <div className="flex-col items-start flex">
-          <div className="mb-2 text-center">Màu nền tin nhắn nhận</div>
-          <Button
-            isDisabled={!isEditable}
-            className="border-[1px] border-gray-300"
-            style={{ backgroundColor: chatbotConfig?.receiving_message_background_color }}
-            onClick={() => setIsSelectMessageBgColor(!isSelectMessageBgColor)}
-          ></Button>
-          {isSelectMessageBgColor && (
-            <div>
-              <div
-                className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectMessageBgColor(false)}
-              />
-              <ChromePicker
-                className="z-20 absolute"
-                color={chatbotConfig?.receiving_message_background_color}
-                onChange={(color) => {
-                  setEditConfigData({
-                    ...editConfigData,
-                    message_background_color: color.hex,
-                  });
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex-col items-start flex">
-          <div className="mb-2 text-center">Màu chữ tin nhắn nhận</div>
-          <Button
-            isDisabled={!isEditable}
-            className="border-[1px] border-gray-300"
-            style={{ backgroundColor: chatbotConfig?.receiving_message_font_color }}
-            onClick={() =>
-              setIsSelectMessageTextColor(!isSelectMessageTextColor)
-            }
-          ></Button>
-          {isSelectMessageTextColor && (
-            <div>
-              <div
-                className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectMessageTextColor(false)}
-              />
-              <ChromePicker
-                className="z-20 absolute"
-                color={chatbotConfig?.receiving_message_font_color}
-                onChange={(color) => {
-                  setEditConfigData({
-                    ...editConfigData,
-                    message_text_color: color.hex,
-                  });
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex-col items-start flex">
-          <div className="mb-2 text-center">Màu nền tin nhắn gửi</div>
-          <Button
-            isDisabled={!isEditable}
-            className="border-[1px] border-gray-300"
-            style={{
-              backgroundColor: chatbotConfig?.sending_message_background_color,
-            }}
-            onClick={() =>
-              setIsSelectMessageBgColorMe(!isSelectMessageBgColorMe)
-            }
-          ></Button>
-          {isSelectMessageBgColorMe && (
-            <div>
-              <div
-                className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectMessageBgColorMe(false)}
-              />
-              <ChromePicker
-                className="z-20 absolute"
-                color={chatbotConfig?.sending_message_background_color}
-                onChange={(color) => {
-                  setEditConfigData({
-                    ...editConfigData,
-                    message_background_color_me: color.hex,
-                  });
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <div className="flex-col items-start flex">
-          <div className="mb-2 text-center">Màu chữ tin nhắn gửi</div>
-          <Button
-            isDisabled={!isEditable}
-            className="border-[1px] border-gray-300"
-            style={{ backgroundColor: chatbotConfig?.sending_message_font_color }}
-            onClick={() =>
-              setIsSelectMessageTextColorMe(!isSelectMessageTextColorMe)
-            }
-          ></Button>
-          {isSelectMessageTextColorMe && (
-            <div>
-              <div
-                className="fixed top-0 left-0 right-0 bottom-0"
-                onClick={() => setIsSelectMessageTextColorMe(false)}
-              />
-              <ChromePicker
-                className="z-20 absolute"
-                color={chatbotConfig?.sending_message_font_color}
-                onChange={(color) => {
-                  setEditConfigData({
-                    ...editConfigData,
-                    message_text_color_me: color.hex,
-                  });
-                }}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-        <PreviewChatBox
-          config={examplePreviewConfig}
+        <SelectColor
+          title="Màu nền tin nhắn nhận"
+          color={watch("receiving_message_background_color")}
+          isEditable={isEditable}
+          handleChangeColor={(color) => {
+            setValue("receiving_message_background_color", color);
+          }}
         />
+        <SelectColor
+          title="Màu chữ tin nhắn nhận"
+          color={watch("receiving_message_font_color")}
+          isEditable={isEditable}
+          handleChangeColor={(color) => {
+            setValue("receiving_message_font_color", color);
+          }}
+        />
+        <SelectColor
+          title="Màu nền tin nhắn gửi"
+          color={watch("sending_message_background_color")}
+          isEditable={isEditable}
+          handleChangeColor={(color) => {
+            setValue("sending_message_background_color", color);
+          }}
+        />
+        <SelectColor
+          title="Màu chữ tin nhắn gửi"
+          color={watch("sending_message_font_color")}
+          isEditable={isEditable}
+          handleChangeColor={(color) => {
+            setValue("sending_message_font_color", color);
+          }}
+        />
+      </div>
       {isEditable ? (
         <div className="flex gap-5">
           <Button color="danger" onClick={handleCancel}>
@@ -565,7 +435,7 @@ export const EditChatbotInterface = ({
           <Button color="primary" onClick={handlePreviewConfig}>
             XEM TRƯỚC
           </Button>
-          <Button color="success" onClick={handleChangeConfig}>
+          <Button color="success" onClick={handleSubmit(handleChangeConfig)}>
             LƯU
           </Button>
         </div>

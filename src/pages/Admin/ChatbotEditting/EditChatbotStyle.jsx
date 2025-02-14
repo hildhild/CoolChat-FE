@@ -16,8 +16,10 @@ import { useEffect, useState } from "react";
 import { LoadingProcess } from "../../../components";
 import { editChatbotToneApi, editGoodbyeMessageApi, editSwitchMessageApi, editWelcomeMessageApi } from "../../../services/chatbotConfigApi";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
-export const EditChatbotStyle = ({ config, refetch }) => {
+export const EditChatbotStyle = ({ refetch }) => {
+  const config = useSelector((state) => state.chatbotConfig.config);
   const [isLoading, setIsLoading] = useState(false);
   const [welcomeMessage, setWelcomeMessage] = useState(config?.welcome_message);
   const [goodbyeMessage, setGoodbyeMessage] = useState(config?.goodbye_message);
@@ -139,10 +141,10 @@ export const EditChatbotStyle = ({ config, refetch }) => {
             <FaHandPeace className="text-yellow-300" size={30} />
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button color="default" size="sm" onClick={()=>setWelcomeMessage(config?.welcome_message)}>
+            <Button color="default" size="sm" onClick={()=>setWelcomeMessage(config?.welcome_message)} isDisabled={welcomeMessage === config?.welcome_message}>
               Hủy
             </Button>
-            <Button color="primary" size="sm" onClick={handleChangeWelcomeMessage}>
+            <Button color="primary" size="sm" onClick={handleChangeWelcomeMessage} isDisabled={welcomeMessage === config?.welcome_message || !welcomeMessage}>
               Lưu
             </Button>
           </div>
@@ -165,10 +167,10 @@ export const EditChatbotStyle = ({ config, refetch }) => {
             <MdWavingHand className="text-yellow-300" size={30} />
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button color="default" size="sm" onClick={()=>setGoodbyeMessage(config?.goodbye_message)}>
+            <Button color="default" size="sm" onClick={()=>setGoodbyeMessage(config?.goodbye_message)}  isDisabled={goodbyeMessage === config?.goodbye_message}>
               Hủy
             </Button>
-            <Button color="primary" size="sm" onClick={handleChangeGoodbyeMessage}>
+            <Button color="primary" size="sm" onClick={handleChangeGoodbyeMessage} isDisabled={goodbyeMessage === config?.goodbye_message || !goodbyeMessage}>
               Lưu
             </Button>
           </div>
@@ -191,10 +193,10 @@ export const EditChatbotStyle = ({ config, refetch }) => {
             <FaHandshakeSimple className="text-yellow-300" size={30} />
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button color="default" size="sm" onClick={()=>setSwitchMessage(config?.human_switch_message)}>
+            <Button color="default" size="sm" onClick={()=>setSwitchMessage(config?.human_switch_message)}  isDisabled={switchMessage === config?.human_switch_message}>
               Hủy
             </Button>
-            <Button color="primary" size="sm" onClick={handleChangeSwitchMessage}>
+            <Button color="primary" size="sm" onClick={handleChangeSwitchMessage} isDisabled={switchMessage === config?.human_switch_message || !switchMessage}>
               Lưu
             </Button>
           </div>
