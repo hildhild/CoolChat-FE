@@ -19,9 +19,9 @@ import { toast } from "react-toastify";
 
 export const EditChatbotStyle = ({ config, refetch }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [welcomeMessage, setWelcomeMessage] = useState(config.welcome_message);
-  const [goodbyeMessage, setGoodbyeMessage] = useState(config.goodbye_message);
-  const [switchMessage, setSwitchMessage] = useState(config.human_switch_message);
+  const [welcomeMessage, setWelcomeMessage] = useState(config?.welcome_message);
+  const [goodbyeMessage, setGoodbyeMessage] = useState(config?.goodbye_message);
+  const [switchMessage, setSwitchMessage] = useState(config?.human_switch_message);
 
   const handleChangeChatbotTone = async (tone) => {
     setIsLoading(true);
@@ -139,7 +139,7 @@ export const EditChatbotStyle = ({ config, refetch }) => {
             <FaHandPeace className="text-yellow-300" size={30} />
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button color="default" size="sm" onClick={()=>setWelcomeMessage(config.welcome_message)}>
+            <Button color="default" size="sm" onClick={()=>setWelcomeMessage(config?.welcome_message)}>
               Hủy
             </Button>
             <Button color="primary" size="sm" onClick={handleChangeWelcomeMessage}>
@@ -165,7 +165,7 @@ export const EditChatbotStyle = ({ config, refetch }) => {
             <MdWavingHand className="text-yellow-300" size={30} />
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button color="default" size="sm" onClick={()=>setGoodbyeMessage(config.goodbye_message)}>
+            <Button color="default" size="sm" onClick={()=>setGoodbyeMessage(config?.goodbye_message)}>
               Hủy
             </Button>
             <Button color="primary" size="sm" onClick={handleChangeGoodbyeMessage}>
@@ -191,7 +191,7 @@ export const EditChatbotStyle = ({ config, refetch }) => {
             <FaHandshakeSimple className="text-yellow-300" size={30} />
           </div>
           <div className="flex justify-end gap-5 mt-3">
-            <Button color="default" size="sm" onClick={()=>setSwitchMessage(config.human_switch_message)}>
+            <Button color="default" size="sm" onClick={()=>setSwitchMessage(config?.human_switch_message)}>
               Hủy
             </Button>
             <Button color="primary" size="sm" onClick={handleChangeSwitchMessage}>
