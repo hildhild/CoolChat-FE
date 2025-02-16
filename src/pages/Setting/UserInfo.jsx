@@ -1,11 +1,10 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { editUserInfoApi } from "../../services/userApi";
-import { LoadingProcess } from "../../components";
+import { LoadingProcess, UploadImage } from "../../components";
 import { Button, Input, Select, SelectItem } from "@nextui-org/react";
 import { useTranslation } from "react-i18next";
-import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { toast } from "react-toastify";
 import { setUserData } from "../../store/slices/UserSlice";
 
@@ -19,15 +18,13 @@ export const UserInfo = () => {
     control: infoControl,
     handleSubmit: infoHandleSubmit,
     formState: { errors: infoErrors },
-    reset
+    reset,
   } = useForm({
     mode: "onSubmit",
     defaultValues: userInfo,
   });
-  const inputFileRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  
 
   const handleChangeProfile = async (data) => {
     setIsLoading(true);
@@ -35,12 +32,16 @@ export const UserInfo = () => {
       .then((res) => {
         console.log(123, res);
         if (res.status === 200) {
-          dispatch(setUserData({
-            email: userInfo.email,
-            name: res.data.name,
-            avatar_url: res.data?.avatar ? res.data.avatar : userInfo.avatar,
-            phone_number: res.data?.phone_number ? res.data.phone_number : userInfo.phoneNumber,
-          }));
+          dispatch(
+            setUserData({
+              email: userInfo.email,
+              name: res.data.name,
+              avatar_url: res.data?.avatar ? res.data.avatar : userInfo.avatar,
+              phone_number: res.data?.phone_number
+                ? res.data.phone_number
+                : userInfo.phoneNumber,
+            })
+          );
           toast.success("Thay đổi thông tin thành công.");
           setIsEditProfile(false);
         }
@@ -59,24 +60,6 @@ export const UserInfo = () => {
     setIsLoading(false);
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setAvatarFile(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatar(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleAvatarClick = () => {
-    if (isEditProfile) {
-      inputFileRef.current.click();
-    }
-  };
-
   return (
     <div>
       <LoadingProcess isLoading={isLoading} />
@@ -84,62 +67,15 @@ export const UserInfo = () => {
         <div className="flex flex-col items-center">
           <div className="flex justify-center items-center text-neutral-600 mb-2">
             <div className="text-sm">Ảnh đại diện</div>
-            {/* <MdOutlineAddPhotoAlternate /> */}
           </div>
-          {isEditProfile && (
-            <input
-              type="file"
-              accept="image/*"
-              ref={inputFileRef}
-              style={{ display: "none" }}
-              onChange={handleImageChange}
-            />
-          )}
-          <button
-            onClick={handleAvatarClick}
-            className="overflow-hidden group rounded-2xl aspect-square relative max-w-24 max-h-24 h-24 w-24 border-gray-300 border-2"
-          >
-            <img
-              className={`${
-                isEditProfile
-                  ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
-                  : "cursor-default"
-              } w-full h-full object-contain`}
-              alt="avatar"
-              src={
-                avatar
-                  ? avatar
-                  : userInfo.avatar
-                  ? userInfo.avatar
-                  : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"
-              }
-            />
-            {isEditProfile && (
-              <>
-                <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
-                <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-              </>
-            )}
-          </button>
-          {/* <Avatar
-                      className="w-20 h-20 bg-white"
-                      isBordered
-                      radius="sm"
-                      src={
-                        userInfoData.avatar
-                          ? userInfoData.avatar
-                          : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png"
-                      }
-                    />
-                    {isEditProfile && (
-                      <input
-                        id="avatar-input"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="mt-3"
-                      />
-                    )} */}
+          <UploadImage
+            image={avatar}
+            setImage={setAvatar}
+            setImageFile={setAvatarFile}
+            isEditable={isEditProfile}
+            curImage={userInfo.avatar}
+            defaultImage="https://cdn-icons-png.flaticon.com/512/6676/6676023.png"
+          />
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-5">
