@@ -48,6 +48,10 @@ function ChatbotEditting() {
     setIsLoading(false);
   }
 
+  useEffect(()=> {
+    handleGetChatbotConfig();
+  }, [])
+
   useEffect(() => {
     if (!accessToken) {
       navigate('/login');
