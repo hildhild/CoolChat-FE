@@ -75,6 +75,8 @@ const PreviewChatBox = ({ config }) => {
       safeRemoveElement(script);
       safeRemoveElement(link);
       safeRemoveElement(container);
+
+      window.coolchatWidget = null;
     };
   }, [config]);
 
