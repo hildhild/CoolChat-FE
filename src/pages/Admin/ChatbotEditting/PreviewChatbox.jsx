@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-const PreviewChatBox = ({ config }) => {
+const PreviewChatBox = ({ config, isPreview, setIsPreview }) => {
+
   const containerRef = useRef(null);
 
   const safeRemoveElement = (element) => {
@@ -45,6 +46,8 @@ const PreviewChatBox = ({ config }) => {
       script.async = true;
       script.setAttribute('data-base-url', 'https://api.coolchat.software');
       script.setAttribute('data-preview', 'true');
+      const data_open = isPreview ? 'true' : 'false';
+      script.setAttribute('data-open', data_open);
       script.setAttribute('data-config', JSON.stringify(config));
 
       script.onload = () => resolve();
@@ -78,6 +81,7 @@ const PreviewChatBox = ({ config }) => {
       safeRemoveElement(container);
 
       window.coolchatWidget = null;
+      setIsPreview(false);
     };
   }, [config]);
 

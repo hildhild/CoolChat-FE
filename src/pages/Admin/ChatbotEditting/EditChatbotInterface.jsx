@@ -31,6 +31,7 @@ export const EditChatbotInterface = ({}) => {
   const [backgroundFile, setBackgroundFile] = useState(null);
   const inputBackgroundFileRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
 
   const {
     control,
@@ -67,6 +68,7 @@ export const EditChatbotInterface = ({}) => {
 
   const handlePreviewConfig = () => {
     setPreviewConfig(getValues());
+    setIsPreview(true);
   };
 
   const handleCancel = () => {
@@ -115,7 +117,7 @@ export const EditChatbotInterface = ({}) => {
   return (
     <div>
       <LoadingProcess isLoading={isLoading} />
-      <PreviewChatBox config={previewConfig} />
+      <PreviewChatBox config={previewConfig} isPreview={isPreview} setIsPreview={setIsPreview} />
       <ConfirmModal
         isOpen={isOpenConfirm}
         onClose={() => setIsOpenConfirm(false)}
