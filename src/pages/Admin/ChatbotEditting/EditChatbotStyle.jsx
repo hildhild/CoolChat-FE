@@ -118,8 +118,8 @@ export const EditChatbotStyle = ({ refetch }) => {
       >
         <Radio value="FRIENDLY">Thân thiện, nhiệt tình</Radio>
         <Radio value="PROFESSIONAL">Chuyên nghiệp, lịch sự</Radio>
-        <Radio value="FUNNY">Hài hước, vui vẻ</Radio>
-        <Radio value="DIRECT">Ngắn gọn, trực tiếp</Radio>
+        <Radio value="HUMOROUS">Hài hước, vui vẻ</Radio>
+        <Radio value="CONCISE">Ngắn gọn, trực tiếp</Radio>
       </RadioGroup>
       <div className="mb-3 font-semibold">Các tin nhắn mặc định</div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
