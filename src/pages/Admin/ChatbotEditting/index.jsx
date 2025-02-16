@@ -50,9 +50,9 @@ function ChatbotEditting() {
 
   useEffect(() => {
     if (!accessToken) {
-      navigate("/login");
+      navigate('/login');
     }
-  }, []);
+  }, [accessToken, navigate]);
 
   return (
     <DashboardLayout page="chatbot-editting">
