@@ -56,6 +56,7 @@ const PreviewChatBox = ({ config }) => {
 
   useEffect(() => {
     if (!config) return;
+    window.coolchatWidget = null;
 
     const initializeWidget = async () => {
       try {

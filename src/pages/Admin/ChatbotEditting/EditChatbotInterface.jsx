@@ -24,7 +24,6 @@ export const EditChatbotInterface = ({}) => {
   const [configType, setConfigType] = useState(
     chatbotConfig?.background_image ? "image" : "color"
   );
-  const [showPreview, setShowPreview] = useState(true);
   const [avatar, setAvatar] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const inputAvatarFileRef = useRef(null);
@@ -67,7 +66,6 @@ export const EditChatbotInterface = ({}) => {
   };
 
   const handlePreviewConfig = () => {
-    setShowPreview(!showPreview);
     setPreviewConfig(getValues());
   };
 
@@ -113,10 +111,11 @@ export const EditChatbotInterface = ({}) => {
     }
   };
 
+
   return (
     <div>
       <LoadingProcess isLoading={isLoading} />
-      {showPreview && <PreviewChatBox config={previewConfig} />}
+      <PreviewChatBox config={previewConfig} />
       <ConfirmModal
         isOpen={isOpenConfirm}
         onClose={() => setIsOpenConfirm(false)}
