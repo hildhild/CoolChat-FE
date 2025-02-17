@@ -62,8 +62,8 @@ export const EditChatbotInterface = ({}) => {
     await editChatbotConfigApi({
       ...data,
       avatar: avatarFile,
-      background_image: backgroundFile,
-      ...(data.background_image ? {primary_background_color: "#ffffff"} : {})
+      ...(configType === "image" ? {background_image: backgroundFile} : {background_image: null}),
+      ...(configType === "image" ? {primary_background_color: "#ffffff" } : {})
     }).then((res) => {
       console.log(12, res);
       if (res.status === 200) {
@@ -120,7 +120,7 @@ export const EditChatbotInterface = ({}) => {
             isEditable={isEditable}
             curImage={watch("avatar")}
             defaultImage="https://api.coolchat.software/static/images/default-avatar.png"
-            sizeTailwind="28"
+            size={130}
           />
         </div>
         <div className="w-[160px]">
@@ -156,7 +156,7 @@ export const EditChatbotInterface = ({}) => {
               isEditable={isEditable}
               curImage={watch("background_image")}
               defaultImage="https://cdn-icons-png.flaticon.com/512/4211/4211763.png"
-              sizeTailwind="28"
+              size={130}
             />
           )}
         </div>

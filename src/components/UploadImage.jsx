@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 
-export const UploadImage = ({ image, setImage, setImageFile, isEditable=true, curImage, defaultImage, sizeTailwind="24" }) => {
+export const UploadImage = ({ image, setImage, setImageFile, isEditable=true, curImage, defaultImage, size=93 }) => {
   const inputFileRef = useRef(null);
 
   const handleImageChange = (event) => {
@@ -35,7 +35,13 @@ export const UploadImage = ({ image, setImage, setImageFile, isEditable=true, cu
       )}
       <button
         onClick={handleClick}
-        className={`overflow-hidden group rounded-2xl aspect-square relative max-w-${sizeTailwind} max-h-${sizeTailwind} h-${sizeTailwind} w-${sizeTailwind} border-gray-300 border-2`}
+        className={`overflow-hidden group rounded-2xl aspect-square relative border-gray-300 border-2`}
+        style={{
+          width: size,
+          height: size,
+          maxHeight: size,
+          maxWidth: size,
+        }}
       >
         <img
           className={`${
