@@ -1,7 +1,18 @@
-import { Button, Input, Select, SelectItem } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  Select,
+  SelectItem,
+  useDisclosure,
+} from "@nextui-org/react";
 import { BiBorderRadius } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { ConfirmModal } from "../../../components/ConfirmModal";
 import { LoadingProcess, UploadImage } from "../../../components";
@@ -14,9 +25,8 @@ import {
 import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
 import { Controller, useForm } from "react-hook-form";
 
-export const EditChatbotInterface = ({}) => {
+export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
   const chatbotConfig = useSelector((state) => state.chatbotConfig.config);
-  const [previewConfig, setPreviewConfig] = useState(chatbotConfig);
   const dispatch = useDispatch();
   const [isEditable, setIsEditable] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
@@ -28,7 +38,6 @@ export const EditChatbotInterface = ({}) => {
   const [background, setBackground] = useState(null);
   const [backgroundFile, setBackgroundFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isPreview, setIsPreview] = useState(false);
 
   const {
     control,
@@ -62,20 +71,25 @@ export const EditChatbotInterface = ({}) => {
     await editChatbotConfigApi({
       ...data,
       avatar: avatarFile,
-      ...(configType === "image" ? {background_image: backgroundFile} : {background_image: null}),
-      ...(configType === "image" ? {primary_background_color: "#ffffff" } : {})
-    }).then((res) => {
-      console.log(12, res);
-      if (res.status === 200) {
-        dispatch(setChatbotConfig(res.data));
-        setPreviewConfig(res.data);
-        setIsEditable(false);
-        toast.success("Chỉnh sửa thành công");
-      }
+      ...(configType === "image" 
+        ? { background_image: backgroundFile }
+        : { background_image: null }),
+      ...(configType === "image"
+        ? { primary_background_color: "#ffffff" }
+        : {}),
     })
-    .catch((err) => {
-      console.log(2, err);
-    });
+      .then((res) => {
+        console.log(12, res);
+        if (res.status === 200) {
+          dispatch(setChatbotConfig(res.data));
+          setPreviewConfig(res.data);
+          setIsEditable(false);
+          toast.success("Chỉnh sửa thành công");
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
 
     setIsLoading(false);
   };
@@ -98,11 +112,6 @@ export const EditChatbotInterface = ({}) => {
   return (
     <div>
       <LoadingProcess isLoading={isLoading} />
-      <PreviewChatBox
-        config={previewConfig}
-        isPreview={isPreview}
-        setIsPreview={setIsPreview}
-      />
       <ConfirmModal
         isOpen={isOpenConfirm}
         onClose={() => setIsOpenConfirm(false)}
@@ -157,6 +166,7 @@ export const EditChatbotInterface = ({}) => {
               curImage={watch("background_image")}
               defaultImage="https://cdn-icons-png.flaticon.com/512/4211/4211763.png"
               size={130}
+              scale={380 / 337}
             />
           )}
         </div>
@@ -293,6 +303,33 @@ export const EditChatbotInterface = ({}) => {
           {errors.font_size && (
             <div className="text-red-500 text-xs mt-2">
               {errors.font_size.message}
+            </div>
+          )}
+        </div>
+        <div>
+          <Controller
+            control={control}
+            name="border_radius"
+            rules={{
+              required: "Bắt buộc",
+            }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                isDisabled={!isEditable}
+                type="number"
+                variant="bordered"
+                label="Độ bo góc khung chat (px)"
+                placeholder="Điền độ bo góc khung chat"
+                startContent={<BiBorderRadius size={20} />}
+                value={value}
+                onChange={onChange}
+                isRequired
+              />
+            )}
+          />
+          {errors.border_radius && (
+            <div className="text-red-500 text-xs mt-2">
+              {errors.border_radius.message}
             </div>
           )}
         </div>
