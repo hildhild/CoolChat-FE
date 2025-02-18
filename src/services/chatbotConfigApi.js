@@ -11,7 +11,7 @@ export const resetChatbotInterfaceApi = () => {
 export const editChatbotConfigApi = (config) => {
     const formData = new FormData();
     if (config?.avatar) formData.append("avatar", config.avatar);
-    formData.append("background_image", config.background_image);
+    if (config?.background_image) formData.append("background_image", config.background_image);
     if (config?.primary_background_color) formData.append("primary_background_color", config.primary_background_color);
     if (config?.secondary_background_color) formData.append("secondary_background_color", config.secondary_background_color);
     if (config?.primary_font_color) formData.append("primary_font_color", config.primary_font_color);
