@@ -19,17 +19,20 @@ import { LoadingProcess } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
 import { useQuery } from "@tanstack/react-query";
 import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
+import PreviewChatBox from "./PreviewChatbox";
 
 function ChatbotEditting() {
-  const { t } = useTranslation();
   const [isChatbotConfig, setIsChatbotConfig] = useState(true);
   const [isIntegrate, setIsIntegrate] = useState(false);
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
-  const [toggleOpenChatbox, setToggleOpenChatbox] = useState(false);
   const [allowedDomains, setAllowedDomains] = useState([]);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const chatbotConfig = useSelector((state) => state.chatbotConfig.config);
+  const [previewConfig, setPreviewConfig] = useState(chatbotConfig);
+  const [isPreview, setIsPreview] = useState(false);
+
   const handleGetChatbotConfig = async () => {
     setIsLoading(true);
     await getChatbotConfigApi()
@@ -60,6 +63,11 @@ function ChatbotEditting() {
 
   return (
     <DashboardLayout page="chatbot-editting">
+      <PreviewChatBox
+        config={previewConfig}
+        isPreview={isPreview}
+        setIsPreview={setIsPreview}
+      />
       <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
@@ -91,7 +99,7 @@ function ChatbotEditting() {
               }}
             >
               <Tab key="interface" title="Giao diện">
-                <EditChatbotInterface/>
+                <EditChatbotInterface setPreviewConfig={setPreviewConfig} setIsPreview={setIsPreview}/>
               </Tab>
               <Tab key="style" title="Phong cách">
                 <EditChatbotStyle refetch={handleGetChatbotConfig}/>
