@@ -8,80 +8,67 @@ import { RiComputerLine } from "react-icons/ri";
 import { FaFacebookSquare } from "react-icons/fa";
 import { GrIntegration } from "react-icons/gr";
 import { GiNightSleep } from "react-icons/gi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import ChatBox from "../../../components/ChatBox";
 import { EditChatbotInterface } from "./EditChatbotInterface";
 import { EditChatbotStyle } from "./EditChatbotStyle";
 import {
   getChatbotConfigApi,
-  getEmbedCodeApi,
 } from "../../../services/chatbotConfigApi";
 import { LoadingProcess } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
 import { useQuery } from "@tanstack/react-query";
+import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
+import PreviewChatBox from "./PreviewChatbox";
 
 function ChatbotEditting() {
-  const { t } = useTranslation();
   const [isChatbotConfig, setIsChatbotConfig] = useState(true);
   const [isIntegrate, setIsIntegrate] = useState(false);
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
-  const [toggleOpenChatbox, setToggleOpenChatbox] = useState(false);
-  const [chatboxConfig, setChatboxConfig] = useState(null);
-
-  const [isLoading, setIsLoading] = useState(false);
   const [allowedDomains, setAllowedDomains] = useState([]);
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const chatbotConfig = useSelector((state) => state.chatbotConfig.config);
+  const [previewConfig, setPreviewConfig] = useState(chatbotConfig);
+  const [isPreview, setIsPreview] = useState(false);
 
-  const {
-    data,
-    refetch,
-    isLoading: getConfigLoading,
-  } = useQuery({
-    queryKey: ["chatbotConfig"],
-    queryFn: async () => {
-      try {
-        const res = await getChatbotConfigApi();
+  const handleGetChatbotConfig = async () => {
+    setIsLoading(true);
+    await getChatbotConfigApi()
+      .then((res) => {
+        console.log(12, res);
         if (res.status === 200) {
-          console.log(res.data);
           setAllowedDomains(
             res.data.allowed_domains.split(",").filter((item) => item !== "")
           );
-          setChatboxConfig(res.data);
-          return res.data;
-        } else {
-          // toast.error(res.data.detail);
-          return [];
+          dispatch(setChatbotConfig(res.data));
         }
-      } catch (e) {
-        throw new Error("Failed to fetch invitations.");
-      }
-    },
-  });
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    setIsLoading(false);
+  }
 
-  // const getChatbotConfig = async () => {
-  //   setIsLoading(true);
-  //   await getChatbotConfigApi().then((res) => {
-  //     console.log(res);
-  //     setAllowedDomains(res.data.allowed_domains.split(",").filter((item) => item !== ""));
-  //   });
-  //   setIsLoading(false);
-  // };
-
-  // useEffect(() => {
-  //   getChatbotConfig();
-  // }, []);
+  useEffect(()=> {
+    handleGetChatbotConfig();
+  }, [])
 
   useEffect(() => {
     if (!accessToken) {
-      navigate("/login");
+      navigate('/login');
     }
-  }, []);
+  }, [accessToken, navigate]);
 
   return (
     <DashboardLayout page="chatbot-editting">
-      <LoadingProcess isLoading={isLoading || getConfigLoading} />
-      <ChatBox toggleOpenChatbox={toggleOpenChatbox} config={chatboxConfig} />
+      <PreviewChatBox
+        config={previewConfig}
+        isPreview={isPreview}
+        setIsPreview={setIsPreview}
+      />
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
         <Button
@@ -112,14 +99,10 @@ function ChatbotEditting() {
               }}
             >
               <Tab key="interface" title="Giao diện">
-                <EditChatbotInterface
-                  toggleOpenChatbox={toggleOpenChatbox}
-                  setToggleOpenChatbox={setToggleOpenChatbox}
-                  setChatboxConfig={setChatboxConfig}
-                />
+                <EditChatbotInterface setPreviewConfig={setPreviewConfig} setIsPreview={setIsPreview}/>
               </Tab>
               <Tab key="style" title="Phong cách">
-                <EditChatbotStyle config={chatboxConfig} refetch={refetch}/>
+                <EditChatbotStyle refetch={handleGetChatbotConfig}/>
               </Tab>
             </Tabs>
           </div>
@@ -162,7 +145,7 @@ function ChatbotEditting() {
                   </Tooltip>
                 }
               >
-                <EmbedCode allowedDomains={allowedDomains} refetch={refetch} />
+                <EmbedCode allowedDomains={allowedDomains} refetch={handleGetChatbotConfig} />
               </Tab>
               <Tab
                 key="facebook"

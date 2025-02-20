@@ -1,29 +1,26 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrganizationData } from "../../../store/slices/OrganizationSlice";
 import { setCompanyName } from "../../../store/slices/UserSlice";
 import { Button, Input } from "@nextui-org/react";
-import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import { editOrgInfoApi } from "../../../services/orgApi";
 import { toast } from "react-toastify";
 import { EMAIL_PATTERN } from "../../../constants/patterns";
 import { useTranslation } from "react-i18next";
-import { LoadingProcess } from "../../../components";
+import { LoadingProcess, UploadImage } from "../../../components";
 
 export const OrganizationInfo = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const inputFileRef = useRef(null);
   const orgInfo = useSelector((state) => state.organization);
-  const [orgInfoData, setOrgInfoData] = useState(orgInfo);
   const [isEditInfo, setIsEditInfo] = useState(false);
   const {
     control: editControl,
     handleSubmit: editHandleSubmit,
     formState: { errors: editErrors },
-    reset
+    reset,
   } = useForm({
     mode: "onSubmit",
     defaultValues: orgInfo,
@@ -69,24 +66,6 @@ export const OrganizationInfo = () => {
     setIsLoading(false);
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setLogoFile(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogo(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleLogoClick = () => {
-    if (isEditInfo) {
-      inputFileRef.current.click();
-    }
-  };
-
   return (
     <div className="bg-white px-5 py-8 rounded-xl mb-8">
       <LoadingProcess isLoading={isLoading} />
@@ -94,52 +73,15 @@ export const OrganizationInfo = () => {
         <div className="flex flex-col items-center">
           <div className="flex justify-center items-center text-neutral-600 mb-2">
             <div className="text-sm">Logo</div>
-            {/* <MdOutlineAddPhotoAlternate /> */}
           </div>
-          {isEditInfo && (
-            <input
-              type="file"
-              accept="image/*"
-              ref={inputFileRef}
-              style={{ display: "none" }}
-              onChange={handleImageChange}
-            />
-          )}
-          <button
-            onClick={handleLogoClick}
-            className="overflow-hidden group rounded-2xl aspect-square relative max-w-24 max-h-24 h-24 w-24 border-gray-300 border-2"
-          >
-            <img
-              className={`${
-                isEditInfo
-                  ? "group-hover:grayscale transition-all duration-300 cursor-pointer"
-                  : "cursor-default"
-              } w-full h-full object-contain`}
-              alt="avatar"
-              src={logo ? logo : orgInfo.logo ? orgInfo.logo : LogoOnly}
-            />
-            {isEditInfo && (
-              <>
-                <div className="group-hover:opacity-25 opacity-0 transition-all absolute bg-black inset-0 z-1" />
-                <MdOutlineAddPhotoAlternate className="z-2 group-hover:opacity-100 opacity-0 transition-all duration-300 text-4xl text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-              </>
-            )}
-          </button>
-          {/* <Avatar
-          className="w-20 h-20 bg-white"
-          isBordered
-          radius="sm"
-          src={orgInfoData.logo ? orgInfoData.logo : LogoOnly}
-        /> */}
-          {/* {isEditInfo && (
-          <input
-            id="avatar-input"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="mt-3"
+          <UploadImage
+            image={logo}
+            setImage={setLogo}
+            setImageFile={setLogoFile}
+            isEditable={isEditInfo}
+            curImage={orgInfo.logo}
+            defaultImage={LogoOnly}
           />
-        )} */}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-5 mb-3">
