@@ -155,7 +155,7 @@ export const DocumentList = ({
               <FaInfoCircle className="text-blue-500" />
             </button>
           )}
-          {cellValue.document_type !== "FILE" && (
+          {cellValue.document_type === "URL" && (
             <FaEdit className="text-black" />
           )}
           {cellValue.document_type !== "URL" && (
