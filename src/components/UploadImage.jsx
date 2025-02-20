@@ -91,6 +91,7 @@ export const UploadImage = ({
           }
         }}
         size="xl"
+        isDismissable={false}
       >
         <ModalContent>
           {(onClose) => (
