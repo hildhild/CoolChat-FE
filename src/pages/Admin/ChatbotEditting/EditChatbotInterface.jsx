@@ -31,7 +31,7 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
   const [isEditable, setIsEditable] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [configType, setConfigType] = useState(
-    chatbotConfig?.background_image ? "image" : "color"
+    chatbotConfig?.background_image_url ? "image" : "color"
   );
   const [avatar, setAvatar] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
@@ -72,8 +72,8 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
       ...data,
       avatar: avatarFile,
       ...(configType === "image" 
-        ? { background_image: backgroundFile }
-        : { background_image: null }),
+        ? { background_image_url: backgroundFile }
+        : { background_image_url: null }),
       ...(configType === "image"
         ? { primary_background_color: "#ffffff" }
         : {}),
@@ -98,7 +98,7 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
     setPreviewConfig({
       ...getValues(),
       avatar: avatar,
-      background_image: background,
+      background_image_url: background,
     });
     setIsPreview(true);
   };
@@ -163,7 +163,7 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
               setImage={setBackground}
               setImageFile={setBackgroundFile}
               isEditable={isEditable}
-              curImage={watch("background_image")}
+              curImage={watch("background_image_url")}
               defaultImage="https://cdn-icons-png.flaticon.com/512/4211/4211763.png"
               size={130}
               scale={380 / 337}
