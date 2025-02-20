@@ -25,19 +25,22 @@ import {
 import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
 import { Controller, useForm } from "react-hook-form";
 
-export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
+export const EditChatbotInterface = ({
+  setPreviewConfig,
+  setIsPreview,
+}) => {
   const chatbotConfig = useSelector((state) => state.chatbotConfig.config);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [isOpenConfirm, setIsOpenConfirm] = useState(false);
   const [configType, setConfigType] = useState(
-    chatbotConfig?.background_image ? "image" : "color"
+    chatbotConfig?.background_image_url ? "image" : "color"
   );
   const [avatar, setAvatar] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
   const [background, setBackground] = useState(null);
   const [backgroundFile, setBackgroundFile] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -56,9 +59,12 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
     setIsOpenConfirm(false);
     setIsLoading(true);
     await resetChatbotInterfaceApi().then((res) => {
+      console.log(88, res);
       if (res.status === 200) {
         dispatch(setChatbotConfig(res.data));
-        reset;
+        reset(res.data);
+        setPreviewConfig(res.data);
+        reset();
         toast.success("Khôi phục thành công");
       }
     });
@@ -71,9 +77,9 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
     await editChatbotConfigApi({
       ...data,
       avatar: avatarFile,
-      ...(configType === "image" 
-        ? { background_image: backgroundFile }
-        : { background_image: null }),
+      ...(configType === "image"
+        ? { background_image: backgroundFile ? backgroundFile : "" }
+        : { background_image: "" }),
       ...(configType === "image"
         ? { primary_background_color: "#ffffff" }
         : {}),
@@ -82,7 +88,12 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
         console.log(12, res);
         if (res.status === 200) {
           dispatch(setChatbotConfig(res.data));
+          reset(res.data);
           setPreviewConfig(res.data);
+          setAvatar(null);
+          setAvatarFile(null);
+          setBackground(null);
+          setBackgroundFile(null);
           setIsEditable(false);
           toast.success("Chỉnh sửa thành công");
         }
@@ -97,15 +108,25 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
   const handlePreviewConfig = () => {
     setPreviewConfig({
       ...getValues(),
-      avatar: avatar,
-      background_image: background,
+      ...(avatar ? {avatar_url: avatar} : {}),
+      ...(background ? {background_image_url: background} : {}),
+      ...(configType === "image"
+        ? { primary_background_color: "#ffffff" }
+        : {}),
     });
     setIsPreview(true);
   };
 
   const handleCancel = () => {
     reset();
+    setAvatar(null);
+    setAvatarFile(null);
+    setBackground(null);
+    setBackgroundFile(null);
     setPreviewConfig(chatbotConfig);
+    if (!chatbotConfig.background_image_url) {
+      setConfigType("color");
+    }
     setIsEditable(false);
   };
 
@@ -127,7 +148,7 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
             setImage={setAvatar}
             setImageFile={setAvatarFile}
             isEditable={isEditable}
-            curImage={watch("avatar")}
+            curImage={watch("avatar_url")}
             defaultImage="https://api.coolchat.software/static/images/default-avatar.png"
             size={130}
           />
@@ -140,8 +161,13 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
             className="w-full mb-2"
             onChange={(e) => {
               setConfigType(e.target.value);
-              setBackground(null);
-              setBackgroundFile(null);
+              if (e.target.value === "color") {
+                setBackground(null);
+                setBackgroundFile(null);
+              } else {
+                setValue("primary_background_color", chatbotConfig.primary_background_color);
+              }
+              
             }}
             isRequired
             isDisabled={!isEditable}
@@ -163,7 +189,7 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
               setImage={setBackground}
               setImageFile={setBackgroundFile}
               isEditable={isEditable}
-              curImage={watch("background_image")}
+              curImage={watch("background_image_url")}
               defaultImage="https://cdn-icons-png.flaticon.com/512/4211/4211763.png"
               size={130}
               scale={380 / 337}
@@ -218,9 +244,6 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
           <Controller
             control={control}
             name="description"
-            rules={{
-              required: "Bắt buộc",
-            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 isDisabled={!isEditable}
@@ -230,7 +253,6 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
                 placeholder="Điền tiêu đề phụ"
                 value={value}
                 onChange={onChange}
-                isRequired
               />
             )}
           />
@@ -336,7 +358,7 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
         <div>
           <Controller
             control={control}
-            name="border_radius"
+            name="message_border_radius"
             rules={{
               required: "Bắt buộc",
             }}
@@ -354,9 +376,9 @@ export const EditChatbotInterface = ({setPreviewConfig, setIsPreview}) => {
               />
             )}
           />
-          {errors.border_radius && (
+          {errors.message_border_radius && (
             <div className="text-red-500 text-xs mt-2">
-              {errors.border_radius.message}
+              {errors.message_border_radius.message}
             </div>
           )}
         </div>
