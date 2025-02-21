@@ -4,7 +4,7 @@ import Chat from "./Chat";
 import Report from "./Report";
 import Subscription from "./Subscription";
 import ChatbotComparison from "./ChatbotComparison";
-import ChatDetail from "./ChatDetail";
+import ChatDetail from "./Chat/ChatDetail";
 import Organization from "./Organization";
 
 export {

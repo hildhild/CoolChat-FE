@@ -1,6 +1,22 @@
-import { Button, Chip, Input, Pagination, Select, SelectItem, Tab, Tabs } from "@nextui-org/react";
-import { DashboardLayout } from "../../layouts";
-import { MdOutlineChat, MdOutlineImage, MdOutlineSupportAgent, MdSearch  } from "react-icons/md";
+import {
+  BreadcrumbItem,
+  Breadcrumbs,
+  Button,
+  Chip,
+  Input,
+  Pagination,
+  Select,
+  SelectItem,
+  Tab,
+  Tabs,
+} from "@nextui-org/react";
+import { DashboardLayout } from "../../../layouts";
+import {
+  MdOutlineChat,
+  MdOutlineImage,
+  MdOutlineSupportAgent,
+  MdSearch,
+} from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -10,12 +26,11 @@ import { BsThreeDots } from "react-icons/bs";
 import { LuBot, LuBotOff } from "react-icons/lu";
 import { IoIosSend } from "react-icons/io";
 
-
 function ChatDetail() {
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
 
-  useEffect(()=> {
+  useEffect(() => {
     if (!accessToken) {
       navigate("/login");
     }
@@ -24,7 +39,19 @@ function ChatDetail() {
   return (
     <DashboardLayout page="chat">
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">
-        <div className="font-semibold mb-6 text-2xl">CHI TIẾT HỘI THOẠI</div>
+        <Breadcrumbs className="mb-6">
+          <BreadcrumbItem href="/chat">
+            <div className="font-semibold text-2xl">
+              HỘI THOẠI
+            </div>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <div className="font-semibold text-2xl">
+              CHI TIẾT HỘI THOẠI
+            </div>
+          </BreadcrumbItem>
+        </Breadcrumbs>
+
         <div className="flex flex-col w-full h-[580px] bg-white rounded-2xl">
           <div className="flex justify-between items-center p-3 border-b-[1px] border-gray-200 h-[64px]">
             <div className="flex gap-5 items-center">
@@ -52,7 +79,10 @@ function ChatDetail() {
                 <LuBot size={18} />
               </div>
               <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
-                <div>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </div>
+                <div>
+                  It is a long established fact that a reader will be distracted
+                  by the readable content of a page when looking at its layout.{" "}
+                </div>
                 <div className="text-end text-neutral-400 text-xs">6:30 pm</div>
               </div>
             </div>
@@ -67,7 +97,11 @@ function ChatDetail() {
             </div>
             <div className="flex gap-3 items-end justify-end p-3 mb-3">
               <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl w-[270px] p-3">
-                <div>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour. </div>
+                <div>
+                  There are many variations of passages of Lorem Ipsum
+                  available, but the majority have suffered alteration in some
+                  form, by injected humour.{" "}
+                </div>
                 <div className="text-end text-xs">9:32 pm</div>
               </div>
             </div>
@@ -76,8 +110,14 @@ function ChatDetail() {
             <button className="w-8 h-8 flex justify-center items-center rounded-full">
               <MdOutlineImage size={25} />
             </button>
-            <input className="flex-grow !bg-white !border-none !outline-none" placeholder="Aa"></input>
-            <Button className="flex justify-center items-center" color="primary">
+            <input
+              className="flex-grow !bg-white !border-none !outline-none"
+              placeholder="Aa"
+            ></input>
+            <Button
+              className="flex justify-center items-center"
+              color="primary"
+            >
               Gửi
               <IoIosSend size={20} />
             </Button>
