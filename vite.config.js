@@ -13,5 +13,15 @@ export default defineConfig({
   },
   build: {
     outDir: "build", // Đổi từ "dist" thành "build"
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return "vendor"; // Tách thư viện vào file riêng
+          }
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000 // Tăng giới hạn cảnh báo
   },
 })
