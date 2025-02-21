@@ -11,17 +11,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'), // '@' đại diện cho thư mục src
     },
   },
-  build: {
-    outDir: "build", // Đổi từ "dist" thành "build"
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes("node_modules")) {
-            return "vendor"; // Tách thư viện vào file riêng
-          }
-        }
-      }
-    },
-    chunkSizeWarningLimit: 3000 // Tăng giới hạn cảnh báo
-  },
 })
