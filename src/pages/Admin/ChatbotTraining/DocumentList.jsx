@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { trainingLegends } from "../../../constants/trainingLegend";
 import { LegendItem } from "./LegendItem";
-import { LoadingProcess, TableBottom } from "../../../components";
+import { ConfirmModal, LoadingProcess, TableBottom } from "../../../components";
 import { dateTimeToString } from "../../../utils";
 import {
   downloadDocumentApi,
@@ -32,7 +32,7 @@ import {
 import { SelectPriority } from "./SelectPriority";
 import { toast } from "react-toastify";
 
-const documentType = (type) => {
+const translateDocumentType = (type) => {
   return {
     value:
       type === "FILE" ? "Tập tin" : type === "TEXT" ? "Văn bản" : "Website",
@@ -47,8 +47,11 @@ export const DocumentList = ({
   setPage,
   pageSize,
   setPageSize,
+  documentType,
   setDocumentType,
+  priority,
   setPriority,
+  searchInput,
   setSearchInput,
   total,
   documentPages,
@@ -58,7 +61,12 @@ export const DocumentList = ({
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [updatePriorities, setUpdatePriorities] = useState([]);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
   const [curDoc, setCurDoc] = useState(null);
 
   const data = documentList?.map((document) => {
@@ -166,7 +174,12 @@ export const DocumentList = ({
               <FaDownload className="text-green-500" />
             </button>
           )}
-          <FaTrash className="text-red-500" />
+          <button onClick={ () => {
+            onOpenDelete();
+            setCurDoc(cellValue);
+          }}>
+            <FaTrash className="text-red-500" />
+          </button>
         </div>
       );
     } else if (columnKey === "document_type") {
@@ -174,9 +187,9 @@ export const DocumentList = ({
         <Chip
           size="sm"
           variant="bordered"
-          color={documentType(cellValue).color}
+          color={translateDocumentType(cellValue).color}
         >
-          {documentType(cellValue).value}
+          {translateDocumentType(cellValue).value}
         </Chip>
       );
     } else {
@@ -204,46 +217,74 @@ export const DocumentList = ({
     setIsLoading(false);
   };
 
+  const handleConfirmDelete = () => {
+    onCloseDelete();
+    setCurDoc(null);
+  }
+
   return (
     <>
-      {curDoc && (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1">
-                  {curDoc.url_title}
-                </ModalHeader>
-                <ModalBody>
-                  <div className="grid grid-cols-6">
-                    <div className="col-span-2">Tiêu đề:</div>{" "}
-                    <div className="col-span-4">
+      <ConfirmModal
+        isOpen={isOpenDelete}
+        onClose={() => {
+          onCloseDelete();
+          setCurDoc(null);
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Xóa tài liệu"
+        description="Bạn có muốn xóa tài liệu này không?"
+      />
+      {curDoc &&
+        curDoc.document_type ===
+          "URL" && (
+            <Modal
+              isOpen={isOpen}
+              onOpenChange={onOpenChange}
+              onClose={() => {
+                onClose();
+                setCurDoc(null);
+              }}
+            >
+              <ModalContent>
+                {(onClose) => (
+                  <>
+                    <ModalHeader className="flex flex-col gap-1">
                       {curDoc.url_title}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-6">
-                    <div className="col-span-2">Đường dẫn:</div>{" "}
-                    <div className="col-span-4">
-                      <a href={curDoc.url} className="text-coolchat hover:opacity-70" target="_blank">{curDoc.url}</a>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-6">
-                    <div className="col-span-2">Mô tả:</div>{" "}
-                    <div className="col-span-4">
-                      {curDoc.url_description}
-                    </div>
-                  </div>
-                </ModalBody>
-                <ModalFooter>
-                  <Button color="default" onPress={onClose}>
-                    Đóng
-                  </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+                    </ModalHeader>
+                    <ModalBody>
+                      <div className="grid grid-cols-6">
+                        <div className="col-span-2">Tiêu đề:</div>{" "}
+                        <div className="col-span-4">{curDoc.url_title}</div>
+                      </div>
+                      <div className="grid grid-cols-6">
+                        <div className="col-span-2">Đường dẫn:</div>{" "}
+                        <div className="col-span-4">
+                          <a
+                            href={curDoc.url}
+                            className="text-coolchat hover:opacity-70"
+                            target="_blank"
+                          >
+                            {curDoc.url}
+                          </a>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-6">
+                        <div className="col-span-2">Mô tả:</div>{" "}
+                        <div className="col-span-4">
+                          {curDoc.url_description}
+                        </div>
+                      </div>
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="default" onPress={onClose}>
+                        Đóng
+                      </Button>
+                    </ModalFooter>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
+          )}
       <LoadingProcess isLoading={isLoading} />
       <div className="bg-white px-5 py-8 rounded-xl mb-8">
         <div className="flex flex-col lg:flex-row w-full justify-between md:items-center mb-5 gap-5">
@@ -263,12 +304,14 @@ export const DocumentList = ({
               size="lg"
               startContent={<MdSearch size={25} />}
               onChange={(e) => setSearchInput(e.target.value)}
+              onClear={() => setSearchInput("")}
+              value={searchInput}
             />
             <Select
               aria-label="select type"
               variant="bordered"
               label="Loại hình"
-              defaultSelectedKeys={[""]}
+              selectedKeys={[documentType]}
               size="sm"
               className="w-[120px]"
               onChange={(e) => setDocumentType(e.target.value)}
@@ -282,7 +325,7 @@ export const DocumentList = ({
               aria-label="select priority"
               variant="bordered"
               label="Độ ưu tiên"
-              defaultSelectedKeys={[""]}
+              selectedKeys={[priority]}
               size="sm"
               className="w-[120px]"
               onChange={(e) => setPriority(e.target.value)}
@@ -293,6 +336,18 @@ export const DocumentList = ({
               <SelectItem key="LOW">LOW</SelectItem>
               <SelectItem key="NONE">NONE</SelectItem>
             </Select>
+            <Button
+              variant="bordered"
+              color="danger"
+              size="sm"
+              onClick={() => {
+                setSearchInput("");
+                setDocumentType("");
+                setPriority("");
+              }}
+            >
+              Xóa bộ lọc
+            </Button>
           </div>
         </div>
         <Table

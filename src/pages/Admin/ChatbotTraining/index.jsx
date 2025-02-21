@@ -106,8 +106,11 @@ function ChatbotTraining() {
             setPage={setPage}
             pageSize={pageSize}
             setPageSize={setPageSize}
+            documentType={documentType}
             setDocumentType={setDocumentType}
+            priority={priority}
             setPriority={setPriority}
+            searchInput={searchInput}
             setSearchInput={setSearchInput}
             total={total}
             documentPages={documentPages}
