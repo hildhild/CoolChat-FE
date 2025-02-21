@@ -11,4 +11,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'), // '@' đại diện cho thư mục src
     },
   },
+  build: {
+    outDir: "build", // Đổi từ "dist" thành "build"
+  },
 })
