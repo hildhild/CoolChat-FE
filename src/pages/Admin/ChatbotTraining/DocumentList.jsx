@@ -26,11 +26,13 @@ import { LegendItem } from "./LegendItem";
 import { ConfirmModal, LoadingProcess, TableBottom } from "../../../components";
 import { dateTimeToString } from "../../../utils";
 import {
+  deleteDocumentApi,
   downloadDocumentApi,
   updatePrioritiesApi,
 } from "../../../services/documentApi";
 import { SelectPriority } from "./SelectPriority";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
 
 const translateDocumentType = (type) => {
   return {
@@ -67,6 +69,12 @@ export const DocumentList = ({
     onOpen: onOpenDelete,
     onClose: onCloseDelete,
   } = useDisclosure();
+  const {
+    isOpen: isOpenEdit,
+    onOpen: onOpenEdit,
+    onClose: onCloseEdit,
+    onOpenChange: onOpenChangeEdit,
+  } = useDisclosure();
   const [curDoc, setCurDoc] = useState(null);
 
   const data = documentList?.map((document) => {
@@ -78,6 +86,21 @@ export const DocumentList = ({
         priority: document.priority,
       },
     };
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm({
+    mode: "onSubmit",
+    defaultValues: {
+      filename: "",
+      url: "",
+      url_description: "",
+    },
   });
 
   const [isEditted, setIsEditted] = useState(false);
@@ -116,6 +139,10 @@ export const DocumentList = ({
       label: "Tên tri thức",
     },
     {
+      key: "content_type",
+      label: "Loại tệp",
+    },
+    {
       key: "file_size_display",
       label: "Kích thước tệp",
     },
@@ -149,10 +176,22 @@ export const DocumentList = ({
       );
     } else if (columnKey === "uploaded_at" || columnKey === "updated_at") {
       return dateTimeToString(new Date(cellValue));
+    } else if (columnKey === "content_type") {
+      if (!cellValue) {
+        return "";
+      } else if (cellValue === "application/pdf") {
+        return "PDF";
+      } else if (cellValue.includes("text/plain")) {
+        return "TXT";
+      } else if (cellValue === "application/msword") {
+        return "DOC";
+      } else {
+        return "DOCX";
+      }
     } else if (columnKey === "operation") {
       return (
         <div className="flex gap-3">
-          {cellValue.document_type === "URL" && (
+          {cellValue.document_type === "URL" ? (
             <button
               onClick={() => {
                 onOpen();
@@ -162,11 +201,7 @@ export const DocumentList = ({
             >
               <FaInfoCircle className="text-blue-500" />
             </button>
-          )}
-          {cellValue.document_type === "URL" && (
-            <FaEdit className="text-black" />
-          )}
-          {cellValue.document_type !== "URL" && (
+          ) : (
             <button
               onClick={() => handleDownloadDocument(cellValue.id)}
               className="hover:opacity-70"
@@ -174,10 +209,22 @@ export const DocumentList = ({
               <FaDownload className="text-green-500" />
             </button>
           )}
-          <button onClick={ () => {
-            onOpenDelete();
-            setCurDoc(cellValue);
-          }}>
+          <button
+            className="hover:opacity-70"
+            onClick={() => {
+              onOpenEdit();
+              setCurDoc(cellValue);
+            }}
+          >
+            <FaEdit className="text-black" />
+          </button>
+          <button
+            onClick={() => {
+              onOpenDelete();
+              setCurDoc(cellValue);
+            }}
+            className="hover:opacity-70"
+          >
             <FaTrash className="text-red-500" />
           </button>
         </div>
@@ -199,7 +246,7 @@ export const DocumentList = ({
 
   const handleUpdatePriority = async () => {
     if (!updatePriorities.every((item) => item.priority)) {
-      toast.error("Vui lòng chọn độ ưu tiên cho tài liệu");
+      toast.error("Vui lòng chọn độ ưu tiên cho tri thức");
       return;
     }
     setIsLoading(true);
@@ -217,10 +264,24 @@ export const DocumentList = ({
     setIsLoading(false);
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     onCloseDelete();
-    setCurDoc(null);
-  }
+    setIsLoading(true);
+    await deleteDocumentApi(curDoc.id)
+      .then((res) => {
+        if (res.status === 204) {
+          setCurDoc(null);
+          refetch();
+          toast.success("Xóa tri thức thành công");
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    setIsLoading(false);
+  };
+
+  const handleConfirmEdit = async () => {};
 
   return (
     <>
@@ -231,60 +292,121 @@ export const DocumentList = ({
           setCurDoc(null);
         }}
         onConfirm={handleConfirmDelete}
-        title="Xóa tài liệu"
-        description="Bạn có muốn xóa tài liệu này không?"
+        title="Xóa tri thức"
+        description="Bạn có muốn xóa tri thức này không?"
       />
-      {curDoc &&
-        curDoc.document_type ===
-          "URL" && (
-            <Modal
-              isOpen={isOpen}
-              onOpenChange={onOpenChange}
-              onClose={() => {
-                onClose();
-                setCurDoc(null);
-              }}
-            >
-              <ModalContent>
-                {(onClose) => (
+      <Modal
+        isOpen={isOpenEdit}
+        onOpenChange={onOpenChangeEdit}
+        onClose={() => {
+          onCloseEdit();
+          setCurDoc(null);
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Chỉnh sửa tri thức
+              </ModalHeader>
+              <ModalBody>
+                <div className="grid grid-cols-6 items-center">
+                  <div className="col-span-2">
+                    Tên tri thức <span className="text-red-500">(*)</span>:
+                  </div>{" "}
+                  <Input
+                    value={curDoc.filename}
+                    className="col-span-4"
+                    size="sm"
+                    variant="bordered"
+                  />
+                </div>
+                {curDoc.document_type === "URL" && (
                   <>
-                    <ModalHeader className="flex flex-col gap-1">
-                      {curDoc.url_title}
-                    </ModalHeader>
-                    <ModalBody>
-                      <div className="grid grid-cols-6">
-                        <div className="col-span-2">Tiêu đề:</div>{" "}
-                        <div className="col-span-4">{curDoc.url_title}</div>
-                      </div>
-                      <div className="grid grid-cols-6">
-                        <div className="col-span-2">Đường dẫn:</div>{" "}
-                        <div className="col-span-4">
-                          <a
-                            href={curDoc.url}
-                            className="text-coolchat hover:opacity-70"
-                            target="_blank"
-                          >
-                            {curDoc.url}
-                          </a>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-6">
-                        <div className="col-span-2">Mô tả:</div>{" "}
-                        <div className="col-span-4">
-                          {curDoc.url_description}
-                        </div>
-                      </div>
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color="default" onPress={onClose}>
-                        Đóng
-                      </Button>
-                    </ModalFooter>
+                    <div className="grid grid-cols-6 items-center">
+                      <div className="col-span-2">
+                        Đường dẫn <span className="text-red-500">(*)</span>:
+                      </div>{" "}
+                      <Input
+                        value={curDoc.url}
+                        className="col-span-4"
+                        size="sm"
+                        variant="bordered"
+                      />
+                    </div>
+                    <div className="grid grid-cols-6 items-center">
+                      <div className="col-span-2">
+                        Mô tả <span className="text-red-500">(*)</span>:
+                      </div>{" "}
+                      <Input
+                        value={curDoc.url_description}
+                        className="col-span-4"
+                        size="sm"
+                        variant="bordered"
+                      />
+                    </div>
                   </>
                 )}
-              </ModalContent>
-            </Modal>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" onPress={onClose}>
+                  Đóng
+                </Button>
+                <Button color="primary" onPress={handleConfirmEdit}>
+                  Lưu
+                </Button>
+              </ModalFooter>
+            </>
           )}
+        </ModalContent>
+      </Modal>
+      {curDoc && curDoc.document_type === "URL" && (
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          onClose={() => {
+            onClose();
+            setCurDoc(null);
+          }}
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  {curDoc.url_title}
+                </ModalHeader>
+                <ModalBody>
+                  <div className="grid grid-cols-6">
+                    <div className="col-span-2">Tên tri thức:</div>{" "}
+                    <div className="col-span-4">{curDoc.url_title}</div>
+                  </div>
+                  <div className="grid grid-cols-6">
+                    <div className="col-span-2">Đường dẫn:</div>{" "}
+                    <div className="col-span-4">
+                      <a
+                        href={curDoc.url}
+                        className="text-coolchat hover:opacity-70"
+                        target="_blank"
+                      >
+                        {curDoc.url}
+                      </a>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-6">
+                    <div className="col-span-2">Mô tả:</div>{" "}
+                    <div className="col-span-4">{curDoc.url_description}</div>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="default" onPress={onClose}>
+                    Đóng
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      )}
       <LoadingProcess isLoading={isLoading} />
       <div className="bg-white px-5 py-8 rounded-xl mb-8">
         <div className="flex flex-col lg:flex-row w-full justify-between md:items-center mb-5 gap-5">

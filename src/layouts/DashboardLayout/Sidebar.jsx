@@ -77,7 +77,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
               </div>
             ) : (
               <div className="flex w-full bg-white px-5 h-14">
-                <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+                <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
                   <MdDataUsage size={20} />
                   <div className="ml-4 flex items-center font-semibold">
                     Đào tạo chatbot
@@ -102,7 +102,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
               </div>
             ) : (
               <div className="flex w-full bg-white px-5 h-14">
-                <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+                <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
                   <FaEdit size={20} />
                   <div className="ml-4 flex items-center font-semibold">
                     Tùy chỉnh chatbot
@@ -129,7 +129,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
           </div>
         ) : (
           <div className="flex w-full bg-white px-5 h-14">
-            <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+            <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
               <MdOutlineChat size={20} />
               <div className="ml-4 flex items-center font-semibold">
                 Hội thoại
@@ -156,7 +156,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
               </div>
             ) : (
               <div className="flex w-full bg-white px-5 h-14">
-                <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+                <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
                   <FaChartBar size={20} />
                   <div className="ml-4 flex items-center font-semibold">
                     Báo cáo
@@ -181,7 +181,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
               </div>
             ) : (
               <div className="flex w-full bg-white px-5 h-14">
-                <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+                <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
                   <FaRegMoneyBillAlt size={20} />
                   <div className="ml-4 flex items-center font-semibold">
                     Thanh toán
@@ -209,7 +209,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
             </div>
           ) : (
             <div className="flex w-full bg-white px-5 h-14">
-              <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+              <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
                 <MdOutlineGroups size={20} />
                 <div className="ml-4 flex items-center font-semibold">
                   Tổ chức
@@ -236,7 +236,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
             </div>
           ) : (
             <div className="flex w-full bg-white px-5 h-14">
-              <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+              <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
                 <FaCalendarAlt size={20} />
                 <div className="ml-4 flex items-center font-semibold">
                   Lịch hẹn
@@ -263,7 +263,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
           </div>
         ) : (
           <div className="flex w-full bg-white px-5 h-14">
-            <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+            <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
               <FaCog size={20} />
               <div className="ml-4 flex items-center font-semibold">
                 Cài đặt
@@ -273,7 +273,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
         )}
       </Link>
       <button className="flex w-full bg-white px-5 h-14" onClick={handleLogout}>
-        <div className="flex w-full h-full justify-start items-center !rounded-md p-4">
+        <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-red-500">
           <MdLogout size={20} />
           <div className="ml-4 flex items-center font-semibold">Đăng xuất</div>
         </div>

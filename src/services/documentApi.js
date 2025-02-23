@@ -48,3 +48,21 @@ export const updatePrioritiesApi = (updatePriorities) => {
         "updates": updatePriorities
     });
 }
+
+export const deleteDocumentApi = (id) => {
+    return axios.delete(`/documents/${id}/delete/`);
+}
+
+export const editDocumentNameApi = (id, fileName) => {
+    return axios.patch(`/documents/${id}/`, {
+        "filename": fileName
+    });
+}
+
+export const editUrlDocumentApi = (id, url, url_title, url_description) => {
+    return axios.patch(`/documents/${id}/`, {
+        "url": url,
+        "url_title": url_title,
+        "url_description": url_description
+    });
+}
