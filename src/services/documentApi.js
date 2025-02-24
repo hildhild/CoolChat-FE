@@ -59,10 +59,10 @@ export const editDocumentNameApi = (id, fileName) => {
     });
 }
 
-export const editUrlDocumentApi = (id, url, url_title, url_description) => {
+export const editUrlDocumentApi = (id, filename, url, url_description) => {
     return axios.patch(`/documents/${id}/`, {
+        "filename": filename,
         "url": url,
-        "url_title": url_title,
         "url_description": url_description
     });
 }

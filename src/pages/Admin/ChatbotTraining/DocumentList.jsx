@@ -28,11 +28,13 @@ import { dateTimeToString } from "../../../utils";
 import {
   deleteDocumentApi,
   downloadDocumentApi,
+  editDocumentNameApi,
+  editUrlDocumentApi,
   updatePrioritiesApi,
 } from "../../../services/documentApi";
 import { SelectPriority } from "./SelectPriority";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 const translateDocumentType = (type) => {
   return {
@@ -96,11 +98,7 @@ export const DocumentList = ({
     reset,
   } = useForm({
     mode: "onSubmit",
-    defaultValues: {
-      filename: "",
-      url: "",
-      url_description: "",
-    },
+    defaultValues: curDoc,
   });
 
   const [isEditted, setIsEditted] = useState(false);
@@ -214,6 +212,7 @@ export const DocumentList = ({
             onClick={() => {
               onOpenEdit();
               setCurDoc(cellValue);
+              reset(cellValue);
             }}
           >
             <FaEdit className="text-black" />
@@ -281,7 +280,36 @@ export const DocumentList = ({
     setIsLoading(false);
   };
 
-  const handleConfirmEdit = async () => {};
+  const handleConfirmEdit = async (data) => {
+    onCloseEdit();
+    setIsLoading(true);
+    if (data.document_type === "URL") {
+      await editUrlDocumentApi(data.id, data.filename, data.url, data.url_description)
+      .then((res) => {
+        if (res.status === 200) {
+          setCurDoc(null);
+          refetch();
+          toast.success("Chỉnh sửa tri thức thành công");
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    } else {
+      await editDocumentNameApi(data.id, data.filename)
+      .then((res) => {
+        if (res.status === 200) {
+          setCurDoc(null);
+          refetch();
+          toast.success("Chỉnh sửa tri thức thành công");
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    }
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -314,12 +342,31 @@ export const DocumentList = ({
                   <div className="col-span-2">
                     Tên tri thức <span className="text-red-500">(*)</span>:
                   </div>{" "}
-                  <Input
-                    value={curDoc.filename}
-                    className="col-span-4"
-                    size="sm"
-                    variant="bordered"
+                  <Controller
+                    control={control}
+                    name="filename"
+                    rules={{
+                      required: "Bắt buộc",
+                    }}
+                    render={({ field: { onChange, value } }) => (
+                      <Input
+                        type="text"
+                        variant="bordered"
+                        placeholder="Nhập tên tri thức"
+                        className="col-span-4"
+                        size="sm"
+                        value={value}
+                        onChange={onChange}
+                        isRequired
+                      />
+                    )}
                   />
+                  <div className="col-span-2"></div>
+                  {errors.filename && (
+                    <div className="text-red-500 text-xs col-span-4 mt-2">
+                      {errors.filename.message}
+                    </div>
+                  )}
                 </div>
                 {curDoc.document_type === "URL" && (
                   <>
@@ -327,23 +374,61 @@ export const DocumentList = ({
                       <div className="col-span-2">
                         Đường dẫn <span className="text-red-500">(*)</span>:
                       </div>{" "}
-                      <Input
-                        value={curDoc.url}
-                        className="col-span-4"
-                        size="sm"
-                        variant="bordered"
+                      <Controller
+                        control={control}
+                        name="url"
+                        rules={{
+                          required: "Bắt buộc",
+                        }}
+                        render={({ field: { onChange, value } }) => (
+                          <Input
+                            type="text"
+                            variant="bordered"
+                            placeholder="Nhập đường dẫn"
+                            className="col-span-4"
+                            size="sm"
+                            value={value}
+                            onChange={onChange}
+                            isRequired
+                          />
+                        )}
                       />
+                      <div className="col-span-2"></div>
+                      {errors.url && (
+                        <div className="text-red-500 text-xs col-span-4 mt-2">
+                          {errors.url.message}
+                        </div>
+                      )}
                     </div>
                     <div className="grid grid-cols-6 items-center">
                       <div className="col-span-2">
                         Mô tả <span className="text-red-500">(*)</span>:
                       </div>{" "}
-                      <Input
-                        value={curDoc.url_description}
-                        className="col-span-4"
-                        size="sm"
-                        variant="bordered"
+                      <Controller
+                        control={control}
+                        name="url_description"
+                        rules={{
+                          required: "Bắt buộc",
+                        }}
+                        render={({ field: { onChange, value } }) => (
+                          <Input
+                            type="text"
+                            variant="bordered"
+                            placeholder="Nhập mô tả"
+                            className="col-span-4"
+                            size="sm"
+                            value={value}
+                            onChange={onChange}
+                            isRequired
+                          />
+                        )}
                       />
+                      <div className="col-span-2"></div>
+                      {errors.url_description && (
+                        <div className="text-red-500 text-xs col-span-4 mt-2">
+                          {errors.url_description.message}
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
@@ -352,7 +437,10 @@ export const DocumentList = ({
                 <Button color="default" onPress={onClose}>
                   Đóng
                 </Button>
-                <Button color="primary" onPress={handleConfirmEdit}>
+                <Button
+                  color="primary"
+                  onPress={handleSubmit(handleConfirmEdit)}
+                >
                   Lưu
                 </Button>
               </ModalFooter>
