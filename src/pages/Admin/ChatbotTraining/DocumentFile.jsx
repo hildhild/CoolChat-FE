@@ -49,7 +49,7 @@ export const DocumentFile = ({refetch}) => {
     onDrop,
     accept: {
       "application/pdf": [".pdf"],
-      "application/msword": [".doc"],
+      // "application/msword": [".doc"],
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
         [".docx"],
       "text/plain": [".txt"],
@@ -102,7 +102,7 @@ export const DocumentFile = ({refetch}) => {
         </div>
       </div>
       <div className="text-sm text-neutral-600 mb-5">
-        Chỉ hỗ trợ .pdf, .doc, .docx và .txt. Tối đa 5 tệp, mỗi tệp tối đa 20MB.
+        Chỉ hỗ trợ .pdf, .docx và .txt. Tối đa 5 tệp, mỗi tệp tối đa 20MB.
       </div>
       <div className="grid grid-cols-1 gap-5">
         <div className="flex justify-between items-center">
