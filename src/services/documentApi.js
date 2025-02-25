@@ -62,6 +62,7 @@ export const editDocumentNameApi = (id, fileName) => {
 export const editUrlDocumentApi = (id, filename, url, url_description) => {
     return axios.patch(`/documents/${id}/`, {
         "filename": filename,
+        "url_title": filename,
         "url": url,
         "url_description": url_description
     });
