@@ -10,6 +10,7 @@ export const UserSlice = createSlice({
         avatar: "",
         role: "",
         companyName: "",
+        userId: "",
     },
     reducers: {
         setToken: (state, action) => {
@@ -26,10 +27,13 @@ export const UserSlice = createSlice({
         },
         setCompanyName: (state, action) => {
             state.companyName = action.payload;
+        },
+        setUserId: (state, action) => {
+            state.userId = action.payload;
         }
     }
 });
 
-export const { setToken, setUserData, setUserRole, setCompanyName } = UserSlice.actions
+export const { setToken, setUserData, setUserRole, setCompanyName, setUserId } = UserSlice.actions
 
 export default UserSlice.reducer;

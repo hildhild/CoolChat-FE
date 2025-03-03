@@ -15,6 +15,7 @@ import {
   setCompanyName,
   setToken,
   setUserData,
+  setUserId,
   setUserRole,
 } from "../../store/slices/UserSlice";
 import { getUserInfoApi } from "../../services/userApi";
@@ -60,6 +61,8 @@ function LoginBody() {
               }
             });
             const decoded = jwtDecode(res.data.access);
+            console.log(33, decoded);
+            dispatch(setUserId(decoded.user_id));
             dispatch(setUserRole(decoded.organization.role));
             dispatch(setCompanyName(decoded.organization.name));
             if (decoded.organization.role === "AGENT") {

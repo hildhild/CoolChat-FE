@@ -14,11 +14,49 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChatItem } from "./ChatItem";
+import { useQuery } from "@tanstack/react-query";
+import { getChatConversationsApi } from "../../../services/chatApi";
+import { LoadingProcess, TableBottom } from "../../../components";
+import useDebounce from "../../../hooks/useDebounce";
 
 function Chat() {
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
   const [chatType, setChatType] = useState("all");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isActive, setIsActive] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const debouncedSearchInput = useDebounce(customerName, 500);
+  const [total, setTotal] = useState(0);
+  const [numOfPages, setNumOfPages] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+
+  const { data, refetch, isLoading } = useQuery({
+    queryKey: ["conversation", isActive, debouncedSearchInput, page, pageSize],
+    queryFn: async () => {
+      try {
+        const res = await getChatConversationsApi(
+          isActive,
+          debouncedSearchInput,
+          page,
+          pageSize
+        );
+        console.log(44, res);
+        if (res.status === 200) {
+          setTotal(res.data.count);
+          setPageCount(res.data.results.length);
+          setNumOfPages(Math.ceil(res.data.count / pageSize));
+          return res.data.results;
+        } else {
+          // toast.error(res.data.detail);
+          return [];
+        }
+      } catch (e) {
+        throw new Error("Failed to fetch invitations.");
+      }
+    },
+  });
 
   useEffect(() => {
     if (!accessToken) {
@@ -28,6 +66,7 @@ function Chat() {
 
   return (
     <DashboardLayout page="chat">
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">
         <div className="font-semibold mb-6 text-2xl">HỘI THOẠI</div>
         <div className="flex flex-col lg:flex-row gap-3 justify-between">
@@ -73,6 +112,8 @@ function Chat() {
               variant="bordered"
               className="bg-white rounded-2xl w-72"
               startContent={<MdSearch />}
+              onChange={(e) => setCustomerName(e.target.value)}
+              onClear={() => setCustomerName("")}
             />
             <Select
               aria-label="Select filter type"
@@ -85,22 +126,29 @@ function Chat() {
             </Select>
           </div>
         </div>
-        <div className="bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-5">
-          <ChatItem
-            id={1}
-            name="Jullu Jalal"
-            content="Our Bachelor of Commerce program is ACBSP-accredited."
-            time="8:38 AM"
-          />
-          <ChatItem
-            id={1}
-            name="Jullu Jalal"
-            content="Our Bachelor of Commerce program is ACBSP-accredited."
-            time="8:38 AM"
-            isNeedToSupport={true}
-          />
+        <div className={`${data?.length !== 0 && "bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-5"}`}>
+          {data?.map((item) => (
+            <ChatItem
+              key={item.id}
+              id={item.id}
+              name={item.customer_name}
+              senderId={item.last_message.sender}
+              senderType={item.last_message.sender_type}
+              content={item.last_message.content}
+              time={item.last_message.timestamp}
+            />
+          ))}
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-5">
+        <TableBottom
+          page={page}
+          setPage={setPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          pageCount={pageCount}
+          totalCount={total}
+          numOfPages={numOfPages}
+        />
+        {/* <div className="flex flex-col md:flex-row justify-between items-center gap-5">
           <div className="flex gap-3 items-center">
             Hiển thị
             <Select
@@ -122,7 +170,7 @@ function Chat() {
             variant="light"
             color="primary"
           />
-        </div>
+        </div> */}
       </div>
     </DashboardLayout>
   );

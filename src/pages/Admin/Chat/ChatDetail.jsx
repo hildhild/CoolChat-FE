@@ -19,16 +19,104 @@ import {
 } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
 import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import { BsThreeDots } from "react-icons/bs";
 import { LuBot, LuBotOff } from "react-icons/lu";
 import { IoIosSend } from "react-icons/io";
+import { LoadingProcess } from "../../../components";
+import { useEffect, useState, useRef } from "react";
+import io from "socket.io-client";
+import { animateScroll } from "react-scroll";
+import { getChatDetailApi } from "../../../services/chatApi";
+import { useParams } from "react-router-dom";
+import { formatTimeFromNow } from "../../../utils";
+import useWebSocket from "react-use-websocket";
 
 function ChatDetail() {
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [chatDetail, setChatDetail] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState("");
+  const { chatId } = useParams();
+  const userRole = useSelector((state) => state.user.role);
+  const userId = useSelector((state) => state.user.userId);
+
+  const scrollToBottom = () => {
+    animateScroll.scrollToBottom({
+      containerId: "chat-container",
+      duration: 300,
+    });
+  };
+
+  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    `ws://${import.meta.env.VITE_WEBSOCKET_DOMAIN}/ws/chat/agent/${chatId}/`,
+    {
+      onOpen: () => {
+        console.log("WebSocket Connected");
+        sendJsonMessage({ type: "fetch_history" }); // Yêu cầu lịch sử tin nhắn
+      },
+      onClose: () => console.log("WebSocket Disconnected"),
+      shouldReconnect: () => true, // Tự động kết nối lại khi mất kết nối
+    }
+  );
+
+  useEffect(() => {
+    console.log("WebSocket message received:", lastJsonMessage);
+    if (lastJsonMessage) {
+      if (lastJsonMessage.type === "message_history") {
+        // Nhận lịch sử tin nhắn
+        setMessages(lastJsonMessage.messages);
+      } else if (lastJsonMessage.type === "message") {
+        // Nhận tin nhắn mới
+        setMessages((prev) => [...prev, lastJsonMessage.message]);
+      }
+    }
+  }, [lastJsonMessage]);
+
+  const handleSend = () => {
+    if (!messageInput.trim()) return;
+    const newMessage = {
+      type: "message",
+      content: messageInput,
+      sender_type: "AGENT",
+      sender_id: userId,
+    };
+    sendJsonMessage(newMessage);
+    setMessages((prev) => [
+      ...prev,
+      {
+        content: messageInput,
+        sender_type: "AGENT",
+        timestamp: new Date().toISOString(),
+      },
+    ]);
+    setMessageInput("");
+  };
+
+  useEffect(() => scrollToBottom(), [messages]);
+
+  const handleGetChatDetail = async () => {
+    setIsLoading(true);
+    await getChatDetailApi(chatId)
+      .then((res) => {
+        console.log(48, res);
+        if (res.status === 200) {
+          setChatDetail(res.data);
+          setMessages(res.data.messages);
+        }
+      })
+      .catch((err) => {
+        console.log(48, err);
+      });
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    handleGetChatDetail();
+  }, []);
 
   useEffect(() => {
     if (!accessToken) {
@@ -36,23 +124,27 @@ function ChatDetail() {
     }
   }, []);
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <DashboardLayout page="chat">
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">
         <Breadcrumbs className="mb-6">
           <BreadcrumbItem href="/chat">
-            <div className="font-semibold text-2xl">
-              HỘI THOẠI
-            </div>
+            <div className="font-semibold text-2xl">HỘI THOẠI</div>
           </BreadcrumbItem>
           <BreadcrumbItem>
-            <div className="font-semibold text-2xl">
-              CHI TIẾT HỘI THOẠI
-            </div>
+            <div className="font-semibold text-2xl">CHI TIẾT HỘI THOẠI</div>
           </BreadcrumbItem>
         </Breadcrumbs>
 
-        <div className="flex flex-col w-full h-[580px] bg-white rounded-2xl">
+        <div className="flex flex-col w-full h-[580px] bg-white rounded-2xl overflow-hidden">
           <div className="flex justify-between items-center p-3 border-b-[1px] border-gray-200 h-[64px]">
             <div className="flex gap-5 items-center">
               <button
@@ -61,7 +153,9 @@ function ChatDetail() {
               >
                 <FaChevronLeft size={12} />
               </button>
-              <div className="font-semibold text-lg">Jullu Jalal</div>
+              <div className="font-semibold text-lg">
+                {chatDetail?.customer_name}
+              </div>
               <Chip color="warning">Cần hỗ trợ</Chip>
             </div>
             <div className="flex rounded-full bg-gray-100 border-[1px] border-[#b9b9b9]">
@@ -73,8 +167,55 @@ function ChatDetail() {
               </button>
             </div>
           </div>
-          <div className="flex-grow overflow-y-scroll">
-            <div className="flex gap-3 items-end justify-start p-3 mb-3">
+          <div className="flex-grow overflow-y-auto" id="chat-container">
+            {messages.map((item, index) =>
+              item.sender_type === "CUSTOMER" ? (
+                <div
+                  className="flex gap-3 items-end justify-start p-3 mb-3"
+                  key={index}
+                >
+                  <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
+                    {item.sender_type === "SYSTEM" ? (
+                      <LuBot size={18} />
+                    ) : item.sender_type === "CUSTOMER" ? (
+                      <FaRegUser size={18} />
+                    ) : (
+                      <MdOutlineSupportAgent size={18} />
+                    )}
+                  </div>
+                  <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
+                    <div>{item.content} </div>
+                    <div className="text-end text-neutral-400 text-xs">
+                      {formatTimeFromNow(item.timestamp)}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="flex gap-3 items-end justify-end p-3 mb-3"
+                  key={index}
+                >
+                  <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl w-[270px] p-3">
+                    <div>{item.content} </div>
+                    <div className="text-end text-xs">
+                      {formatTimeFromNow(item.timestamp)}
+                    </div>
+                  </div>
+                  {item.sender !== userId && (
+                    <div className="bg-coolchat text-white w-7 h-7 flex justify-center items-center rounded-full">
+                      {item.sender_type === "SYSTEM" ? (
+                        <LuBot size={18} />
+                      ) : item.sender_type === "CUSTOMER" ? (
+                        <FaRegUser size={18} />
+                      ) : (
+                        <MdOutlineSupportAgent size={18} />
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            )}
+            {/* <div className="flex gap-3 items-end justify-start p-3 mb-3">
               <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
                 <LuBot size={18} />
               </div>
@@ -104,24 +245,31 @@ function ChatDetail() {
                 </div>
                 <div className="text-end text-xs">9:32 pm</div>
               </div>
+            </div> */}
+          </div>
+          {userRole === "AGENT" && (
+            <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
+              <button className="w-8 h-8 flex justify-center items-center rounded-full">
+                <MdOutlineImage size={25} />
+              </button>
+              <input
+                className="flex-grow !bg-white !border-none !outline-none"
+                placeholder="Aa"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+              ></input>
+              <Button
+                className="flex justify-center items-center"
+                color="primary"
+                onClick={handleSend}
+                isDisabled={readyState !== 1}
+              >
+                Gửi
+                <IoIosSend size={20} />
+              </Button>
             </div>
-          </div>
-          <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
-            <button className="w-8 h-8 flex justify-center items-center rounded-full">
-              <MdOutlineImage size={25} />
-            </button>
-            <input
-              className="flex-grow !bg-white !border-none !outline-none"
-              placeholder="Aa"
-            ></input>
-            <Button
-              className="flex justify-center items-center"
-              color="primary"
-            >
-              Gửi
-              <IoIosSend size={20} />
-            </Button>
-          </div>
+          )}
         </div>
       </div>
     </DashboardLayout>

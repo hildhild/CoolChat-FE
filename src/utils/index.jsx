@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/vi";
+
 export const dateTimeToString = (date) => {
   return date.toLocaleString("vi-VN", {
     year: "numeric",
@@ -49,8 +53,8 @@ export const getCroppedImg = async (imageSrc, pixelCrop, file) => {
 
       resolve({
         file: newFile,
-        url: URL.createObjectURL(blob)
-      }); 
+        url: URL.createObjectURL(blob),
+      });
     }, file.type);
   });
 };
@@ -63,3 +67,9 @@ const createImage = (url) =>
     image.onload = () => resolve(image);
     image.onerror = (error) => reject(error);
   });
+
+export const formatTimeFromNow = (timestamp) => {
+  dayjs.extend(relativeTime);
+  dayjs.locale("vi");
+  return dayjs(timestamp).fromNow(true).replace("một", "1").replace("vài", "Vài");
+};

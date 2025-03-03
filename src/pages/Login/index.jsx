@@ -5,22 +5,25 @@ import { useEffect } from "react";
 import { AuthenLayout } from "../../layouts";
 
 function Login() {
-    const accessToken = useSelector((state) => state.user.accessToken);
-    const navigate = useNavigate();
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const navigate = useNavigate();
+  const userRole = useSelector((state) => state.user.role);
 
-    useEffect(()=> {
-        if (accessToken) {
+  useEffect(() => {
+    if (accessToken) {
+      if (userRole === "AGENT") {
+        navigate("/chat");
+      } else {
         navigate("/chatbot-training");
-        }
-    }, []);
+      }
+    }
+  }, []);
 
-    return (
-        <AuthenLayout>
-            <LoginBody/>
-        </AuthenLayout>
-    );
+  return (
+    <AuthenLayout>
+      <LoginBody />
+    </AuthenLayout>
+  );
 }
 
 export default Login;
-
-
