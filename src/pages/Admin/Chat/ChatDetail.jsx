@@ -51,7 +51,7 @@ function ChatDetail() {
   };
 
   const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
-    `ws://${import.meta.env.VITE_WEBSOCKET_DOMAIN}/ws/chat/agent/${chatId}/`,
+    `wss://${import.meta.env.VITE_WEBSOCKET_DOMAIN}/ws/chat/agent/${chatId}/`,
     {
       onOpen: () => {
         console.log("WebSocket Connected");
