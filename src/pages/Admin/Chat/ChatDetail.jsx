@@ -26,7 +26,6 @@ import { LuBot, LuBotOff } from "react-icons/lu";
 import { IoIosSend } from "react-icons/io";
 import { LoadingProcess } from "../../../components";
 import { useEffect, useState, useRef } from "react";
-import io from "socket.io-client";
 import { animateScroll } from "react-scroll";
 import { getChatDetailApi } from "../../../services/chatApi";
 import { useParams } from "react-router-dom";
