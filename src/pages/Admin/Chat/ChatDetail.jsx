@@ -90,6 +90,7 @@ function ChatDetail() {
         content: messageInput,
         sender_type: "AGENT",
         timestamp: new Date().toISOString(),
+        sender: userId,
       },
     ]);
     setMessageInput("");
