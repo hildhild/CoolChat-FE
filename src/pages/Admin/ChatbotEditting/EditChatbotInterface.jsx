@@ -172,8 +172,8 @@ export const EditChatbotInterface = ({
             isRequired
             isDisabled={!isEditable}
           >
-            <SelectItem key="color" value="color">Màu nền trung tâm</SelectItem>
-            <SelectItem key="image" value="image">Ảnh nền trung tâm</SelectItem>
+            <SelectItem key="color">Màu nền trung tâm</SelectItem>
+            <SelectItem key="image">Ảnh nền trung tâm</SelectItem>
           </Select>
           {configType === "color" ? (
             <SelectColor

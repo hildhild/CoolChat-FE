@@ -1,4 +1,7 @@
 import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
   Chip,
   Input,
   Pagination,
@@ -18,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getChatConversationsApi } from "../../../services/chatApi";
 import { LoadingProcess, TableBottom } from "../../../components";
 import useDebounce from "../../../hooks/useDebounce";
+import { getMembersApi } from "../../../services/orgApi";
 
 function Chat() {
   const accessToken = useSelector((state) => state.user.accessToken);
@@ -31,16 +35,20 @@ function Chat() {
   const [total, setTotal] = useState(0);
   const [numOfPages, setNumOfPages] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [isLoadingStatus, setIsLoadingStatus] = useState(false);
+  const [agentList, setAgentList] = useState([]);
+  const [agentId, setAgentId] = useState("");
 
   const { data, refetch, isLoading } = useQuery({
-    queryKey: ["conversation", isActive, debouncedSearchInput, page, pageSize],
+    queryKey: ["conversation", isActive, debouncedSearchInput, page, pageSize, agentId],
     queryFn: async () => {
       try {
         const res = await getChatConversationsApi(
           isActive,
           debouncedSearchInput,
           page,
-          pageSize
+          pageSize,
+          agentId,
         );
         console.log(44, res);
         if (res.status === 200) {
@@ -58,15 +66,31 @@ function Chat() {
     },
   });
 
+  const handleGetMembers = async () => {
+    setIsLoadingStatus(true);
+    await getMembersApi(1, 99999)
+      .then((res) => {
+        console.log(67, res);
+        if (res.status === 200) {
+          setAgentList(
+            res.data.results.filter((member) => member.role === "AGENT")
+          );
+        }
+      })
+      .catch((err) => console.log(err));
+    setIsLoadingStatus(false);
+  };
+
   useEffect(() => {
     if (!accessToken) {
       navigate("/login");
     }
+    handleGetMembers();
   }, []);
 
   return (
     <DashboardLayout page="chat">
-      <LoadingProcess isLoading={isLoading} />
+      <LoadingProcess isLoading={isLoading || isLoadingStatus} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">
         <div className="font-semibold mb-6 text-2xl">HỘI THOẠI</div>
         <div className="flex flex-col lg:flex-row gap-3 justify-between">
@@ -107,26 +131,69 @@ function Chat() {
           <div className="flex gap-4 justify-between xl:justify-end items-center">
             <Input
               isClearable
-              radius="lg"
               placeholder="Tìm kiếm..."
+              size="lg"
               variant="bordered"
               className="bg-white rounded-2xl w-72"
-              startContent={<MdSearch />}
+              startContent={<MdSearch size={25}/>}
               onChange={(e) => setCustomerName(e.target.value)}
               onClear={() => setCustomerName("")}
             />
+            <Autocomplete
+              className="w-44 bg-white rounded-2xl"
+              label="Nhân viên"
+              variant="bordered"
+              size="sm"
+              listboxProps={{
+                emptyContent: "Không có dữ liệu",
+              }}
+              selectedKey={agentId}
+              defaultSelectedKey={""}
+              onSelectionChange={setAgentId}
+            >
+              <AutocompleteItem key="">
+                Tất cả
+              </AutocompleteItem>
+              {agentList.map((agent) => (
+                <AutocompleteItem key={agent.id}>
+                  {agent.user_name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
             <Select
               aria-label="Select filter type"
               variant="bordered"
-              className="w-20 bg-white rounded-2xl"
-              placeholder="Lọc"
+              className="w-40 bg-white rounded-2xl"
+              label="Trạng thái"
+              size="sm"
+              onChange={(e) => setIsActive(e.target.value)}
+              selectedKeys={[isActive]}
             >
-              <SelectItem key="year">Năm</SelectItem>
-              <SelectItem key="month">Tháng</SelectItem>
+              <SelectItem key="">Tất cả</SelectItem>
+              <SelectItem key="true">Đang hoạt động</SelectItem>
+              <SelectItem key="false">Đã kết thúc</SelectItem>
             </Select>
+            <Button
+              variant="bordered"
+              color="danger"
+              size="sm"
+              onClick={() => {
+                setCustomerName("");
+                setIsActive("");
+                setAgentId("");
+              }}
+            >
+              Xóa bộ lọc
+            </Button>
           </div>
         </div>
-        <div className={`${data?.length !== 0 && "bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-5"}`}>
+        <div
+          className={`${
+            data?.length !== 0 &&
+            data &&
+            "bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-5"
+          }`}
+        >
           {data?.map((item) => (
             <ChatItem
               key={item.id}

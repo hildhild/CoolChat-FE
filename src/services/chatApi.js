@@ -1,12 +1,13 @@
 import axios from './axios';
 
-export const getChatConversationsApi = (active, customer, page, size) => {
+export const getChatConversationsApi = (active, customer, page, size, agentId) => {
     return axios.get(`/chat/conversations/`, {
         params: {
             page: page, 
             page_size: size,
             ...(active ? {active : active} : {}),
             ...(customer ? {customer : customer} : {}),
+            ...(agentId ? {agent : agentId} : {}),
         }
     });
 }
