@@ -109,7 +109,7 @@ export const EditChatbotInterface = ({
     setPreviewConfig({
       ...getValues(),
       ...(avatar ? {avatar_url: avatar} : {}),
-      ...(background ? {background_image_url: background} : {}),
+      ...(background ? {background_image_url: background} : configType === "image" ? {background_image_url: chatbotConfig.background_image} : {background_image_url: null}),
       ...(configType === "image"
         ? { primary_background_color: "#ffffff" }
         : {}),
@@ -172,8 +172,8 @@ export const EditChatbotInterface = ({
             isRequired
             isDisabled={!isEditable}
           >
-            <SelectItem key="color">Màu nền trung tâm</SelectItem>
-            <SelectItem key="image">Ảnh nền trung tâm</SelectItem>
+            <SelectItem key="color" value="color">Màu nền trung tâm</SelectItem>
+            <SelectItem key="image" value="image">Ảnh nền trung tâm</SelectItem>
           </Select>
           {configType === "color" ? (
             <SelectColor
