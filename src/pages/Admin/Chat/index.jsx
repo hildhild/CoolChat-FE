@@ -8,6 +8,12 @@ import {
   Select,
   SelectItem,
   Tab,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
   Tabs,
   Tooltip,
 } from "@nextui-org/react";
@@ -22,11 +28,11 @@ import { getChatConversationsApi } from "../../../services/chatApi";
 import { LoadingProcess, TableBottom } from "../../../components";
 import useDebounce from "../../../hooks/useDebounce";
 import { getMembersApi } from "../../../services/orgApi";
+import { formatTimeFromNow, truncateString } from "../../../utils";
 
 function Chat() {
   const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
-  const [chatType, setChatType] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isActive, setIsActive] = useState("");
@@ -38,9 +44,19 @@ function Chat() {
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [agentList, setAgentList] = useState([]);
   const [agentId, setAgentId] = useState("");
+  const [isNeedSupport, setIsNeedSupport] = useState("");
+  const userId = useSelector((state) => state.user.userId);
 
   const { data, refetch, isLoading } = useQuery({
-    queryKey: ["conversation", isActive, debouncedSearchInput, page, pageSize, agentId],
+    queryKey: [
+      "conversation",
+      isActive,
+      debouncedSearchInput,
+      page,
+      pageSize,
+      agentId,
+      isNeedSupport,
+    ],
     queryFn: async () => {
       try {
         const res = await getChatConversationsApi(
@@ -49,6 +65,7 @@ function Chat() {
           page,
           pageSize,
           agentId,
+          isNeedSupport
         );
         console.log(44, res);
         if (res.status === 200) {
@@ -65,6 +82,89 @@ function Chat() {
       }
     },
   });
+
+  const chatList = data?.map((item) => {
+    return {
+      ...item,
+      support_info: item,
+      last_time: item.last_message.timestamp,
+    };
+  });
+  const columns = [
+    {
+      key: "customer_name",
+    },
+    {
+      key: "support_info",
+    },
+    {
+      key: "last_message",
+    },
+    {
+      key: "last_time",
+    },
+    {
+      key: "is_active",
+    },
+  ];
+
+  const renderCell = (item, columnKey) => {
+    const cellValue = item[columnKey];
+    if (columnKey === "customer_name") {
+      return (
+        <div className="font-semibold">
+          {cellValue ? cellValue : "Không tên"}
+        </div>
+      );
+    } else if (columnKey === "support_info") {
+      if (cellValue.agent) {
+        return (
+          <div className="flex gap-2">
+            <Chip color="warning">Cần hỗ trợ</Chip>
+            <div>{" >> "}</div>
+            <Chip color="primary" variant="bordered">
+              <div className="flex flex-row gap-2 items-center">
+                <MdOutlineSupportAgent />
+                <div>{cellValue.agent === userId ? "Bạn" : cellValue.agent_name}</div>
+              </div>
+            </Chip>
+          </div>
+        );
+      } else {
+        return "";
+      }
+    } else if (columnKey === "last_message") {
+      return (
+        <div>
+          <span>
+            {cellValue.sender_type === "SYSTEM"
+              ? "Hệ thống"
+              : cellValue.sender_type === "CUSTOMER"
+              ? "Khách hàng"
+              : cellValue.sender === userId
+              ? "Bạn"
+              : "Nhân viên"}
+            :{" "}
+          </span>
+          {truncateString(cellValue.content, 100)}
+        </div>
+      );
+    } else if (columnKey === "last_time") {
+      return <div>{formatTimeFromNow(cellValue)}</div>;
+    } else if (columnKey === "is_active") {
+      return (
+        <Tooltip content={cellValue ? "Đang hoạt động" : "Đã kết thúc"}>
+          <div
+            className={`w-3 h-3 ${
+              cellValue ? "bg-success-400" : "bg-danger-400"
+            } rounded-full`}
+          ></div>
+        </Tooltip>
+      );
+    } else {
+      return cellValue;
+    }
+  };
 
   const handleGetMembers = async () => {
     setIsLoadingStatus(true);
@@ -98,11 +198,11 @@ function Chat() {
             <Tooltip content="Tất cả">
               <button
                 className={`flex justify-between items-center sm:w-[180px] font-semibold gap-5 ${
-                  chatType === "all"
+                  isNeedSupport === ""
                     ? "bg-primary-50 border-primary-100"
                     : "bg-default-50 border-default-100"
                 } border-2 py-2 px-3 rounded-xl hover:opacity-70`}
-                onClick={() => setChatType("all")}
+                onClick={() => setIsNeedSupport("")}
               >
                 <div className="flex justify-center items-center gap-3">
                   <MdOutlineChat size={20} />
@@ -114,11 +214,11 @@ function Chat() {
             <Tooltip content="Cần hỗ trợ">
               <button
                 className={`flex justify-between items-center sm:w-[180px] font-semibold gap-5 ${
-                  chatType === "support"
+                  isNeedSupport === "true"
                     ? "bg-primary-50 border-primary-100"
                     : "bg-default-50 border-default-100"
                 } border-2 py-2 px-3 rounded-xl hover:opacity-70`}
-                onClick={() => setChatType("support")}
+                onClick={() => setIsNeedSupport("true")}
               >
                 <div className="flex justify-center items-center gap-3">
                   <MdOutlineSupportAgent size={20} />
@@ -135,7 +235,7 @@ function Chat() {
               size="lg"
               variant="bordered"
               className="bg-white rounded-2xl w-72"
-              startContent={<MdSearch size={25}/>}
+              startContent={<MdSearch size={25} />}
               onChange={(e) => setCustomerName(e.target.value)}
               onClear={() => setCustomerName("")}
             />
@@ -150,12 +250,11 @@ function Chat() {
               selectedKey={agentId}
               defaultSelectedKey={""}
               onSelectionChange={setAgentId}
+              isClearable={false}
             >
-              <AutocompleteItem key="">
-                Tất cả
-              </AutocompleteItem>
+              <AutocompleteItem key="">Tất cả</AutocompleteItem>
               {agentList.map((agent) => (
-                <AutocompleteItem key={agent.id}>
+                <AutocompleteItem key={agent.user_id}>
                   {agent.user_name}
                 </AutocompleteItem>
               ))}
@@ -187,7 +286,7 @@ function Chat() {
             </Button>
           </div>
         </div>
-        <div
+        {/* <div
           className={`${
             data?.length !== 0 &&
             data &&
@@ -195,17 +294,45 @@ function Chat() {
           }`}
         >
           {data?.map((item) => (
-            <ChatItem
-              key={item.id}
-              id={item.id}
-              name={item.customer_name}
-              senderId={item.last_message.sender}
-              senderType={item.last_message.sender_type}
-              content={item.last_message.content}
-              time={item.last_message.timestamp}
-            />
+            <ChatItem key={item.id} chat={item} />
           ))}
+        </div> */}
+        <div
+          className={`${
+            data?.length !== 0 &&
+            data &&
+            "bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-5"
+          }`}
+        >
+          <Table
+            selectionBehavior="replace"
+            selectionMode="multiple"
+            hideHeader
+            removeWrapper
+            aria-label="Chat conversation"
+            className="w-full overflow-x-scroll md:overflow-auto"
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn key={column.key}>{column.key}</TableColumn>
+              )}
+            </TableHeader>
+            <TableBody items={chatList ? chatList : []}>
+              {(item) => (
+                <TableRow
+                  key={item.key}
+                  onClick={() => navigate(`/chat/${item.id}`)}
+                  className="cursor-pointer h-16"
+                >
+                  {(columnKey) => (
+                    <TableCell className="text-md">{renderCell(item, columnKey)}</TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </div>
+
         <TableBottom
           page={page}
           setPage={setPage}

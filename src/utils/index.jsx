@@ -73,3 +73,7 @@ export const formatTimeFromNow = (timestamp) => {
   dayjs.locale("vi");
   return dayjs(timestamp).fromNow(true).replace("một", "1").replace("vài", "Vài");
 };
+
+export const truncateString = (str, maxLength) => {
+  return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+}

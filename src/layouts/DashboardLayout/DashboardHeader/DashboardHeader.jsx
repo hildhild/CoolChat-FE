@@ -59,7 +59,7 @@ const DashboardHeader = () => {
           : "w-full md:w-[calc(100%-60px)]"
       }`}
     >
-      <div className="w-full flex justify-between items-center h-16 px-8">
+      <div className="w-full flex justify-between items-center h-16 px-5">
         <button
           className={`hamburger hamburger--spin ${
             isExpanded ? "is-active" : ""

@@ -7,8 +7,10 @@ import {
   Pagination,
   Select,
   SelectItem,
+  Skeleton,
   Tab,
   Tabs,
+  Tooltip,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../../layouts";
 import {
@@ -134,7 +136,7 @@ function ChatDetail() {
   return (
     <DashboardLayout page="chat">
       <LoadingProcess isLoading={isLoading} />
-      <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">
+      <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 max-h-[calc(100vh-108px)] relative flex flex-col">
         <Breadcrumbs className="mb-6">
           <BreadcrumbItem href="/chat">
             <div className="font-semibold text-2xl">HỘI THOẠI</div>
@@ -144,7 +146,7 @@ function ChatDetail() {
           </BreadcrumbItem>
         </Breadcrumbs>
 
-        <div className="flex flex-col w-full h-[580px] bg-white rounded-2xl overflow-hidden">
+        <div className="flex-grow h-[calc(100vh-224px)] flex flex-col w-full bg-white rounded-2xl overflow-hidden">
           <div className="flex justify-between items-center p-3 border-b-[1px] border-gray-200 h-[64px]">
             <div className="flex gap-5 items-center">
               <button
@@ -153,10 +155,44 @@ function ChatDetail() {
               >
                 <FaChevronLeft size={12} />
               </button>
-              <div className="font-semibold text-lg">
-                {chatDetail?.customer_name}
-              </div>
-              <Chip color="warning">Cần hỗ trợ</Chip>
+              {isLoading || !chatDetail ? (
+                <Skeleton className="h-5 w-48 rounded-lg" />
+              ) : (
+                <>
+                  <div className="font-semibold text-lg">
+                    {chatDetail?.customer_name
+                      ? chatDetail.customer_name
+                      : "Không tên"}
+                  </div>
+                  {chatDetail?.agent && (
+                    <div className="flex gap-2">
+                      <Chip color="warning">Cần hỗ trợ</Chip>
+                      <div>{" >> "}</div>
+                      <Chip color="primary" variant="bordered">
+                        <div className="flex flex-row gap-2 items-center">
+                          <MdOutlineSupportAgent />
+                          {chatDetail?.agent === userId
+                            ? "Bạn"
+                            : chatDetail?.agent_name}
+                        </div>
+                      </Chip>
+                    </div>
+                  )}
+                  <Tooltip
+                    content={
+                      chatDetail?.is_active ? "Đang hoạt động" : "Đã kết thúc"
+                    }
+                  >
+                    <div
+                      className={`w-3 h-3 ${
+                        chatDetail?.is_active
+                          ? "bg-success-400"
+                          : "bg-danger-400"
+                      } rounded-full`}
+                    ></div>
+                  </Tooltip>
+                </>
+              )}
             </div>
             <div className="flex rounded-full bg-gray-100 border-[1px] border-[#b9b9b9]">
               <button className="border-r-[1px] border-[#b9b9b9] px-3 py-2">
@@ -167,7 +203,13 @@ function ChatDetail() {
               </button>
             </div>
           </div>
-          <div className="flex-grow overflow-y-auto" id="chat-container">
+          <div className="flex-grow">
+
+          </div>
+          <div
+            className=" overflow-y-auto overflow-x-hidden flex flex-col"
+            id="chat-container"
+          >
             {messages.map((item, index) =>
               item.sender_type === "CUSTOMER" ? (
                 <div
@@ -183,7 +225,7 @@ function ChatDetail() {
                       <MdOutlineSupportAgent size={18} />
                     )}
                   </div>
-                  <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
+                  <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3">
                     <div>{item.content} </div>
                     <div className="text-end text-neutral-400 text-xs">
                       {formatTimeFromNow(item.timestamp)}
@@ -195,7 +237,7 @@ function ChatDetail() {
                   className="flex gap-3 items-end justify-end p-3 mb-3"
                   key={index}
                 >
-                  <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl w-[270px] p-3">
+                  <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl max-w-[70%] p-3">
                     <div>{item.content} </div>
                     <div className="text-end text-xs">
                       {formatTimeFromNow(item.timestamp)}
@@ -219,7 +261,7 @@ function ChatDetail() {
               <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
                 <LuBot size={18} />
               </div>
-              <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
+              <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3">
                 <div>
                   It is a long established fact that a reader will be distracted
                   by the readable content of a page when looking at its layout.{" "}
@@ -231,13 +273,13 @@ function ChatDetail() {
               <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
                 <FaRegUser size={18} />
               </div>
-              <div className="bg-gray-100 rounded-r-xl rounded-t-xl w-[270px] p-3">
+              <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3">
                 <div>OK. </div>
                 <div className="text-end text-neutral-400 text-xs">9:30 pm</div>
               </div>
             </div>
             <div className="flex gap-3 items-end justify-end p-3 mb-3">
-              <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl w-[270px] p-3">
+              <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl max-w-[70%] p-3">
                 <div>
                   There are many variations of passages of Lorem Ipsum
                   available, but the majority have suffered alteration in some
