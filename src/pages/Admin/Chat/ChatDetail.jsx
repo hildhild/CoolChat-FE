@@ -136,7 +136,7 @@ function ChatDetail() {
   return (
     <DashboardLayout page="chat">
       <LoadingProcess isLoading={isLoading} />
-      <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 max-h-[calc(100vh-108px)] relative flex flex-col">
+      <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 max-h-[calc(100vh-32px)] relative flex flex-col">
         <Breadcrumbs className="mb-6">
           <BreadcrumbItem href="/chat">
             <div className="font-semibold text-2xl">HỘI THOẠI</div>
@@ -146,7 +146,7 @@ function ChatDetail() {
           </BreadcrumbItem>
         </Breadcrumbs>
 
-        <div className="flex-grow h-[calc(100vh-224px)] flex flex-col w-full bg-white rounded-2xl overflow-hidden">
+        <div className="flex-grow h-[calc(100vh-148px)] flex flex-col w-full bg-white rounded-2xl overflow-hidden">
           <div className="flex justify-between items-center p-3 border-b-[1px] border-gray-200 h-[64px]">
             <div className="flex gap-5 items-center">
               <button

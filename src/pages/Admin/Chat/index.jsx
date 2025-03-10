@@ -32,6 +32,8 @@ import { formatTimeFromNow, truncateString } from "../../../utils";
 
 function Chat() {
   const accessToken = useSelector((state) => state.user.accessToken);
+  const userId = useSelector((state) => state.user.userId);
+  const userRole = useSelector((state) => state.user.role);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -45,7 +47,6 @@ function Chat() {
   const [agentList, setAgentList] = useState([]);
   const [agentId, setAgentId] = useState("");
   const [isNeedSupport, setIsNeedSupport] = useState("");
-  const userId = useSelector((state) => state.user.userId);
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: [
@@ -64,7 +65,7 @@ function Chat() {
           debouncedSearchInput,
           page,
           pageSize,
-          agentId,
+          userRole === "AGENT" ? userId : agentId,
           isNeedSupport
         );
         console.log(44, res);
@@ -125,7 +126,9 @@ function Chat() {
             <Chip color="primary" variant="bordered">
               <div className="flex flex-row gap-2 items-center">
                 <MdOutlineSupportAgent />
-                <div>{cellValue.agent === userId ? "Bạn" : cellValue.agent_name}</div>
+                <div>
+                  {cellValue.agent === userId ? "Bạn" : cellValue.agent_name}
+                </div>
               </div>
             </Chip>
           </div>
@@ -146,7 +149,7 @@ function Chat() {
               : "Nhân viên"}
             :{" "}
           </span>
-          {truncateString(cellValue.content, 100)}
+          {truncateString(cellValue.content, 50)}
         </div>
       );
     } else if (columnKey === "last_time") {
@@ -185,7 +188,9 @@ function Chat() {
     if (!accessToken) {
       navigate("/login");
     }
-    handleGetMembers();
+    if (userRole !== "AGENT") {
+      handleGetMembers();
+    }
   }, []);
 
   return (
@@ -239,26 +244,29 @@ function Chat() {
               onChange={(e) => setCustomerName(e.target.value)}
               onClear={() => setCustomerName("")}
             />
-            <Autocomplete
-              className="w-44 bg-white rounded-2xl"
-              label="Nhân viên"
-              variant="bordered"
-              size="sm"
-              listboxProps={{
-                emptyContent: "Không có dữ liệu",
-              }}
-              selectedKey={agentId}
-              defaultSelectedKey={""}
-              onSelectionChange={setAgentId}
-              isClearable={false}
-            >
-              <AutocompleteItem key="">Tất cả</AutocompleteItem>
-              {agentList.map((agent) => (
-                <AutocompleteItem key={agent.user_id}>
-                  {agent.user_name}
-                </AutocompleteItem>
-              ))}
-            </Autocomplete>
+            {userRole !== "AGENT" && (
+              <Autocomplete
+                className="w-44 bg-white rounded-2xl"
+                label="Nhân viên"
+                variant="bordered"
+                size="sm"
+                listboxProps={{
+                  emptyContent: "Không có dữ liệu",
+                }}
+                selectedKey={agentId}
+                defaultSelectedKey={""}
+                onSelectionChange={setAgentId}
+                isClearable={false}
+              >
+                <AutocompleteItem key="">Tất cả</AutocompleteItem>
+                {agentList.map((agent) => (
+                  <AutocompleteItem key={agent.user_id}>
+                    {agent.user_name}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+            )}
+
             <Select
               aria-label="Select filter type"
               variant="bordered"
@@ -325,7 +333,9 @@ function Chat() {
                   className="cursor-pointer h-16"
                 >
                   {(columnKey) => (
-                    <TableCell className="text-md">{renderCell(item, columnKey)}</TableCell>
+                    <TableCell className="text-md">
+                      {renderCell(item, columnKey)}
+                    </TableCell>
                   )}
                 </TableRow>
               )}
