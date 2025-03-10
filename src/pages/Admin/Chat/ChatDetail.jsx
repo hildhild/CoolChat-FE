@@ -44,6 +44,10 @@ function ChatDetail() {
   const { chatId } = useParams();
   const userRole = useSelector((state) => state.user.role);
   const userId = useSelector((state) => state.user.userId);
+  const userName = useSelector((state) => state.user.name);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
+  const [typingUser, setTypingUser] = useState(null);
 
   const scrollToBottom = () => {
     animateScroll.scrollToBottom({
@@ -72,7 +76,16 @@ function ChatDetail() {
         setMessages(lastJsonMessage.messages);
       } else if (lastJsonMessage.type === "message") {
         // Nhận tin nhắn mới
-        setMessages((prev) => [...prev, lastJsonMessage.message]);
+        setTypingUser(null);
+        if (lastJsonMessage.message) {  // Check if message exists
+          setMessages((prev) => [...prev, lastJsonMessage.message]);
+        }
+      } else if (lastJsonMessage.type === "typing") {
+        if (lastJsonMessage.is_typing) {
+          setTypingUser(lastJsonMessage.name);
+        } else {
+          setTypingUser(null);
+        }
       }
     }
   }, [lastJsonMessage]);
@@ -96,6 +109,50 @@ function ChatDetail() {
       },
     ]);
     setMessageInput("");
+  };
+
+  const handleInputChange = (e) => {
+    setMessageInput(e.target.value);
+    
+    if (!isTyping) {
+      setIsTyping(true);
+      sendJsonMessage({
+        type: "typing",
+        is_typing: true,
+        name: userName || "Agent",
+      });
+    }
+
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setIsTyping(false);
+      sendJsonMessage({
+        type: "typing",
+        is_typing: false,
+        name: userName || "Agent",
+      });
+    }, 3000);
+
+    setTypingTimeout(timeout);
+  };
+
+  const handleBlur = () => {
+    if (isTyping) {
+      setIsTyping(false);
+      sendJsonMessage({
+        type: "typing",
+        is_typing: false,
+        name: userName || "Agent"
+      });
+      
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        setTypingTimeout(null);
+      }
+    }
   };
 
   useEffect(() => scrollToBottom(), [messages]);
@@ -288,6 +345,16 @@ function ChatDetail() {
                 <div className="text-end text-xs">9:32 pm</div>
               </div>
             </div> */}
+             {typingUser && (
+              <div className="flex gap-3 items-end justify-start p-3 mb-3">
+                <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
+                  <FaRegUser size={18} />
+                </div>
+                <div className="coolchat-typing-indicator">
+                  <span>{typingUser} is typing</span>
+                </div>
+            </div>
+          )}
           </div>
           {userRole === "AGENT" && (
             <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
@@ -298,7 +365,8 @@ function ChatDetail() {
                 className="flex-grow !bg-white !border-none !outline-none"
                 placeholder="Aa"
                 value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
               ></input>
               <Button
