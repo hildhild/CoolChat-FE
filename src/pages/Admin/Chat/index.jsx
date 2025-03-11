@@ -175,7 +175,6 @@ function Chat() {
     setIsLoadingStatus(true);
     await getMembersApi(1, 99999)
       .then((res) => {
-        console.log(67, res);
         if (res.status === 200) {
           setAgentList(
             res.data.results.filter((member) => member.role === "AGENT")
@@ -296,17 +295,6 @@ function Chat() {
             </Button>
           </div>
         </div>
-        {/* <div
-          className={`${
-            data?.length !== 0 &&
-            data &&
-            "bg-white rounded-xl border-[1px] border-gray-200 mb-5 mt-5"
-          }`}
-        >
-          {data?.map((item) => (
-            <ChatItem key={item.id} chat={item} />
-          ))}
-        </div> */}
         <div
           className={`${
             data?.length !== 0 &&
@@ -354,29 +342,6 @@ function Chat() {
           totalCount={total}
           numOfPages={numOfPages}
         />
-        {/* <div className="flex flex-col md:flex-row justify-between items-center gap-5">
-          <div className="flex gap-3 items-center">
-            Hiển thị
-            <Select
-              aria-label="Select page size"
-              variant="bordered"
-              className="w-20 bg-white rounded-2xl"
-              size="sm"
-              defaultSelectedKeys={["8"]}
-            >
-              <SelectItem key="8">8</SelectItem>
-              <SelectItem key="16">16</SelectItem>
-            </Select>
-            hàng
-          </div>
-          <Pagination
-            showControls
-            total={2}
-            initialPage={1}
-            variant="light"
-            color="primary"
-          />
-        </div> */}
       </div>
     </DashboardLayout>
   );

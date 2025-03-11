@@ -28,3 +28,19 @@ export const getAgentChatConversationsApi = (active, agent, customer, page, size
 export const getChatDetailApi = (id) => {
     return axios.get(`/chat/conversations/${id}/`);
 }
+
+export const editIsActiveChatDetailApi = (id, value) => {
+    return axios.patch(`/chat/conversations/${id}/`, {
+        is_active: value,
+    });
+}
+
+export const changeAgentOfChatApi = (id, agentId) => {
+    return axios.patch(`/chat/conversations/${id}/`, {
+        agent: agentId,
+    });
+}
+
+export const deleteChatApi = (id) => {
+    return axios.delete(`/chat/conversations/${id}/`);
+}

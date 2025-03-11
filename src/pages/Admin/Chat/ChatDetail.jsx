@@ -3,42 +3,26 @@ import {
   Breadcrumbs,
   Button,
   Chip,
-  Input,
-  Pagination,
-  Select,
-  SelectItem,
   Skeleton,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  Tabs,
   Tooltip,
 } from "@nextui-org/react";
 import { DashboardLayout } from "../../../layouts";
-import {
-  MdOutlineChat,
-  MdOutlineImage,
-  MdOutlineSupportAgent,
-  MdSearch,
-} from "react-icons/md";
+import { MdOutlineImage, MdOutlineSupportAgent } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
-import LogoOnly from "@/assets/CoolChat Logo/3.png";
 import { BsThreeDots } from "react-icons/bs";
 import { LuBot, LuBotOff } from "react-icons/lu";
 import { IoIosSend } from "react-icons/io";
 import { DotsSpinner, LoadingProcess } from "../../../components";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { animateScroll } from "react-scroll";
 import { getChatDetailApi } from "../../../services/chatApi";
 import { useParams } from "react-router-dom";
-import { dateTimeToString, formatTimeFromNow } from "../../../utils";
+import { formatTimeFromNow } from "../../../utils";
 import useWebSocket from "react-use-websocket";
+import { ChatDetailBar } from "./ChatDetailBar";
+import { getMembersApi } from "../../../services/orgApi";
 
 function ChatDetail() {
   const accessToken = useSelector((state) => state.user.accessToken);
@@ -55,6 +39,27 @@ function ChatDetail() {
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [typingUser, setTypingUser] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [agentList, setAgentList] = useState([]);
+
+  const handleGetMembers = async () => {
+    setIsLoading(true);
+    await getMembersApi(1, 99999)
+      .then((res) => {
+        if (res.status === 200) {
+          setAgentList(
+            res.data.results.filter((member) => member.role === "AGENT")
+          );
+        }
+      })
+      .catch((err) => console.log(err));
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (userRole !== "AGENT") {
+      handleGetMembers();
+    }
+  }, []);
 
   const scrollToBottom = () => {
     animateScroll.scrollToBottom({
@@ -334,17 +339,30 @@ function ChatDetail() {
                 )
               )}
               {typingUser && (
-                <div className="flex gap-3 items-end justify-start p-3 mb-3">
-                  {/* <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
-                  <FaRegUser size={18} />
-                </div> */}
-                  <div className="coolchat-typing-indicator flex items-center gap-3 text-sm text-neutral-400">
-                    <span>
-                      {typingUser ? typingUser : "Khách hàng"} đang nhập
-                    </span>
-                    <DotsSpinner />
+                <div className="flex gap-3 items-end justify-start p-3 mb-3 break-words">
+                  <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
+                    <FaRegUser size={18} />
+                  </div>
+                  <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3">
+                    <div className="coolchat-typing-indicator flex items-center gap-2 text-sm text-neutral-500">
+                      <span>
+                        {typingUser ? typingUser : "Khách hàng"} đang nhập
+                      </span>
+                      <DotsSpinner />
+                    </div>
                   </div>
                 </div>
+                // <div className="flex gap-3 items-end justify-start p-3 mb-3">
+                //   {/* <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
+                //   <FaRegUser size={18} />
+                // </div> */}
+                //   <div className="coolchat-typing-indicator flex items-center gap-3 text-sm text-neutral-400">
+                //     <span>
+                //       {typingUser ? typingUser : "Khách hàng"} đang nhập
+                //     </span>
+                //     <DotsSpinner />
+                //   </div>
+                // </div>
               )}
             </div>
             {userRole === "AGENT" && chatDetail?.is_active && (
@@ -373,44 +391,11 @@ function ChatDetail() {
             )}
           </div>
           {showDetail && (
-            <div className="col-span-1 w-full bg-white rounded-2xl px-5 py-10">
-              <div className="flex flex-col items-center gap-1 mb-5">
-                <div className="text-sm text-neutral-400">Khách hàng</div>
-                <div className="text-lg text-coolchat font-semibold">
-                  {chatDetail?.customer_name
-                    ? chatDetail.customer_name
-                    : "Không tên"}
-                </div>
-              </div>
-              <Table
-                aria-label="Chat detail"
-                color="default"
-                selectionMode="single"
-                removeWrapper
-                hideHeader
-              >
-                <TableHeader>
-                  <TableColumn align="start">Title</TableColumn>
-                  <TableColumn align="end">Value</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  {chatDetail.customer_email && (
-                    <TableRow key="1" className="h-12">
-                      <TableCell>Email</TableCell>
-                      <TableCell className="font-semibold">
-                        {chatDetail.customer_email}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                  <TableRow key="2" className="h-12">
-                    <TableCell>Thời gian tạo</TableCell>
-                    <TableCell className="font-semibold">
-                      {dateTimeToString(new Date(chatDetail.started_at))}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
+            <ChatDetailBar
+              chatDetail={chatDetail}
+              refetch={handleGetChatDetail}
+              agentList={agentList}
+            />
           )}
         </div>
       </div>
