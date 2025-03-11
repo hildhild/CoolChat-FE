@@ -8,5 +8,6 @@ export { AuthenBottom } from "./AuthenBottom";
 export { AuthenTop } from "./AuthenTop";
 export { TableBottom } from "./TableBottom";
 export { UploadImage } from "./UploadImage";
+import DotsSpinner from "./DotsSpinner";
 
-export { Header, Footer, LoadingProcess, ChatBox, SelectLanguage};
+export { Header, Footer, LoadingProcess, ChatBox, SelectLanguage, DotsSpinner};

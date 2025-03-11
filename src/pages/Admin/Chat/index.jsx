@@ -113,24 +113,26 @@ function Chat() {
     const cellValue = item[columnKey];
     if (columnKey === "customer_name") {
       return (
-        <div className="font-semibold">
+        <div className={`font-semibold ${!cellValue && "text-neutral-400"}`}>
           {cellValue ? cellValue : "Không tên"}
         </div>
       );
     } else if (columnKey === "support_info") {
       if (cellValue.agent) {
         return (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Chip color="warning">Cần hỗ trợ</Chip>
-            <div>{" >> "}</div>
-            <Chip color="primary" variant="bordered">
-              <div className="flex flex-row gap-2 items-center">
-                <MdOutlineSupportAgent />
-                <div>
-                  {cellValue.agent === userId ? "Bạn" : cellValue.agent_name}
+            {/* <div>{" > "}</div> */}
+            {userRole !== "AGENT" && (
+              <Chip color="primary" variant="bordered">
+                <div className="flex flex-row gap-2 items-center">
+                  <MdOutlineSupportAgent />
+                  <div>
+                    {cellValue.agent === userId ? "Bạn" : cellValue.agent_name}
+                  </div>
                 </div>
-              </div>
-            </Chip>
+              </Chip>
+            )}
           </div>
         );
       } else {
@@ -213,7 +215,7 @@ function Chat() {
                   <MdOutlineChat size={20} />
                   <div className="hidden sm:block">Tất cả</div>
                 </div>
-                <div>12</div>
+                <div>{total}</div>
               </button>
             </Tooltip>
             <Tooltip content="Cần hỗ trợ">
