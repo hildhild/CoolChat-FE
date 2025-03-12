@@ -34,25 +34,27 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
   const handleConfirmModal = async () => {
     onClose();
     setIsLoading(true);
+    // if (action === "finish") {
+    //   await editIsActiveChatDetailApi(chatDetail.id, false)
+    //     .then((res) => {
+    //       console.log(res);
+    //       if (res.status === 200) {
+    //         toast.success("Thao tác thành công");
+    //         handleGetChatDetail();
+    //       }
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // } else
     if (action === "finish") {
-      //   await editIsActiveChatDetailApi(chatDetail.id, false)
-      //     .then((res) => {
-      //       console.log(res);
-      //       if (res.status === 200) {
-      //         toast.success("Thao tác thành công");
-      //         handleGetChatDetail();
-      //       }
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-    } else if (action === "delete") {
       await deleteChatApi(chatDetail.id)
         .then((res) => {
           console.log(res);
           if (res.status === 204) {
-            toast.success("Xóa hội thoại thành công");
-            navigate("/chat");
+            toast.success("Cuộc hội thoại đã được đóng");
+            // navigate("/chat");
+            refetch();
           }
         })
         .catch((err) => {
@@ -89,14 +91,14 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
           action === "delete"
             ? "Xóa hội thoại"
             : action === "finish"
-            ? "Kết thúc hội thoại"
+            ? "Đóng hội thoại"
             : "Thay đổi nhân viên"
         }
         description={
           action === "delete"
             ? "Bạn có muốn xóa hội thoại này không?"
             : action === "finish"
-            ? "Bạn có muốn kết thúc hội thoại này không?"
+            ? "Bạn có muốn đóng cuộc hội thoại này không?"
             : "Bạn có chắc chắn muốn thay đổi không?"
         }
       />
@@ -163,21 +165,31 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
               {dateTimeToString(new Date(chatDetail.started_at))}
             </TableCell>
           </TableRow>
+          {chatDetail?.ended_at && (
+            <TableRow key="4" className="h-12">
+              <TableCell>Thời gian đóng</TableCell>
+              <TableCell className="font-semibold">
+                {dateTimeToString(new Date(chatDetail.ended_at))}
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
       <div className="flex justify-end items-center gap-5 mt-10">
-        <Button
-          color="danger"
-          variant="bordered"
-          size="sm"
-          onClick={() => {
-            setAction("finish");
-            onOpen();
-          }}
-        >
-          Kết thúc
-        </Button>
-        {userRole !== "AGENT" && (
+        {chatDetail.is_active === true && (
+          <Button
+            color="danger"
+            variant="bordered"
+            size="sm"
+            onClick={() => {
+              setAction("finish");
+              onOpen();
+            }}
+          >
+            Đóng
+          </Button>
+        )}
+        {/* {userRole !== "AGENT" && (
           <Button
             color="danger"
             size="sm"
@@ -188,7 +200,7 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
           >
             Xóa
           </Button>
-        )}
+        )} */}
       </div>
     </div>
   );

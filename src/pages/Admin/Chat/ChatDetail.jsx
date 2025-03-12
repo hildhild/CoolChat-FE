@@ -23,6 +23,7 @@ import { formatTimeFromNow } from "../../../utils";
 import useWebSocket from "react-use-websocket";
 import { ChatDetailBar } from "./ChatDetailBar";
 import { getMembersApi } from "../../../services/orgApi";
+import { FaFileCirclePlus } from "react-icons/fa6";
 
 function ChatDetail() {
   const accessToken = useSelector((state) => state.user.accessToken);
@@ -344,7 +345,7 @@ function ChatDetail() {
                     <FaRegUser size={18} />
                   </div>
                   <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3">
-                    <div className="coolchat-typing-indicator flex items-center gap-2 text-sm text-neutral-500">
+                    <div className="coolchat-typing-indicator flex items-center gap-2 text-sm text-neutral-5np00">
                       <span>
                         {typingUser ? typingUser : "Khách hàng"} đang nhập
                       </span>
@@ -368,7 +369,7 @@ function ChatDetail() {
             {userRole === "AGENT" && chatDetail?.is_active && (
               <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
                 <button className="w-8 h-8 flex justify-center items-center rounded-full">
-                  <MdOutlineImage size={25} />
+                  <FaFileCirclePlus size={25} />
                 </button>
                 <input
                   className="flex-grow !bg-white !border-none !outline-none"

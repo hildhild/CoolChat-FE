@@ -41,6 +41,8 @@ function Chat() {
   const [customerName, setCustomerName] = useState("");
   const debouncedSearchInput = useDebounce(customerName, 500);
   const [total, setTotal] = useState(0);
+  const [totalChatCount, setTotalChatCount] = useState(0);
+  const [supportChatCount, setSupportChatCount] = useState(0);
   const [numOfPages, setNumOfPages] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
@@ -71,6 +73,8 @@ function Chat() {
         console.log(44, res);
         if (res.status === 200) {
           setTotal(res.data.count);
+          setTotalChatCount(res.data.total_count);
+          setSupportChatCount(res.data.assigned_count);
           setPageCount(res.data.results.length);
           setNumOfPages(Math.ceil(res.data.count / pageSize));
           return res.data.results;
@@ -214,7 +218,7 @@ function Chat() {
                   <MdOutlineChat size={20} />
                   <div className="hidden sm:block">Tất cả</div>
                 </div>
-                <div>{total}</div>
+                <div>{totalChatCount}</div>
               </button>
             </Tooltip>
             <Tooltip content="Cần hỗ trợ">
@@ -230,7 +234,7 @@ function Chat() {
                   <MdOutlineSupportAgent size={20} />
                   <div className="hidden sm:block">Cần hỗ trợ</div>
                 </div>
-                <div>12</div>
+                <div>{supportChatCount}</div>
               </button>
             </Tooltip>
           </div>

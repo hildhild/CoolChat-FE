@@ -36,8 +36,8 @@ export const editIsActiveChatDetailApi = (id, value) => {
 }
 
 export const changeAgentOfChatApi = (id, agentId) => {
-    return axios.patch(`/chat/conversations/${id}/`, {
-        agent: agentId,
+    return axios.post(`/chat/conversations/${id}/assign_agent/`, {
+        agent_id: agentId,
     });
 }
 
