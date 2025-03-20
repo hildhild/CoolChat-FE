@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { LoadingProcess } from "../../../components";
 import { addDocumentFileApi } from "../../../services/documentApi";
 
-export const DocumentFile = ({refetch}) => {
+export const DocumentFile = ({ refetch, handleTrain }) => {
   const { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,9 +36,14 @@ export const DocumentFile = ({refetch}) => {
       return;
     }
     if (!newFiles.every((file) => file.size <= 20000000 && file.size > 0)) {
-      toast.error("Chỉ tải lên các tệp có kích thước không quá 20 MB và không được rỗng");
+      toast.error(
+        "Chỉ tải lên các tệp có kích thước không quá 20 MB và không được rỗng"
+      );
     }
-    setFiles((prevFiles) => [...prevFiles, ...newFiles.filter(file => file.size > 0 && file.size <= 20000000)]);
+    setFiles((prevFiles) => [
+      ...prevFiles,
+      ...newFiles.filter((file) => file.size > 0 && file.size <= 20000000),
+    ]);
   };
 
   const removeFile = (fileName) => {
@@ -67,9 +72,10 @@ export const DocumentFile = ({refetch}) => {
       .then((res) => {
         console.log(12, res);
         if (res.status === 201) {
-          refetch();
+          // refetch();
           setFiles([]);
           toast.success("Tải tài liệu lên thành công");
+          handleTrain();
         }
       })
       .catch((err) => {
@@ -180,7 +186,9 @@ export const DocumentFile = ({refetch}) => {
         <Button color="default" onClick={() => setFiles([])}>
           Hủy
         </Button>
-        <Button color="primary" onClick={handleUploadFiles}>Lưu</Button>
+        <Button color="primary" onClick={handleUploadFiles}>
+          Lưu
+        </Button>
       </div>
     </>
   );

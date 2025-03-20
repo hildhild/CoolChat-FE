@@ -67,3 +67,11 @@ export const editUrlDocumentApi = (id, filename, url, url_description) => {
         "url_description": url_description
     });
 }
+
+export const trainApi = () => {
+    return axios.post("documents/train/");
+}
+
+export const getTrainingStatusApi = () => {
+    return axios.get("documents/training-status/");
+}

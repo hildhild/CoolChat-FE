@@ -7,7 +7,7 @@ import { addDocumentTextApi } from "../../../services/documentApi";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 
-export const DocumentText = ({ refetch }) => {
+export const DocumentText = ({ refetch, handleTrain }) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     control,
@@ -28,9 +28,10 @@ export const DocumentText = ({ refetch }) => {
       .then((res) => {
         console.log(12, res);
         if (res.status === 201) {
-          refetch();
+          // refetch();
           reset();
           toast.success("Thêm tài liệu thành công");
+          handleTrain();
         }
       })
       .catch((err) => {

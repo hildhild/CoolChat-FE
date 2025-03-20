@@ -1,19 +1,8 @@
-import {
-  Button,
-  Tab,
-  Tabs,
-  Tooltip,
-} from "@nextui-org/react";
+import { Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { DashboardLayout } from "../../../layouts";
-import {
-  FaBook,
-  FaFile,
-  FaEdit,
-} from "react-icons/fa";
+import { FaBook, FaFile, FaEdit } from "react-icons/fa";
 import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
-import {
-  MdLabel,
-} from "react-icons/md";
+import { MdLabel } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { TbWorld } from "react-icons/tb";
 import { useSelector } from "react-redux";
@@ -25,7 +14,8 @@ import { DocumentUrl } from "./DocumentUrl";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingProcess } from "../../../components";
 import useDebounce from "../../../hooks/useDebounce";
-import { getDocumentsApi } from "../../../services/documentApi";
+import { getDocumentsApi, trainApi } from "../../../services/documentApi";
+import { toast } from "react-toastify";
 
 function ChatbotTraining() {
   const [isLabel, setIsLabel] = useState(true);
@@ -82,6 +72,20 @@ function ChatbotTraining() {
     }
   }, []);
 
+  const handleTrain = async () => {
+    await trainApi()
+      .then((res) => {
+        console.log(12, res);
+        if (res.status === 200) {
+          refetch();
+          toast.success("Đào tạo thành công");
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+  };
+
   return (
     <DashboardLayout page="chatbot-training">
       <LoadingProcess isLoading={isLoading} />
@@ -116,6 +120,7 @@ function ChatbotTraining() {
             documentPages={documentPages}
             documentOfPage={documentOfPage}
             refetch={refetch}
+            handleTrain={handleTrain}
           />
         )}
         <Button
@@ -154,7 +159,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentFile refetch={refetch} />
+                <DocumentFile refetch={refetch} handleTrain={handleTrain}/>
               </Tab>
               <Tab
                 key="text"
@@ -167,7 +172,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentText refetch={refetch} />
+                <DocumentText refetch={refetch} handleTrain={handleTrain}/>
               </Tab>
               <Tab
                 key="web"
@@ -180,7 +185,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentUrl refetch={refetch} />
+                <DocumentUrl refetch={refetch} handleTrain={handleTrain}/>
               </Tab>
             </Tabs>
           </div>

@@ -30,11 +30,14 @@ import {
   downloadDocumentApi,
   editDocumentNameApi,
   editUrlDocumentApi,
+  trainApi,
   updatePrioritiesApi,
 } from "../../../services/documentApi";
 import { SelectPriority } from "./SelectPriority";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
+import { FaRegCircleCheck } from "react-icons/fa6";
+import { BsFiletypeTxt, BsFiletypeDocx, BsFiletypePdf } from "react-icons/bs";
 
 const translateDocumentType = (type) => {
   return {
@@ -61,6 +64,7 @@ export const DocumentList = ({
   documentPages,
   documentOfPage,
   refetch,
+  handleTrain,
 }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
@@ -157,6 +161,10 @@ export const DocumentList = ({
       label: "Độ ưu tiên",
     },
     {
+      key: "training_status",
+      label: "Đào tạo",
+    },
+    {
       key: "operation",
       label: "Thao tác",
     },
@@ -178,14 +186,34 @@ export const DocumentList = ({
       if (!cellValue) {
         return "";
       } else if (cellValue === "application/pdf") {
-        return "PDF";
+        return (
+          <div className="flex justify-center">
+            <BsFiletypePdf className="text-[#FF261B] text-2xl" />
+          </div>
+        );
       } else if (cellValue.includes("text/plain")) {
-        return "TXT";
+        return (
+          <div className="flex justify-center">
+            <BsFiletypeTxt className="text-2xl" />
+          </div>
+        );
       } else if (cellValue === "application/msword") {
         return "DOC";
       } else {
-        return "DOCX";
+        return (
+          <div className="flex justify-center">
+            <BsFiletypeDocx className="text-[#3670FF] text-2xl" />
+          </div>
+        );
       }
+    } else if (columnKey === "training_status") {
+      return cellValue === "TRAINED" || "PENDING" ? (
+        <div className="flex justify-center">
+          <FaRegCircleCheck className="text-success" />
+        </div>
+      ) : (
+        <></>
+      );
     } else if (columnKey === "operation") {
       return (
         <div className="flex gap-3">
@@ -250,11 +278,11 @@ export const DocumentList = ({
     }
     setIsLoading(true);
     await updatePrioritiesApi(updatePriorities)
-      .then((res) => {
+      .then(async (res) => {
         console.log(12, res);
         if (res.status === 200) {
-          refetch();
           toast.success("Cập nhật thành công");
+          handleTrain();
         }
       })
       .catch((err) => {
@@ -270,8 +298,9 @@ export const DocumentList = ({
       .then((res) => {
         if (res.status === 204) {
           setCurDoc(null);
-          refetch();
+          // refetch();
           toast.success("Xóa tri thức thành công");
+          handleTrain();
         }
       })
       .catch((err) => {
@@ -284,29 +313,36 @@ export const DocumentList = ({
     onCloseEdit();
     setIsLoading(true);
     if (data.document_type === "URL") {
-      await editUrlDocumentApi(data.id, data.filename, data.url, data.url_description)
-      .then((res) => {
-        if (res.status === 200) {
-          setCurDoc(null);
-          refetch();
-          toast.success("Chỉnh sửa tri thức thành công");
-        }
-      })
-      .catch((err) => {
-        console.log(2, err);
-      });
+      await editUrlDocumentApi(
+        data.id,
+        data.filename,
+        data.url,
+        data.url_description
+      )
+        .then((res) => {
+          if (res.status === 200) {
+            setCurDoc(null);
+            // refetch();
+            toast.success("Chỉnh sửa tri thức thành công");
+            handleTrain();
+          }
+        })
+        .catch((err) => {
+          console.log(2, err);
+        });
     } else {
       await editDocumentNameApi(data.id, data.filename)
-      .then((res) => {
-        if (res.status === 200) {
-          setCurDoc(null);
-          refetch();
-          toast.success("Chỉnh sửa tri thức thành công");
-        }
-      })
-      .catch((err) => {
-        console.log(2, err);
-      });
+        .then((res) => {
+          if (res.status === 200) {
+            setCurDoc(null);
+            // refetch();
+            toast.success("Chỉnh sửa tri thức thành công");
+            handleTrain();
+          }
+        })
+        .catch((err) => {
+          console.log(2, err);
+        });
     }
     setIsLoading(false);
   };
@@ -567,7 +603,16 @@ export const DocumentList = ({
         >
           <TableHeader columns={columns}>
             {(column) => (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
+              <TableColumn
+                key={column.key}
+                align={
+                  ["training_status", "content_type"].includes(column.key)
+                    ? "center"
+                    : "start"
+                }
+              >
+                {column.label}
+              </TableColumn>
             )}
           </TableHeader>
           <TableBody items={data ? data : []}>
