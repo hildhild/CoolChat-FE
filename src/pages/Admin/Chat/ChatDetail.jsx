@@ -299,7 +299,7 @@ function ChatDetail() {
                     key={index}
                   >
                     <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
-                      {item.sender_type === "SYSTEM" ? (
+                      {item.sender_type === "SYSTEM" || item.sender_type === "AI" ? (
                         <LuBot size={18} />
                       ) : item.sender_type === "CUSTOMER" ? (
                         <FaRegUser size={18} />
@@ -327,7 +327,7 @@ function ChatDetail() {
                     </div>
                     {item.sender !== userId && (
                       <div className="bg-coolchat text-white w-7 h-7 flex justify-center items-center rounded-full">
-                        {item.sender_type === "SYSTEM" ? (
+                        {item.sender_type === "SYSTEM" || item.sender_type === "AI" ? (
                           <LuBot size={18} />
                         ) : item.sender_type === "CUSTOMER" ? (
                           <FaRegUser size={18} />

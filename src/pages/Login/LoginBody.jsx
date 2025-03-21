@@ -25,6 +25,8 @@ import { setOrganizationData } from "../../store/slices/OrganizationSlice";
 import { LoadingProcess, AuthenBottom, AuthenTop } from "../../components";
 import { Controller, useForm } from "react-hook-form";
 import { EMAIL_PATTERN, PASSWORD_PATTERN } from "../../constants/patterns";
+import { getChatbotConfigApi } from "../../services/chatbotConfigApi";
+import { setChatbotConfig } from "../../store/slices/ChatbotConfigSlice";
 
 function LoginBody() {
   const { t } = useTranslation();
@@ -76,6 +78,18 @@ function LoginBody() {
                   dispatch(setOrganizationData(res.data));
                 }
               });
+            }
+            if (decoded.organization.role !== "AGENT") {
+              getChatbotConfigApi()
+                .then((res) => {
+                  console.log(12, res);
+                  if (res.status === 200) {
+                    dispatch(setChatbotConfig(res.data));
+                  }
+                })
+                .catch((err) => {
+                  console.log(2, err);
+                });
             }
           }
           // else {

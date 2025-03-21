@@ -3,27 +3,27 @@ import LandingContent from "./LandingContent";
 import { DefaultLayout } from "../../layouts";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import CoolchatWidget from "./CoolchatWidget";
 
 function Landing() {
-    const accessToken = useSelector((state) => state.user.accessToken);
-    const userRole = useSelector((state) => state.user.role);
-    const navigate = useNavigate();
+  const accessToken = useSelector((state) => state.user.accessToken);
+  const userRole = useSelector((state) => state.user.role);
+  const navigate = useNavigate();
 
-    useEffect(()=> {
-        if (accessToken && userRole !== "AGENT") {
-            navigate("/chatbot-training");
-        } else if (accessToken && userRole === "AGENT") {
-            navigate("/chat");
-        }
-    }, []);
+  useEffect(() => {
+    if (accessToken && userRole !== "AGENT") {
+      navigate("/chatbot-training");
+    } else if (accessToken && userRole === "AGENT") {
+      navigate("/chat");
+    }
+  }, []);
 
-    return (
-        <DefaultLayout>
-            <LandingContent/>
-        </DefaultLayout>
-    );
+  return (
+    <DefaultLayout>
+      <LandingContent />
+      <CoolchatWidget/>
+    </DefaultLayout>
+  );
 }
 
 export default Landing;
-
-

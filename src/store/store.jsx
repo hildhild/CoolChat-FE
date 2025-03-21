@@ -21,7 +21,7 @@ import ChatbotConfigReducer from './slices/ChatbotConfigSlice';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['sidebar', 'user', 'organization', 'chatbotInterface', 'chatbotConfig'],
+    whitelist: ['sidebar', 'user', 'organization', 'chatbotInterface', "chatbotConfig"],
 }
 
 

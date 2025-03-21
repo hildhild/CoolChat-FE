@@ -75,5 +75,5 @@ export const formatTimeFromNow = (timestamp) => {
 };
 
 export const truncateString = (str, maxLength) => {
-  return str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
+  return str?.length > maxLength ? str.slice(0, maxLength) + "..." : str;
 }

@@ -16,7 +16,7 @@ import {
   ChatDetail,
   Organization,
   Appointment,
-  NotFound
+  NotFound,
 } from "./pages";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -48,16 +48,12 @@ function App() {
         <Route path="/setting" element={<Setting />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/reset-password" element={<ResetPassword />} />
-        {
-          userRole === "OWNER"
-          &&
+        {userRole === "OWNER" && (
           <Route path="/organization" element={<Organization />} />
-        }
-        {
-          userRole === "AGENT"
-          &&
+        )}
+        {userRole === "AGENT" && (
           <Route path="/appointment" element={<Appointment />} />
-        }
+        )}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

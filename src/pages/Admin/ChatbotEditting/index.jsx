@@ -51,9 +51,9 @@ function ChatbotEditting() {
     setIsLoading(false);
   }
 
-  useEffect(()=> {
-    handleGetChatbotConfig();
-  }, [])
+  // useEffect(()=> {
+  //   handleGetChatbotConfig();
+  // }, [])
 
   useEffect(() => {
     if (!accessToken) {
@@ -145,7 +145,7 @@ function ChatbotEditting() {
                   </Tooltip>
                 }
               >
-                <EmbedCode allowedDomains={allowedDomains} refetch={handleGetChatbotConfig} />
+                <EmbedCode allowedDomains={chatbotConfig.allowed_domains.split(",").filter((item) => item !== "")} refetch={handleGetChatbotConfig} />
               </Tab>
               <Tab
                 key="facebook"

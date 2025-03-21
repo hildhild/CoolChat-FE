@@ -22,7 +22,6 @@ import { MdOutlineChat, MdOutlineSupportAgent, MdSearch } from "react-icons/md";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ChatItem } from "./ChatItem";
 import { useQuery } from "@tanstack/react-query";
 import { getChatConversationsApi } from "../../../services/chatApi";
 import { LoadingProcess, TableBottom } from "../../../components";
@@ -92,7 +91,7 @@ function Chat() {
     return {
       ...item,
       support_info: item,
-      last_time: item.last_message.timestamp,
+      last_time: item.last_message?.timestamp,
     };
   });
   const columns = [
@@ -146,16 +145,16 @@ function Chat() {
       return (
         <div>
           <span>
-            {cellValue.sender_type === "SYSTEM"
+            {cellValue?.sender_type === "SYSTEM" || cellValue?.sender_type === "AI"
               ? "Hệ thống"
-              : cellValue.sender_type === "CUSTOMER"
+              : cellValue?.sender_type === "CUSTOMER"
               ? "Khách hàng"
-              : cellValue.sender === userId
+              : cellValue?.sender === userId
               ? "Bạn"
               : "Nhân viên"}
             :{" "}
           </span>
-          {truncateString(cellValue.content, 50)}
+          {truncateString(cellValue?.content, 50)}
         </div>
       );
     } else if (columnKey === "last_time") {
