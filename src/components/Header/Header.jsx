@@ -58,11 +58,11 @@ const Header = () => {
 
         {/* Actions */}
         <div className="hidden lg:flex items-center space-x-8 ml-8">
-          <SelectLanguage
+          {/* <SelectLanguage
             handleClick={handleSelectLangClick}
             showMenu={showMenu}
             setShowMenu={setShowMenu}
-          />
+          /> */}
           <Link
             to="/login"
             className="text-base text-gray-700 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300 text-center"

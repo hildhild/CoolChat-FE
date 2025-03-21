@@ -83,11 +83,11 @@ const DashboardHeader = () => {
         {/* Actions */}
         <div className="flex gap-7 justify-end items-center">
           <div className="md:flex hidden gap-7 justify-end items-center">
-            <SelectLanguage
+            {/* <SelectLanguage
               handleClick={handleSelectLangClick}
               showMenu={showMenu}
               setShowMenu={setShowMenu}
-            />
+            /> */}
             <Badge content="99+" shape="circle" color="danger">
               <Button
                 radius="full"
