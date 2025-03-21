@@ -9,7 +9,7 @@ const CoolchatWidget = ({}) => {
     }
   };
 
-  const loadScript = (config) => {
+  const loadScript = () => {
     const existingContainer = document.getElementById(
       "coolchat-widget-container"
     );
@@ -45,7 +45,7 @@ const CoolchatWidget = ({}) => {
       script.src =
         "https://api.coolchat.software/static/js/chatbot-widget.min.js";
       script.async = true;
-      script.setAttribute("data-token", "0427b3c7-4215-4612-baf5-bf565adfe63d");
+      script.setAttribute("data-token", import.meta.env.VITE_COOLCHAT_CHATBOT_TOKEN);
       script.setAttribute("data-base-url", "https://api.coolchat.software");
 
       script.onload = () => resolve();
