@@ -17,13 +17,14 @@ import { IoIosSend } from "react-icons/io";
 import { DotsSpinner, LoadingProcess } from "../../../components";
 import { useEffect, useState } from "react";
 import { animateScroll } from "react-scroll";
-import { getChatDetailApi } from "../../../services/chatApi";
+import { getChatDetailApi, toggleChatModeApi } from "../../../services/chatApi";
 import { useParams } from "react-router-dom";
 import { formatTimeFromNow } from "../../../utils";
 import useWebSocket from "react-use-websocket";
 import { ChatDetailBar } from "./ChatDetailBar";
 import { getMembersApi } from "../../../services/orgApi";
 import { FaFileCirclePlus } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 function ChatDetail() {
   const accessToken = useSelector((state) => state.user.accessToken);
@@ -208,6 +209,21 @@ function ChatDetail() {
     }
   };
 
+  const handleToggleChatMode = async () => {
+    setIsLoading(true);
+    await toggleChatModeApi(chatDetail.id)
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success("Thay đổi chế độ thành công");
+          handleGetChatDetail();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    setIsLoading(false);
+  };
+
   return (
     <DashboardLayout page="chat">
       <LoadingProcess isLoading={isLoading} />
@@ -276,9 +292,19 @@ function ChatDetail() {
                 )}
               </div>
               <div className="flex rounded-full  border-[1px] border-[#b9b9b9] overflow-hidden">
-                <button className="border-r-[1px] border-[#b9b9b9] px-3 py-2 bg-gray-100">
-                  <LuBotOff />
-                </button>
+                <Tooltip
+                  content={
+                    chatDetail?.mode === "AI" ? "Tắt chế độ tự động chat" : "Bật chế độ tự động chat"
+                  }
+                >
+                  <button
+                    className="border-r-[1px] border-[#b9b9b9] px-3 py-2 bg-gray-100 hover:bg-[#b9b9b9] hover:text-gray-100"
+                    onClick={handleToggleChatMode}
+                  >
+                    {chatDetail?.mode === "AI" ? <LuBot /> : <LuBotOff />}
+                  </button>
+                </Tooltip>
+
                 <button
                   className="px-3 py-2 bg-gray-100 hover:bg-[#b9b9b9] hover:text-gray-100"
                   onClick={() => setShowDetail(!showDetail)}
@@ -299,7 +325,8 @@ function ChatDetail() {
                     key={index}
                   >
                     <div className="bg-gray-100 w-7 h-7 flex justify-center items-center rounded-full">
-                      {item.sender_type === "SYSTEM" || item.sender_type === "AI" ? (
+                      {item.sender_type === "SYSTEM" ||
+                      item.sender_type === "AI" ? (
                         <LuBot size={18} />
                       ) : item.sender_type === "CUSTOMER" ? (
                         <FaRegUser size={18} />
@@ -327,7 +354,8 @@ function ChatDetail() {
                     </div>
                     {item.sender !== userId && (
                       <div className="bg-coolchat text-white w-7 h-7 flex justify-center items-center rounded-full">
-                        {item.sender_type === "SYSTEM" || item.sender_type === "AI" ? (
+                        {item.sender_type === "SYSTEM" ||
+                        item.sender_type === "AI" ? (
                           <LuBot size={18} />
                         ) : item.sender_type === "CUSTOMER" ? (
                           <FaRegUser size={18} />
@@ -366,30 +394,32 @@ function ChatDetail() {
                 // </div>
               )}
             </div>
-            {userRole === "AGENT" && chatDetail?.is_active && (
-              <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
-                <button className="w-8 h-8 flex justify-center items-center rounded-full">
-                  <FaFileCirclePlus size={25} />
-                </button>
-                <input
-                  className="flex-grow !bg-white !border-none !outline-none"
-                  placeholder="Aa"
-                  value={messageInput}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                ></input>
-                <Button
-                  className="flex justify-center items-center"
-                  color="primary"
-                  onClick={handleSend}
-                  isDisabled={readyState !== 1}
-                >
-                  Gửi
-                  <IoIosSend size={20} />
-                </Button>
-              </div>
-            )}
+            {userRole === "AGENT" &&
+              chatDetail?.is_active &&
+              chatDetail?.mode !== "AI" && (
+                <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
+                  <button className="w-8 h-8 flex justify-center items-center rounded-full">
+                    <FaFileCirclePlus size={25} />
+                  </button>
+                  <input
+                    className="flex-grow !bg-white !border-none !outline-none"
+                    placeholder="Aa"
+                    value={messageInput}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
+                  ></input>
+                  <Button
+                    className="flex justify-center items-center"
+                    color="primary"
+                    onClick={handleSend}
+                    isDisabled={readyState !== 1}
+                  >
+                    Gửi
+                    <IoIosSend size={20} />
+                  </Button>
+                </div>
+              )}
           </div>
           {showDetail && (
             <ChatDetailBar
