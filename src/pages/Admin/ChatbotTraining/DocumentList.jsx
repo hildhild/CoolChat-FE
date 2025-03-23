@@ -207,7 +207,7 @@ export const DocumentList = ({
         );
       }
     } else if (columnKey === "training_status") {
-      return cellValue === "TRAINED" || "PENDING" ? (
+      return cellValue === "TRAINED" || cellValue === "PENDING" ? (
         <div className="flex justify-center">
           <FaRegCircleCheck className="text-success" />
         </div>
