@@ -29,7 +29,7 @@ export const SelectPriority = ({ id, value, setUpdatePriorities }) => {
       <SelectItem key="HIGH">HIGH</SelectItem>
       <SelectItem key="MEDIUM">MEDIUM</SelectItem>
       <SelectItem key="LOW">LOW</SelectItem>
-      <SelectItem key="NONE">NONE</SelectItem>
+      {/* <SelectItem key="NONE">NONE</SelectItem> */}
     </Select>
   );
 };

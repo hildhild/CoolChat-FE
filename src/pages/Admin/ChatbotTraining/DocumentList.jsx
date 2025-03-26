@@ -281,6 +281,7 @@ export const DocumentList = ({
       .then(async (res) => {
         console.log(12, res);
         if (res.status === 200) {
+          setUpdatePriorities([]);
           toast.success("Cập nhật thành công");
           handleTrain();
         }
@@ -509,7 +510,7 @@ export const DocumentList = ({
                     <div className="col-span-4">
                       <a
                         href={curDoc.url}
-                        className="text-coolchat hover:opacity-70"
+                        className="text-coolchat hover:opacity-70 break-words"
                         target="_blank"
                       >
                         {curDoc.url}
@@ -651,12 +652,12 @@ export const DocumentList = ({
           LƯU VÀ ĐÀO TẠO
         </Button>
       </div>
-      <div className="font-semibold text-lg">Chú thích</div>
+      {/* <div className="font-semibold text-lg">Chú thích</div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-5 py-5 mb-5">
         {trainingLegends.map((legend, index) => (
           <LegendItem key={legend.id || index} legend={legend} />
         ))}
-      </div>
+      </div> */}
     </>
   );
 };
