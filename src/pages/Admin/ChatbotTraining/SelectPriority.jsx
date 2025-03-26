@@ -26,9 +26,9 @@ export const SelectPriority = ({ id, value, setUpdatePriorities }) => {
       onChange={(e) => handleChangePriority(e.target.value)}
       isRequired
     >
-      <SelectItem key="HIGH">HIGH</SelectItem>
-      <SelectItem key="MEDIUM">MEDIUM</SelectItem>
-      <SelectItem key="LOW">LOW</SelectItem>
+      <SelectItem key="HIGH">Cao</SelectItem>
+      <SelectItem key="MEDIUM">Trung bình</SelectItem>
+      <SelectItem key="LOW">Thấp</SelectItem>
       {/* <SelectItem key="NONE">NONE</SelectItem> */}
     </Select>
   );

@@ -15,7 +15,7 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import { setToken } from "../../store/slices/UserSlice";
 import { toast } from "react-toastify";
 import { toggleIsExpanded } from "../../store/slices/SidebarSlice";
@@ -318,156 +318,180 @@ export const Sidebar = ({ page }) => {
         {userRole !== "AGENT" && (
           <>
             <Link to="/chatbot-training">
-              {page === "chatbot-training" ? (
-                <div
-                  className="w-full !min-w-0 bg-white h-14 px-2"
-                  radius="none"
-                >
-                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                    <MdDataUsage size={20} />
+              <Tooltip content="Đào tạo chatbot" placement="right">
+                {page === "chatbot-training" ? (
+                  <div
+                    className="w-full !min-w-0 bg-white h-14 px-2"
+                    radius="none"
+                  >
+                    <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                      <MdDataUsage size={20} />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                  <div className="flex w-full h-full justify-center items-center !rounded-md">
-                    <MdDataUsage size={20} />
+                ) : (
+                  <div className="w-full !min-w-0 bg-white h-14 px-2">
+                    <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                      <MdDataUsage size={20} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </Tooltip>
             </Link>
             <Link to="/chatbot-editting">
-              {page === "chatbot-editting" ? (
-                <div
-                  className="w-full !min-w-0 bg-white h-14 px-2"
-                  radius="none"
-                >
-                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                    <FaEdit size={20} />
+              <Tooltip content="Tùy chỉnh chatbot" placement="right">
+                {page === "chatbot-editting" ? (
+                  <div
+                    className="w-full !min-w-0 bg-white h-14 px-2"
+                    radius="none"
+                  >
+                    <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                      <FaEdit size={20} />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                  <div className="flex w-full h-full justify-center items-center !rounded-md">
-                    <FaEdit size={20} />
+                ) : (
+                  <div className="w-full !min-w-0 bg-white h-14 px-2">
+                    <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                      <FaEdit size={20} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </Tooltip>
             </Link>
           </>
         )}
         <Link to="/chat">
-          {page === "chat" ? (
-            <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
-              <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                <MdOutlineChat size={20} />
+          <Tooltip content="Hội thoại" placement="right">
+            {page === "chat" ? (
+              <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                  <MdOutlineChat size={20} />
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="w-full !min-w-0 bg-white h-14 px-2">
-              <div className="flex w-full h-full justify-center items-center !rounded-md">
-                <MdOutlineChat size={20} />
+            ) : (
+              <div className="w-full !min-w-0 bg-white h-14 px-2">
+                <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                  <MdOutlineChat size={20} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </Tooltip>
         </Link>
         {userRole !== "AGENT" && (
           <>
             <Link to="/report">
-              {page === "report" ? (
-                <div
-                  className="w-full !min-w-0 bg-white h-14 px-2"
-                  radius="none"
-                >
-                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                    <FaChartBar size={20} />
+              <Tooltip content="Báo cáo" placement="right">
+                {page === "report" ? (
+                  <div
+                    className="w-full !min-w-0 bg-white h-14 px-2"
+                    radius="none"
+                  >
+                    <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                      <FaChartBar size={20} />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                  <div className="flex w-full h-full justify-center items-center !rounded-md">
-                    <FaChartBar size={20} />
+                ) : (
+                  <div className="w-full !min-w-0 bg-white h-14 px-2">
+                    <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                      <FaChartBar size={20} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </Tooltip>
             </Link>
             <Link to="/subscription">
-              {page === "subscription" ? (
-                <div
-                  className="w-full !min-w-0 bg-white h-14 px-2"
-                  radius="none"
-                >
-                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                    <FaRegMoneyBillAlt size={20} />
+              <Tooltip content="Thanh toán" placement="right">
+                {page === "subscription" ? (
+                  <div
+                    className="w-full !min-w-0 bg-white h-14 px-2"
+                    radius="none"
+                  >
+                    <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                      <FaRegMoneyBillAlt size={20} />
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                  <div className="flex w-full h-full justify-center items-center !rounded-md">
-                    <FaRegMoneyBillAlt size={20} />
+                ) : (
+                  <div className="w-full !min-w-0 bg-white h-14 px-2">
+                    <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                      <FaRegMoneyBillAlt size={20} />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </Tooltip>
             </Link>
           </>
         )}
         {userRole === "OWNER" && (
           <Link to="/organization">
-            {page === "organization" ? (
-              <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
-                <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                  <MdOutlineGroups size={20} />
+            <Tooltip content="Tổ chức" placement="right">
+              {page === "organization" ? (
+                <div
+                  className="w-full !min-w-0 bg-white h-14 px-2"
+                  radius="none"
+                >
+                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                    <MdOutlineGroups size={20} />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="w-full !min-w-0 bg-white h-14 px-2">
-                <div className="flex w-full h-full justify-center items-center !rounded-md">
-                  <MdOutlineGroups size={20} />
+              ) : (
+                <div className="w-full !min-w-0 bg-white h-14 px-2">
+                  <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                    <MdOutlineGroups size={20} />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </Tooltip>
           </Link>
         )}
         {userRole === "AGENT" && (
           <Link to="/appointment">
-            {page === "appointment" ? (
-              <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
-                <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                  <FaCalendarAlt size={20} />
+            <Tooltip content="Lịch hẹn" placement="right">
+              {page === "appointment" ? (
+                <div
+                  className="w-full !min-w-0 bg-white h-14 px-2"
+                  radius="none"
+                >
+                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                    <FaCalendarAlt size={20} />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="w-full !min-w-0 bg-white h-14 px-2">
-                <div className="flex w-full h-full justify-center items-center !rounded-md">
-                  <FaCalendarAlt size={20} />
+              ) : (
+                <div className="w-full !min-w-0 bg-white h-14 px-2">
+                  <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                    <FaCalendarAlt size={20} />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </Tooltip>
           </Link>
         )}
         <hr className="w-full my-4"></hr>
         <Link to="/setting">
-          {page === "setting" ? (
-            <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
-              <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                <FaCog size={20} />
+          <Tooltip content="Cài đặt" placement="right">
+            {page === "setting" ? (
+              <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                  <FaCog size={20} />
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="w-full !min-w-0 bg-white h-14 px-2">
-              <div className="flex w-full h-full justify-center items-center !rounded-md">
-                <FaCog size={20} />
+            ) : (
+              <div className="w-full !min-w-0 bg-white h-14 px-2">
+                <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                  <FaCog size={20} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </Tooltip>
         </Link>
-        <button
-          className="w-full !min-w-0 bg-white h-14 px-2"
-          onClick={handleLogout}
-        >
-          <div className="flex w-full h-full justify-center items-center !rounded-md">
-            <MdLogout size={20} />
-          </div>
-        </button>
+        <Tooltip content="Đăng xuất" placement="right">
+          <button
+            className="w-full !min-w-0 bg-white h-14 px-2"
+            onClick={handleLogout}
+          >
+            <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-red-500">
+              <MdLogout size={20} />
+            </div>
+          </button>
+        </Tooltip>
       </div>
     );
   }
