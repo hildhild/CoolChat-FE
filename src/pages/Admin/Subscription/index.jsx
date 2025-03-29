@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import PriceBg from "@/assets/pricebg.png";
 import { LoadingProcess, ToggleSection } from "../../../components";
 import { useState } from "react";
-import { initPaymentApi } from "../../../services/subscriptionApi";
+import { initChargePaymentApi, initSubscriptionPaymentApi } from "../../../services/subscriptionApi";
 import { PaymentCancel } from "./PaymentCancel";
 import { PaymentSuccess } from "./PaymentSuccess";
 import { MdOutlineSubscriptions, MdOutlinePayments } from "react-icons/md";
@@ -132,9 +132,20 @@ function Subscription() {
     },
   ];
 
-  const handleInitPayment = async (type, name, isNew) => {
+  const handleInitSubscriptionPayment = async (type, name, isNew) => {
     setIsLoading(true);
-    await initPaymentApi(type, name, isNew).then((res) => {
+    await initSubscriptionPaymentApi(type, name, isNew).then((res) => {
+      console.log(123, res);
+      if (res.status === 200) {
+        window.open(res.data.checkout_url, "_self");
+      }
+    });
+    setIsLoading(false);
+  };
+
+  const handleInitChargePayment = async (type, name, quantity) => {
+    setIsLoading(true);
+    await initChargePaymentApi(type, name, quantity).then((res) => {
       console.log(123, res);
       if (res.status === 200) {
         window.open(res.data.checkout_url, "_self");
@@ -236,7 +247,7 @@ function Subscription() {
                       <div className="px-[16px] py-[24px] border-t-[2px] border-gray-200 flex justify-center items-center">
                         <button
                           className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white"
-                          onClick={()=>handleInitPayment(onePackage.type, onePackage.packageName, true)}
+                          onClick={()=>handleInitSubscriptionPayment(onePackage.type, onePackage.packageName, true)}
                         >
                           {t("signup_now")}
                         </button>
@@ -304,7 +315,7 @@ function Subscription() {
                       <div className="px-[16px] py-[24px] border-t-[2px] border-gray-200 flex justify-center items-center">
                         <button
                           className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white"
-                          onClick={()=>handleInitPayment(onePackage.type, onePackage.packageName, false)}
+                          onClick={()=>handleInitChargePayment(onePackage.type, onePackage.packageName, 1)}
                         >
                           {t("signup_now")}
                         </button>
