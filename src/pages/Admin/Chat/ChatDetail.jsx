@@ -27,7 +27,6 @@ import { FaFileCirclePlus } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
 function ChatDetail() {
-  const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [chatDetail, setChatDetail] = useState(null);
@@ -194,12 +193,6 @@ function ChatDetail() {
 
   useEffect(() => {
     handleGetChatDetail();
-  }, []);
-
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
   }, []);
 
   const handleKeyDown = (e) => {

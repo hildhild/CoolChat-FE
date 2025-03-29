@@ -5,8 +5,6 @@ import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { MdLabel } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { TbWorld } from "react-icons/tb";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { DocumentList } from "./DocumentList";
 import { DocumentFile } from "./DocumentFile";
 import { DocumentText } from "./DocumentText";
@@ -20,8 +18,6 @@ import { toast } from "react-toastify";
 function ChatbotTraining() {
   const [isLabel, setIsLabel] = useState(true);
   const [isUpdate, setIsUpdate] = useState(false);
-  const accessToken = useSelector((state) => state.user.accessToken);
-  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [documentType, setDocumentType] = useState("");
@@ -65,12 +61,6 @@ function ChatbotTraining() {
       }
     },
   });
-
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
-  }, []);
 
   const handleTrain = async () => {
     await trainApi()

@@ -9,7 +9,6 @@ import { FaFacebookSquare } from "react-icons/fa";
 import { GrIntegration } from "react-icons/gr";
 import { GiNightSleep } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { EditChatbotInterface } from "./EditChatbotInterface";
 import { EditChatbotStyle } from "./EditChatbotStyle";
 import {
@@ -24,8 +23,6 @@ import PreviewChatBox from "./PreviewChatbox";
 function ChatbotEditting() {
   const [isChatbotConfig, setIsChatbotConfig] = useState(true);
   const [isIntegrate, setIsIntegrate] = useState(false);
-  const accessToken = useSelector((state) => state.user.accessToken);
-  const navigate = useNavigate();
   const [allowedDomains, setAllowedDomains] = useState([]);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,16 +47,6 @@ function ChatbotEditting() {
       });
     setIsLoading(false);
   }
-
-  // useEffect(()=> {
-  //   handleGetChatbotConfig();
-  // }, [])
-
-  useEffect(() => {
-    if (!accessToken) {
-      navigate('/login');
-    }
-  }, [accessToken, navigate]);
 
   return (
     <DashboardLayout page="chatbot-editting">

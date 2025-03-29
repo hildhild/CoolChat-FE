@@ -30,7 +30,6 @@ import { getMembersApi } from "../../../services/orgApi";
 import { formatTimeFromNow, truncateString } from "../../../utils";
 
 function Chat() {
-  const accessToken = useSelector((state) => state.user.accessToken);
   const userId = useSelector((state) => state.user.userId);
   const userRole = useSelector((state) => state.user.role);
   const navigate = useNavigate();
@@ -189,9 +188,6 @@ function Chat() {
   };
 
   useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
     if (userRole !== "AGENT") {
       handleGetMembers();
     }

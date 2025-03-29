@@ -22,8 +22,6 @@ import { MdOutlineGroups } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
   getInvitesApi,
   getMembersApi,
@@ -43,10 +41,6 @@ function Organization() {
   const { t } = useTranslation();
   const [isOrganizationInfo, setIsOrganizationInfo] = useState(true);
   const [isMember, setIsMember] = useState(false);
-  const accessToken = useSelector((state) => state.user.accessToken);
-  const navigate = useNavigate();
-  
-  const userRole = useSelector((state) => state.user.role);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [memberId, setMemberId] = useState(null);
@@ -78,15 +72,6 @@ function Organization() {
       role: "",
     },
   });
-
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
-    if (userRole !== "OWNER") {
-      navigate("/chatbot-training");
-    }
-  }, []);
 
   const {
     data: memberList,

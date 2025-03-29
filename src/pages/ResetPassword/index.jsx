@@ -1,26 +1,12 @@
-import { useSelector } from "react-redux";
 import ResetPasswordBody from "./ResetPasswordBody";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { AuthenLayout } from "../../layouts";
 
 function ResetPassword() {
-    const accessToken = useSelector((state) => state.user.accessToken);
-    const navigate = useNavigate();
-
-    useEffect(()=> {
-        if (accessToken) {
-        navigate("/chatbot-training");
-        }
-    }, []);
-
-    return (
-        <AuthenLayout>
-            <ResetPasswordBody/>
-        </AuthenLayout>
-    );
+  return (
+    <AuthenLayout>
+      <ResetPasswordBody />
+    </AuthenLayout>
+  );
 }
 
 export default ResetPassword;
-
-

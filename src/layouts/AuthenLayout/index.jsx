@@ -5,7 +5,9 @@ function AuthenLayout({ children }) {
   return (
     <div className="overflow-x-hidden relative">
       <HeaderAuthen />
-      {children}
+      <div className="pt-16">
+        {children}
+      </div>
       <Footer />
     </div>
   );

@@ -37,6 +37,8 @@ instance.interceptors.response.use(function (response) { //Máy chặn yêu cầ
         window.location.replace("/login");
     } else if (res.data.errors && res.data.errors.length > 0) {
         toast.error(res.data.errors[0]);
+    } else if (res.data.error) {
+        toast.error(res.data.error);
     }
     return res;
 });

@@ -3,7 +3,7 @@ import ChatbotEditting from "./ChatbotEditting";
 import Chat from "./Chat";
 import Report from "./Report";
 import Subscription from "./Subscription";
-import ChatbotComparison from "./ChatbotComparison";
+import ChatbotComparison from "./ChatbotTraining/ChatbotComparison";
 import ChatDetail from "./Chat/ChatDetail";
 import Organization from "./Organization";
 

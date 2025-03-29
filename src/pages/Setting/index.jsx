@@ -12,7 +12,6 @@ import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 import { LoadingProcess } from "../../components";
 
@@ -23,18 +22,10 @@ function Setting() {
   const { t } = useTranslation();
   const [isAccountSetting, setIsAccountSetting] = useState(true);
   const [isNotificationSetting, setIsNotificationSetting] = useState(false);
-  const accessToken = useSelector((state) => state.user.accessToken);
-  const navigate = useNavigate();
   
   
   const [isLoading, setIsLoading] = useState(false);
   const userRole = useSelector((state) => state.user.role);
-
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
-  }, []);
 
   return (
     <DashboardLayout page="setting">

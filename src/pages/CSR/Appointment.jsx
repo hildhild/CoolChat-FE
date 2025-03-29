@@ -51,20 +51,12 @@ import { GiNightSleep } from "react-icons/gi";
 import { CiEdit } from "react-icons/ci";
 import { TbWorld } from "react-icons/tb";
 import { FaFilePdf } from "react-icons/fa6";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function Appointment() {
   const { t } = useTranslation();
-  const accessToken = useSelector((state) => state.user.accessToken);
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/login");
-    }
-  }, []);
 
   const rows = [
     {

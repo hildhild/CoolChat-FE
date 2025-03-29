@@ -1,11 +1,16 @@
 import { Chip, Progress } from "@nextui-org/react";
-import { DashboardLayout } from "../../layouts";
+import { DashboardLayout } from "../../../layouts";
 import { useTranslation } from "react-i18next";
 import PriceBg from "@/assets/pricebg.png";
-
+import { LoadingProcess } from "../../../components";
+import { useState } from "react";
+import { initPaymentApi } from "../../../services/subscriptionApi";
+import { PaymentCancel } from "./PaymentCancel";
+import { PaymentSuccess } from "./PaymentSuccess";
 
 function Subscription() {
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const packages = [
     {
@@ -46,17 +51,41 @@ function Subscription() {
     },
   ];
 
+  const handleInitPayment = async () => {
+    setIsLoading(true);
+    await initPaymentApi("SUBSCRIPTION", "STARTER", true).then((res) => {
+      console.log(123, res);
+      if (res.status === 200) {
+        window.open(res.data.checkout_url, "_self");
+      }
+    });
+    setIsLoading(false);
+  };
+
   return (
     <DashboardLayout page="subscription">
+      <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">THANH TOÁN</div>
         <div className="bg-white px-5 py-8 rounded-xl mb-8">
           <div className="font-semibold text-lg mb-5">Đang sử dụng</div>
           <div className="flex flex-col items-center">
-            <Chip color="success" className="mb-4">DÙNG THỬ MIỄN PHÍ</Chip>
-            <Progress color="success" aria-label="Loading..." value={12} className="mb-4"/>
-            <div className="font-semibold">Đã sử dụng 0.12 credit / Tổng 1 credit</div>
-            <div><span className="font-semibold">Hạn sử dụng:</span> 23/09/2025 (Gói 1 năm)</div>
+            <Chip color="success" className="mb-4">
+              DÙNG THỬ MIỄN PHÍ
+            </Chip>
+            <Progress
+              color="success"
+              aria-label="Loading..."
+              value={12}
+              className="mb-4"
+            />
+            <div className="font-semibold">
+              Đã sử dụng 0.12 credit / Tổng 1 credit
+            </div>
+            <div>
+              <span className="font-semibold">Hạn sử dụng:</span> 23/09/2025
+              (Gói 1 năm)
+            </div>
           </div>
         </div>
         <div className="font-semibold text-lg mb-5">Các gói dịch vụ</div>
@@ -99,11 +128,12 @@ function Subscription() {
                   ))}
                 </ul>
                 <div className="px-[16px] py-[24px] border-t-[2px] border-gray-200 flex justify-center items-center">
-                  <a href="/sign-up">
-                    <button className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white">
-                      {t("signup_now")}
-                    </button>
-                  </a>
+                  <button
+                    className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white"
+                    onClick={handleInitPayment}
+                  >
+                    {t("signup_now")}
+                  </button>
                 </div>
                 <div className="px-[15px] pb-[24px] text-[14px] flex justify-center items-center text-center underline font-semibold">
                   <a href="/sign-up" className="hover:text-[#4880FF]">
@@ -120,3 +150,4 @@ function Subscription() {
 }
 
 export default Subscription;
+export { PaymentCancel, PaymentSuccess };
