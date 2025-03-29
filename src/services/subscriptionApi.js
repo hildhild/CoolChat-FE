@@ -7,3 +7,12 @@ export const initPaymentApi = (type, name, isNew) => {
         tier_name: name
     });
 }
+
+export const getPaymentsApi = (page, size) => {
+    return axios.get(`/subscription/payments/`, {
+        params: {
+            page: page,
+        page_size: size
+        }
+    });
+}

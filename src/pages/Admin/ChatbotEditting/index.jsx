@@ -1,7 +1,6 @@
 import { Button, Tab, Tabs, Tooltip } from "@nextui-org/react";
 import { DashboardLayout } from "../../../layouts";
 import { FaCode } from "react-icons/fa";
-import { CiSquarePlus, CiSquareMinus } from "react-icons/ci";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { RiComputerLine } from "react-icons/ri";
@@ -11,18 +10,13 @@ import { GiNightSleep } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
 import { EditChatbotInterface } from "./EditChatbotInterface";
 import { EditChatbotStyle } from "./EditChatbotStyle";
-import {
-  getChatbotConfigApi,
-} from "../../../services/chatbotConfigApi";
-import { LoadingProcess } from "../../../components";
+import { getChatbotConfigApi } from "../../../services/chatbotConfigApi";
+import { LoadingProcess, ToggleSection } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
-import { useQuery } from "@tanstack/react-query";
 import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
 import PreviewChatBox from "./PreviewChatbox";
 
 function ChatbotEditting() {
-  const [isChatbotConfig, setIsChatbotConfig] = useState(true);
-  const [isIntegrate, setIsIntegrate] = useState(false);
   const [allowedDomains, setAllowedDomains] = useState([]);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +40,7 @@ function ChatbotEditting() {
         console.log(2, err);
       });
     setIsLoading(false);
-  }
+  };
 
   return (
     <DashboardLayout page="chatbot-editting">
@@ -58,23 +52,7 @@ function ChatbotEditting() {
       <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TÙY CHỈNH CHATBOT</div>
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsChatbotConfig(!isChatbotConfig);
-          }}
-        >
-          <div className="flex gap-3 justify-center items-center">
-            <RiComputerLine size={30} />
-            <div>Cấu hình chatbot</div>
-          </div>
-          {isChatbotConfig ? (
-            <CiSquareMinus size={20} />
-          ) : (
-            <CiSquarePlus size={20} />
-          )}
-        </Button>
-        {isChatbotConfig && (
+        <ToggleSection title="Cấu hình chatbot" Icon={RiComputerLine}>
           <div className="bg-white px-5 py-8 rounded-xl mb-8">
             <Tabs
               variant="underlined"
@@ -86,31 +64,18 @@ function ChatbotEditting() {
               }}
             >
               <Tab key="interface" title="Giao diện">
-                <EditChatbotInterface setPreviewConfig={setPreviewConfig} setIsPreview={setIsPreview}/>
+                <EditChatbotInterface
+                  setPreviewConfig={setPreviewConfig}
+                  setIsPreview={setIsPreview}
+                />
               </Tab>
               <Tab key="style" title="Phong cách">
-                <EditChatbotStyle refetch={handleGetChatbotConfig}/>
+                <EditChatbotStyle refetch={handleGetChatbotConfig} />
               </Tab>
             </Tabs>
           </div>
-        )}
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsIntegrate(!isIntegrate);
-          }}
-        >
-          <div className="flex gap-3 justify-center items-center">
-            <GrIntegration size={30} />
-            <div>Tích hợp</div>
-          </div>
-          {isIntegrate ? (
-            <CiSquareMinus size={20} />
-          ) : (
-            <CiSquarePlus size={20} />
-          )}
-        </Button>
-        {isIntegrate && (
+        </ToggleSection>
+        <ToggleSection title="Tích hợp" Icon={GrIntegration} initIsOpen={false}>
           <div className="bg-white px-5 py-8 rounded-xl">
             <Tabs
               size="lg"
@@ -132,7 +97,12 @@ function ChatbotEditting() {
                   </Tooltip>
                 }
               >
-                <EmbedCode allowedDomains={chatbotConfig.allowed_domains.split(",").filter((item) => item !== "")} refetch={handleGetChatbotConfig} />
+                <EmbedCode
+                  allowedDomains={chatbotConfig.allowed_domains
+                    .split(",")
+                    .filter((item) => item !== "")}
+                  refetch={handleGetChatbotConfig}
+                />
               </Tab>
               <Tab
                 key="facebook"
@@ -159,7 +129,7 @@ function ChatbotEditting() {
               </Tab>
             </Tabs>
           </div>
-        )}
+        </ToggleSection>
       </div>
     </DashboardLayout>
   );

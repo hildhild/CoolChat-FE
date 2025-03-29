@@ -9,5 +9,6 @@ export { AuthenTop } from "./AuthenTop";
 export { TableBottom } from "./TableBottom";
 export { UploadImage } from "./UploadImage";
 import DotsSpinner from "./DotsSpinner";
+export { ToggleSection } from "./ToggleSection";
 
 export { Header, Footer, LoadingProcess, ChatBox, SelectLanguage, DotsSpinner};

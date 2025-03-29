@@ -30,7 +30,12 @@ import {
   revokeInviteApi,
 } from "../../../services/orgApi";
 import { toast } from "react-toastify";
-import { ConfirmModal, LoadingProcess, TableBottom } from "../../../components";
+import {
+  ConfirmModal,
+  LoadingProcess,
+  TableBottom,
+  ToggleSection,
+} from "../../../components";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { EMAIL_PATTERN } from "../../../constants/patterns";
@@ -39,8 +44,6 @@ import { OrganizationInfo } from "./OrganizationInfo";
 
 function Organization() {
   const { t } = useTranslation();
-  const [isOrganizationInfo, setIsOrganizationInfo] = useState(true);
-  const [isMember, setIsMember] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [memberId, setMemberId] = useState(null);
@@ -58,7 +61,6 @@ function Organization() {
   const [inviteOfPage, setInviteOfPage] = useState(0);
   const [invitePageSize, setInvitePageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
-
 
   const {
     control: inviteControl,
@@ -378,36 +380,14 @@ function Organization() {
       />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">TỔ CHỨC</div>
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsOrganizationInfo(!isOrganizationInfo);
-          }}
+        <ToggleSection title="Thông tin tổ chức" Icon={FaInfoCircle}>
+          <OrganizationInfo />
+        </ToggleSection>
+        <ToggleSection
+          title="Thành viên"
+          Icon={MdOutlineGroups}
+          initIsOpen={false}
         >
-          <div className="flex gap-3 justify-center items-center">
-            <FaInfoCircle size={30} />
-            <div>Thông tin tổ chức</div>
-          </div>
-          {isOrganizationInfo ? (
-            <CiSquareMinus size={20} />
-          ) : (
-            <CiSquarePlus size={20} />
-          )}
-        </Button>
-        {isOrganizationInfo && <OrganizationInfo />}
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsMember(!isMember);
-          }}
-        >
-          <div className="flex gap-3 justify-center items-center">
-            <MdOutlineGroups size={30} />
-            <div>Thành viên</div>
-          </div>
-          {isMember ? <CiSquareMinus size={20} /> : <CiSquarePlus size={20} />}
-        </Button>
-        {isMember && (
           <div className="bg-white px-5 py-8 rounded-xl">
             <Tabs
               variant="underlined"
@@ -441,7 +421,15 @@ function Organization() {
                     )}
                   </TableBody>
                 </Table>
-                <TableBottom page={memberPage} setPage={setMemberPage} pageSize={memberPageSize} setPageSize={setMemberPageSize} pageCount={memberOfPage} totalCount={totalMembers} numOfPages={memberPages}/>
+                <TableBottom
+                  page={memberPage}
+                  setPage={setMemberPage}
+                  pageSize={memberPageSize}
+                  setPageSize={setMemberPageSize}
+                  pageCount={memberOfPage}
+                  totalCount={totalMembers}
+                  numOfPages={memberPages}
+                />
               </Tab>
               <Tab key="invitationList" title="Lời mời đã gửi">
                 <div className="flex justify-end mb-5">
@@ -483,7 +471,15 @@ function Organization() {
                     )}
                   </TableBody>
                 </Table>
-                <TableBottom page={invitationPage} setPage={setInvitationPage} pageSize={invitePageSize} setPageSize={setInvitePageSize} pageCount={inviteOfPage} totalCount={totalInvites} numOfPages={invitationPages}/>
+                <TableBottom
+                  page={invitationPage}
+                  setPage={setInvitationPage}
+                  pageSize={invitePageSize}
+                  setPageSize={setInvitePageSize}
+                  pageCount={inviteOfPage}
+                  totalCount={totalInvites}
+                  numOfPages={invitationPages}
+                />
               </Tab>
               <Tab key="inviteMember" title="Mời thêm thành viên">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-3">
@@ -559,7 +555,7 @@ function Organization() {
               </Tab>
             </Tabs>
           </div>
-        )}
+        </ToggleSection>
       </div>
     </DashboardLayout>
   );

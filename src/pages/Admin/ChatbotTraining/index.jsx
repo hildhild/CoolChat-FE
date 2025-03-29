@@ -10,14 +10,12 @@ import { DocumentFile } from "./DocumentFile";
 import { DocumentText } from "./DocumentText";
 import { DocumentUrl } from "./DocumentUrl";
 import { useQuery } from "@tanstack/react-query";
-import { LoadingProcess } from "../../../components";
+import { LoadingProcess, ToggleSection } from "../../../components";
 import useDebounce from "../../../hooks/useDebounce";
 import { getDocumentsApi, trainApi } from "../../../services/documentApi";
 import { toast } from "react-toastify";
 
 function ChatbotTraining() {
-  const [isLabel, setIsLabel] = useState(true);
-  const [isUpdate, setIsUpdate] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [documentType, setDocumentType] = useState("");
@@ -81,19 +79,7 @@ function ChatbotTraining() {
       <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">ĐÀO TẠO CHATBOT</div>
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsLabel(!isLabel);
-          }}
-        >
-          <div className="flex gap-3 justify-center items-center">
-            <MdLabel size={30} />
-            <div>Gán nhãn tri thức</div>
-          </div>
-          {isLabel ? <CiSquareMinus size={20} /> : <CiSquarePlus size={20} />}
-        </Button>
-        {isLabel && (
+        <ToggleSection title="Gán nhãn tri thức" Icon={MdLabel}>
           <DocumentList
             documentList={data}
             page={page}
@@ -112,20 +98,12 @@ function ChatbotTraining() {
             refetch={refetch}
             handleTrain={handleTrain}
           />
-        )}
-        <Button
-          className="flex w-72 justify-between items-center !bg-white shadow-lg font-semibold !rounded-md h-12 mb-8"
-          onClick={() => {
-            setIsUpdate(!isUpdate);
-          }}
+        </ToggleSection>
+        <ToggleSection
+          title="Cập nhật tri thức"
+          Icon={FaBook}
+          initIsOpen={false}
         >
-          <div className="flex gap-3 justify-center items-center">
-            <FaBook size={30} />
-            <div>Cập nhật tri thức</div>
-          </div>
-          {isUpdate ? <CiSquareMinus size={20} /> : <CiSquarePlus size={20} />}
-        </Button>
-        {isUpdate && (
           <div className="bg-white px-5 py-8 rounded-xl">
             <Tabs
               size="lg"
@@ -149,7 +127,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentFile refetch={refetch} handleTrain={handleTrain}/>
+                <DocumentFile refetch={refetch} handleTrain={handleTrain} />
               </Tab>
               <Tab
                 key="text"
@@ -162,7 +140,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentText refetch={refetch} handleTrain={handleTrain}/>
+                <DocumentText refetch={refetch} handleTrain={handleTrain} />
               </Tab>
               <Tab
                 key="web"
@@ -175,11 +153,11 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentUrl refetch={refetch} handleTrain={handleTrain}/>
+                <DocumentUrl refetch={refetch} handleTrain={handleTrain} />
               </Tab>
             </Tabs>
           </div>
-        )}
+        </ToggleSection>
       </div>
     </DashboardLayout>
   );
