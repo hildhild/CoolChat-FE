@@ -3,6 +3,7 @@ import { LoadingProcess } from "../../../components";
 import PriceBg from "@/assets/pricebg.png";
 import { useTranslation } from "react-i18next";
 import { initSubscriptionPaymentApi } from "../../../services/subscriptionApi";
+import { motion } from "framer-motion";
 
 const packages = [
   {
@@ -84,15 +85,20 @@ export const Package = () => {
             <div
               className={`w-full px-[16px] py-[24px] text-center text-[#4880FF] border-b-[2px] border-gray-200`}
             >
-              <div>
-                <span className="text-[32px] font-bold">
+              <div className="flex items-center overflow-hidden w-full justify-center gap-2">
+                <motion.span
+                  initial={{ y: -30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="text-[32px] font-bold"
+                >
                   {onePackage.price}
-                </span>
+                </motion.span>
                 <span className="text-[24px]"> vnđ</span>
               </div>
-              <div className="text-[16px] text-[#65A30D] font-semibold">
+              {/* <div className="text-[16px] text-[#65A30D] font-semibold">
                 {onePackage.credit} credits
-              </div>
+              </div> */}
             </div>
             <ul className="px-[16px] py-[24px]">
               {onePackage.des.map((feature, index) => (
@@ -112,14 +118,14 @@ export const Package = () => {
                   )
                 }
               >
-                {t("signup_now")}
+                {onePackage.name === "Miễn phí" ? "Dùng thử" : "Mua ngay"}
               </button>
             </div>
-            <div className="px-[15px] pb-[24px] text-[14px] flex justify-center items-center text-center underline font-semibold">
+            {/* <div className="px-[15px] pb-[24px] text-[14px] flex justify-center items-center text-center underline font-semibold">
               <a href="/sign-up" className="hover:text-[#4880FF]">
                 {t("start_one_year_free_trial")}
               </a>
-            </div>
+            </div> */}
           </div>
         ))}
       </div>
