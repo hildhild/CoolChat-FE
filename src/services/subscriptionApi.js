@@ -24,3 +24,11 @@ export const getPaymentsApi = (page, size) => {
         }
     });
 }
+
+export const cancelPaymentApi = (id) => {
+    return axios.post(`/subscription/payment/cancel/${id}/`);
+}
+
+export const getCurrentSubscriptionInfoApi = () => {
+    return axios.get(`/subscription/subscriptions/`);
+}

@@ -20,6 +20,7 @@ export const PaymentHistory = () => {
   const [pageCount, setPageCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [numOfPages, setNumOfPages] = useState(0);
+  const [paymentList, setPaymentList] = useState([]);
 
   const {
     data,
@@ -35,6 +36,7 @@ export const PaymentHistory = () => {
           setTotalCount(res.data.count);
           setPageCount(res.data.results.length);
           setNumOfPages(Math.ceil(res.data.count / pageSize));
+          setPaymentList(res.data.results.map((item) => {return {...item, payment_name: item}}));
           return res.data.results;
         } else {
           // toast.error(res.data.detail);
@@ -48,7 +50,7 @@ export const PaymentHistory = () => {
 
   const columns = [
     {
-      key: "subscription_tier",
+      key: "description",
       label: "Tên",
     },
     {
@@ -74,6 +76,8 @@ export const PaymentHistory = () => {
     if (columnKey === "created_at") {
       const date = new Date(cellValue);
       return dateTimeToString(date);
+    } else if (columnKey === "payment_name") {
+     return cellValue.additional_charge_type ? cellValue.additional_charge_type : cellValue.subscription_tier
     } else {
       return cellValue;
     }
@@ -93,7 +97,7 @@ export const PaymentHistory = () => {
               <TableColumn key={column.key}>{column.label}</TableColumn>
             )}
           </TableHeader>
-          <TableBody items={data ? data : []}>
+          <TableBody items={paymentList ? paymentList : []}>
             {(item) => (
               <TableRow key={item.key}>
                 {(columnKey) => (
