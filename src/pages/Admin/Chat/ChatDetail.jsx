@@ -327,7 +327,7 @@ function ChatDetail() {
                         <MdOutlineSupportAgent size={18} />
                       )}
                     </div>
-                    <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3">
+                    <div className="bg-gray-100 rounded-r-xl rounded-t-xl max-w-[70%] p-3 whitespace-pre-line">
                       <div>{item.content} </div>
                       <div className="text-end text-neutral-400 text-xs">
                         {formatTimeFromNow(item.timestamp)}
@@ -339,7 +339,7 @@ function ChatDetail() {
                     className="flex gap-3 items-end justify-end p-3 mb-3 break-words"
                     key={index}
                   >
-                    <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl max-w-[70%] p-3">
+                    <div className="bg-coolchat text-white rounded-l-xl rounded-t-xl max-w-[70%] p-3 whitespace-pre-line">
                       <div>{item.content} </div>
                       <div className="text-end text-xs">
                         {formatTimeFromNow(item.timestamp)}
