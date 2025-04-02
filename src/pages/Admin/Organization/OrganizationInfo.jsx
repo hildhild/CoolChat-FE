@@ -16,6 +16,7 @@ export const OrganizationInfo = () => {
   const dispatch = useDispatch();
   const orgInfo = useSelector((state) => state.organization);
   const [isEditInfo, setIsEditInfo] = useState(false);
+  const userRole = useSelector((state) => state.user.role);
   const {
     control: editControl,
     handleSubmit: editHandleSubmit,
@@ -102,7 +103,8 @@ export const OrganizationInfo = () => {
                 value={value}
                 onChange={onChange}
                 isRequired
-                isDisabled={!isEditInfo}
+                isDisabled={!isEditInfo || userRole !== "OWNER"}
+                className={userRole !== "OWNER" && "opacity-100"}
               />
             )}
           />
@@ -125,7 +127,8 @@ export const OrganizationInfo = () => {
                 variant="bordered"
                 value={value}
                 onChange={onChange}
-                isDisabled={!isEditInfo}
+                isDisabled={!isEditInfo || userRole !== "OWNER"}
+                className={userRole !== "OWNER" && "opacity-100"}
               />
             )}
           />
@@ -156,7 +159,8 @@ export const OrganizationInfo = () => {
                 value={value}
                 onChange={onChange}
                 isRequired
-                isDisabled={!isEditInfo}
+                isDisabled={!isEditInfo || userRole !== "OWNER"}
+                className={userRole !== "OWNER" && "opacity-100"}
               />
             )}
           />
@@ -179,7 +183,8 @@ export const OrganizationInfo = () => {
                 variant="bordered"
                 value={value}
                 onChange={onChange}
-                isDisabled={!isEditInfo}
+                isDisabled={!isEditInfo || userRole !== "OWNER"}
+                className={userRole !== "OWNER" && "opacity-100"}
               />
             )}
           />
@@ -202,7 +207,8 @@ export const OrganizationInfo = () => {
                 variant="bordered"
                 value={value}
                 onChange={onChange}
-                isDisabled={!isEditInfo}
+                isDisabled={!isEditInfo || userRole !== "OWNER"}
+                className={userRole !== "OWNER" && "opacity-100"}
               />
             )}
           />
@@ -212,7 +218,7 @@ export const OrganizationInfo = () => {
             </div>
           )}
         </div>
-        <div>
+        {/* <div>
           <Controller
             control={editControl}
             name="subscription_type"
@@ -233,35 +239,37 @@ export const OrganizationInfo = () => {
               {editErrors.subscription_type.message}
             </div>
           )}
+        </div> */}
+      </div>
+      {userRole === "OWNER" && (
+        <div className="flex gap-5 justify-end">
+          {isEditInfo ? (
+            <>
+              <Button
+                color="danger"
+                onClick={() => {
+                  setIsEditInfo(false);
+                  reset();
+                  setLogo(null);
+                  setLogoFile(null);
+                }}
+              >
+                HỦY BỎ
+              </Button>
+              <Button
+                color="success"
+                onClick={editHandleSubmit(handleChangeInfo)}
+              >
+                LƯU
+              </Button>
+            </>
+          ) : (
+            <Button color="primary" onClick={() => setIsEditInfo(true)}>
+              CHỈNH SỬA
+            </Button>
+          )}
         </div>
-      </div>
-      <div className="flex gap-5 justify-end">
-        {isEditInfo ? (
-          <>
-            <Button
-              color="danger"
-              onClick={() => {
-                setIsEditInfo(false);
-                reset();
-                setLogo(null);
-                setLogoFile(null);
-              }}
-            >
-              HỦY BỎ
-            </Button>
-            <Button
-              color="success"
-              onClick={editHandleSubmit(handleChangeInfo)}
-            >
-              LƯU
-            </Button>
-          </>
-        ) : (
-          <Button color="primary" onClick={() => setIsEditInfo(true)}>
-            CHỈNH SỬA
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   );
 };

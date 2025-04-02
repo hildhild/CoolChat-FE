@@ -47,7 +47,7 @@ const packages = [
   },
 ];
 
-export const Package = () => {
+export const Package = ({tierName}) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
 
@@ -108,18 +108,27 @@ export const Package = () => {
               ))}
             </ul>
             <div className="px-[16px] py-[24px] border-t-[2px] border-gray-200 flex justify-center items-center">
-              <button
-                className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white"
-                onClick={() =>
-                  handleInitSubscriptionPayment(
-                    onePackage.type,
-                    onePackage.packageName,
-                    true
-                  )
-                }
-              >
-                {onePackage.name === "Miễn phí" ? "Dùng thử" : "Mua ngay"}
-              </button>
+              {onePackage.name === "Miễn phí" ? (
+                <button
+                  className={`transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] ${tierName === "FREE" ? "border-success-500 text-success-500 hover:bg-success-500" : "border-red-500 text-red-500 hover:bg-red-500"} bg-white rounded-full  hover:text-white`}
+                  disabled
+                >
+                  {tierName=== "FREE"? "Đang sử dụng" : "Đã sử dụng hết"}
+                </button>
+              ) : (
+                <button
+                  className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white"
+                  onClick={() =>
+                    handleInitSubscriptionPayment(
+                      onePackage.type,
+                      onePackage.packageName,
+                      true
+                    )
+                  }
+                >
+                  Mua ngay
+                </button>
+              )}
             </div>
             {/* <div className="px-[15px] pb-[24px] text-[14px] flex justify-center items-center text-center underline font-semibold">
               <a href="/sign-up" className="hover:text-[#4880FF]">

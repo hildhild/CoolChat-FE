@@ -4,6 +4,7 @@ import { getPaymentsApi } from "../../../services/subscriptionApi";
 import { useQuery } from "@tanstack/react-query";
 import { dateTimeToString } from "../../../utils";
 import {
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -36,7 +37,11 @@ export const PaymentHistory = () => {
           setTotalCount(res.data.count);
           setPageCount(res.data.results.length);
           setNumOfPages(Math.ceil(res.data.count / pageSize));
-          setPaymentList(res.data.results.map((item) => {return {...item, payment_name: item}}));
+          setPaymentList(
+            res.data.results.map((item) => {
+              return { ...item, payment_name: item };
+            })
+          );
           return res.data.results;
         } else {
           // toast.error(res.data.detail);
@@ -77,7 +82,15 @@ export const PaymentHistory = () => {
       const date = new Date(cellValue);
       return dateTimeToString(date);
     } else if (columnKey === "payment_name") {
-     return cellValue.additional_charge_type ? cellValue.additional_charge_type : cellValue.subscription_tier
+      return cellValue.additional_charge_type
+        ? cellValue.additional_charge_type
+        : cellValue.subscription_tier;
+    } else if (columnKey === "amount") {
+      return cellValue.toLocaleString("en-US");
+    } else if (columnKey === "payment_type") {
+      return cellValue === "ADDITIONAL_CHARGE" ? "Gói bổ sung" : "Gói đăng ký";
+    } else if (columnKey === "status") {
+      return <Chip color={cellValue === "FAILED" ? "danger" : cellValue === "PENDING" ? "primary" : "success"} variant="bordered">{cellValue === "FAILED" ? "Đã Hủy" : cellValue === "PENDING" ? "Đang Chờ" : "Thành Công"}</Chip>;
     } else {
       return cellValue;
     }

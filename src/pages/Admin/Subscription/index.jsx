@@ -108,7 +108,14 @@ function Subscription() {
             </div> */}
             <div className="mb-8 w-full flex flex-col justify-center items-center">
               <div className="grid-cols-4 lg:grid-cols-5 gap-3 grid w-full items-center mb-3">
-                <div className="col-span-1 font-semibold">Truy vấn AI:</div>
+                <div
+                  className={`col-span-1 font-semibold ${
+                    data?.ai_queries_used === data?.total_ai_queries_limit &&
+                    "text-red-500"
+                  }`}
+                >
+                  Truy vấn AI:
+                </div>
                 <Progress
                   color="success"
                   aria-label="Loading..."
@@ -128,7 +135,12 @@ function Subscription() {
             </div>
             <div className="mb-8 w-full flex flex-col justify-center items-center">
               <div className="grid-cols-4 lg:grid-cols-5 gap-3 grid w-full items-center mb-3">
-                <div className="col-span-1 font-semibold">
+                <div
+                  className={`col-span-1 font-semibold ${
+                    data?.storage_used_mb === data?.total_storage_limit &&
+                    "text-red-500"
+                  }`}
+                >
                   Kho lưu trữ tài liệu:
                 </div>
                 <Progress
@@ -150,7 +162,12 @@ function Subscription() {
             </div>
             <div className="mb-8 w-full flex flex-col justify-center items-center">
               <div className="grid-cols-4 lg:grid-cols-5 gap-3 grid w-full items-center mb-3">
-                <div className="col-span-1 font-semibold">
+                <div
+                  className={`col-span-1 font-semibold ${
+                    data?.human_agents_count === data?.total_human_agents_limit &&
+                    "text-red-500"
+                  }`}
+                >
                   Tài khoản nhân viên CSKH:
                 </div>
                 <Progress
@@ -173,8 +190,16 @@ function Subscription() {
               </div>
             </div>
             <div>
-              <span className="font-semibold">Hạn sử dụng:</span>{" "}
-              {dateTimeToString(new Date(data?.current_period_end))}
+              {data?.is_active ? (
+                <>
+                  <span className="font-semibold">Hạn sử dụng:</span>{" "}
+                  {dateTimeToString(new Date(data?.current_period_end))}
+                </>
+              ) : (
+                <Chip color="danger" variant="bordered">
+                  Đã hết hạn
+                </Chip>
+              )}
             </div>
           </div>
         </div>
@@ -200,7 +225,7 @@ function Subscription() {
                   </Tooltip>
                 }
               >
-                <Package />
+                <Package tierName={data?.tier_name}/>
               </Tab>
               <Tab
                 key="additional_charge"

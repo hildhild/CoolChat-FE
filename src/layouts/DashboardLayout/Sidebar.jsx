@@ -192,33 +192,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
           </Link>
         </>
       )}
-      {userRole === "OWNER" && (
-        <Link to="/organization">
-          {page === "organization" ? (
-            <div
-              className="flex w-full bg-white px-5 h-14 relative"
-              radius="none"
-            >
-              <div className="absolute left-0 w-1 h-full bg-coolchat z-10 rounded-r-lg"></div>
-              <div className="flex w-full h-full justify-start items-center !rounded-md p-4 bg-coolchat text-white">
-                <MdOutlineGroups size={20} />
-                <div className="ml-4 flex items-center font-semibold">
-                  Tổ chức
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="flex w-full bg-white px-5 h-14">
-              <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
-                <MdOutlineGroups size={20} />
-                <div className="ml-4 flex items-center font-semibold">
-                  Tổ chức
-                </div>
-              </div>
-            </div>
-          )}
-        </Link>
-      )}
+
       {userRole === "AGENT" && (
         <Link to="/appointment">
           {page === "appointment" ? (
@@ -246,6 +220,31 @@ const LargeSidebar = ({ page, isExpanded }) => {
           )}
         </Link>
       )}
+      <Link to="/organization">
+        {page === "organization" ? (
+          <div
+            className="flex w-full bg-white px-5 h-14 relative"
+            radius="none"
+          >
+            <div className="absolute left-0 w-1 h-full bg-coolchat z-10 rounded-r-lg"></div>
+            <div className="flex w-full h-full justify-start items-center !rounded-md p-4 bg-coolchat text-white">
+              <MdOutlineGroups size={20} />
+              <div className="ml-4 flex items-center font-semibold">
+                Tổ chức
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="flex w-full bg-white px-5 h-14">
+            <div className="flex w-full h-full justify-start items-center !rounded-md p-4 hover:text-coolchat">
+              <MdOutlineGroups size={20} />
+              <div className="ml-4 flex items-center font-semibold">
+                Tổ chức
+              </div>
+            </div>
+          </div>
+        )}
+      </Link>
       <hr className="w-full my-4"></hr>
       <Link to="/setting">
         {page === "setting" ? (
@@ -420,28 +419,6 @@ export const Sidebar = ({ page }) => {
             </Link>
           </>
         )}
-        {userRole === "OWNER" && (
-          <Link to="/organization">
-            <Tooltip content="Tổ chức" placement="right">
-              {page === "organization" ? (
-                <div
-                  className="w-full !min-w-0 bg-white h-14 px-2"
-                  radius="none"
-                >
-                  <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
-                    <MdOutlineGroups size={20} />
-                  </div>
-                </div>
-              ) : (
-                <div className="w-full !min-w-0 bg-white h-14 px-2">
-                  <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
-                    <MdOutlineGroups size={20} />
-                  </div>
-                </div>
-              )}
-            </Tooltip>
-          </Link>
-        )}
         {userRole === "AGENT" && (
           <Link to="/appointment">
             <Tooltip content="Lịch hẹn" placement="right">
@@ -464,6 +441,23 @@ export const Sidebar = ({ page }) => {
             </Tooltip>
           </Link>
         )}
+        <Link to="/organization">
+          <Tooltip content="Tổ chức" placement="right">
+            {page === "organization" ? (
+              <div className="w-full !min-w-0 bg-white h-14 px-2" radius="none">
+                <div className="flex w-full h-full justify-center items-center !rounded-md bg-coolchat text-white">
+                  <MdOutlineGroups size={20} />
+                </div>
+              </div>
+            ) : (
+              <div className="w-full !min-w-0 bg-white h-14 px-2">
+                <div className="flex w-full h-full justify-center items-center !rounded-md hover:text-coolchat">
+                  <MdOutlineGroups size={20} />
+                </div>
+              </div>
+            )}
+          </Tooltip>
+        </Link>
         <hr className="w-full my-4"></hr>
         <Link to="/setting">
           <Tooltip content="Cài đặt" placement="right">
