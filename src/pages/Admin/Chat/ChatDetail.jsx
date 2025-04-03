@@ -254,7 +254,9 @@ function ChatDetail() {
                     </div>
                     {chatDetail?.agent && (
                       <div className="flex gap-5">
-                        <Chip color="warning">Cần hỗ trợ</Chip>
+                        {chatDetail.mode === "HUMAN" && (
+                          <Chip color="warning">Cần hỗ trợ</Chip>
+                        )}
                         {/* <div>{" >> "}</div> */}
                         {userRole !== "AGENT" && (
                           <Chip color="primary" variant="bordered">
@@ -287,7 +289,9 @@ function ChatDetail() {
               <div className="flex rounded-full  border-[1px] border-[#b9b9b9] overflow-hidden">
                 <Tooltip
                   content={
-                    chatDetail?.mode === "AI" ? "Tắt chế độ tự động chat" : "Bật chế độ tự động chat"
+                    chatDetail?.mode === "AI"
+                      ? "Tắt chế độ tự động chat"
+                      : "Bật chế độ tự động chat"
                   }
                 >
                   <button

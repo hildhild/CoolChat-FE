@@ -46,7 +46,7 @@ function Chat() {
   const [isLoadingStatus, setIsLoadingStatus] = useState(false);
   const [agentList, setAgentList] = useState([]);
   const [agentId, setAgentId] = useState("");
-  const [isNeedSupport, setIsNeedSupport] = useState("");
+  const [isNeedSupport, setIsNeedSupport] = useState(false);
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: [
@@ -72,7 +72,7 @@ function Chat() {
         if (res.status === 200) {
           setTotal(res.data.count);
           setTotalChatCount(res.data.total_count);
-          setSupportChatCount(res.data.assigned_count);
+          setSupportChatCount(res.data.need_support_count);
           setPageCount(res.data.results.length);
           setNumOfPages(Math.ceil(res.data.count / pageSize));
           return res.data.results;
@@ -123,7 +123,9 @@ function Chat() {
       if (cellValue.agent) {
         return (
           <div className="flex gap-3">
-            <Chip color="warning">Cần hỗ trợ</Chip>
+            {cellValue.mode === "HUMAN" && (
+              <Chip color="warning">Cần hỗ trợ</Chip>
+            )}
             {/* <div>{" > "}</div> */}
             {userRole !== "AGENT" && (
               <Chip color="primary" variant="bordered">
@@ -144,7 +146,8 @@ function Chat() {
       return (
         <div>
           <span>
-            {cellValue?.sender_type === "SYSTEM" || cellValue?.sender_type === "AI"
+            {cellValue?.sender_type === "SYSTEM" ||
+            cellValue?.sender_type === "AI"
               ? "Hệ thống"
               : cellValue?.sender_type === "CUSTOMER"
               ? "Khách hàng"
@@ -198,16 +201,16 @@ function Chat() {
       <LoadingProcess isLoading={isLoading || isLoadingStatus} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative">
         <div className="font-semibold mb-6 text-2xl">HỘI THOẠI</div>
-        <div className="flex flex-col lg:flex-row gap-3 justify-between">
+        <div className="flex flex-col 2xl:flex-row gap-3 justify-between">
           <div className="flex gap-3">
             <Tooltip content="Tất cả">
               <button
                 className={`flex justify-between items-center sm:w-[180px] font-semibold gap-5 ${
-                  isNeedSupport === ""
+                  isNeedSupport === false
                     ? "bg-primary-50 border-primary-100"
                     : "bg-default-50 border-default-100"
                 } border-2 py-2 px-3 rounded-xl hover:opacity-70`}
-                onClick={() => setIsNeedSupport("")}
+                onClick={() => setIsNeedSupport(false)}
               >
                 <div className="flex justify-center items-center gap-3">
                   <MdOutlineChat size={20} />
@@ -219,11 +222,11 @@ function Chat() {
             <Tooltip content="Cần hỗ trợ">
               <button
                 className={`flex justify-between items-center sm:w-[180px] font-semibold gap-5 ${
-                  isNeedSupport === "true"
+                  isNeedSupport === true
                     ? "bg-primary-50 border-primary-100"
                     : "bg-default-50 border-default-100"
                 } border-2 py-2 px-3 rounded-xl hover:opacity-70`}
-                onClick={() => setIsNeedSupport("true")}
+                onClick={() => setIsNeedSupport(true)}
               >
                 <div className="flex justify-center items-center gap-3">
                   <MdOutlineSupportAgent size={20} />
@@ -233,7 +236,7 @@ function Chat() {
               </button>
             </Tooltip>
           </div>
-          <div className="flex gap-4 justify-between xl:justify-end items-center">
+          <div className="flex flex-col lg:flex-row gap-4 justify-end items-center">
             <Input
               isClearable
               placeholder="Tìm kiếm..."
@@ -244,54 +247,56 @@ function Chat() {
               onChange={(e) => setCustomerName(e.target.value)}
               onClear={() => setCustomerName("")}
             />
-            {userRole !== "AGENT" && (
-              <Autocomplete
-                className="w-44 bg-white rounded-2xl"
-                label="Nhân viên"
-                variant="bordered"
-                size="sm"
-                listboxProps={{
-                  emptyContent: "Không có dữ liệu",
-                }}
-                selectedKey={agentId}
-                defaultSelectedKey={""}
-                onSelectionChange={setAgentId}
-                isClearable={false}
-              >
-                <AutocompleteItem key="">Tất cả</AutocompleteItem>
-                {agentList.map((agent) => (
-                  <AutocompleteItem key={agent.user_id}>
-                    {agent.user_name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-            )}
+            <div className="flex flex-col sm:flex-row gap-4 justify-end items-center">
+              {userRole !== "AGENT" && (
+                <Autocomplete
+                  className="w-44 bg-white rounded-2xl"
+                  label="Nhân viên"
+                  variant="bordered"
+                  size="sm"
+                  listboxProps={{
+                    emptyContent: "Không có dữ liệu",
+                  }}
+                  selectedKey={agentId}
+                  defaultSelectedKey={""}
+                  onSelectionChange={setAgentId}
+                  isClearable={false}
+                >
+                  <AutocompleteItem key="">Tất cả</AutocompleteItem>
+                  {agentList.map((agent) => (
+                    <AutocompleteItem key={agent.user_id}>
+                      {agent.user_name}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              )}
 
-            <Select
-              aria-label="Select filter type"
-              variant="bordered"
-              className="w-40 bg-white rounded-2xl"
-              label="Trạng thái"
-              size="sm"
-              onChange={(e) => setIsActive(e.target.value)}
-              selectedKeys={[isActive]}
-            >
-              <SelectItem key="">Tất cả</SelectItem>
-              <SelectItem key="true">Đang hoạt động</SelectItem>
-              <SelectItem key="false">Đã kết thúc</SelectItem>
-            </Select>
-            <Button
-              variant="bordered"
-              color="danger"
-              size="sm"
-              onClick={() => {
-                setCustomerName("");
-                setIsActive("");
-                setAgentId("");
-              }}
-            >
-              Xóa bộ lọc
-            </Button>
+              <Select
+                aria-label="Select filter type"
+                variant="bordered"
+                className="w-40 bg-white rounded-2xl"
+                label="Trạng thái"
+                size="sm"
+                onChange={(e) => setIsActive(e.target.value)}
+                selectedKeys={[isActive]}
+              >
+                <SelectItem key="">Tất cả</SelectItem>
+                <SelectItem key="true">Đang hoạt động</SelectItem>
+                <SelectItem key="false">Đã kết thúc</SelectItem>
+              </Select>
+              <Button
+                variant="bordered"
+                color="danger"
+                size="sm"
+                onClick={() => {
+                  setCustomerName("");
+                  setIsActive("");
+                  setAgentId("");
+                }}
+              >
+                Xóa bộ lọc
+              </Button>
+            </div>
           </div>
         </div>
         <div

@@ -8,7 +8,7 @@ export const getChatConversationsApi = (active, customer, page, size, agentId, i
             ...(active ? {active : active} : {}),
             ...(customer ? {customer : customer} : {}),
             ...(agentId ? {agent : agentId} : {}),
-            ...(isNeedSupport ? {has_agent : isNeedSupport} : {}),
+            ...(isNeedSupport ? {mode : "HUMAN"} : {}),
         }
     });
 }
