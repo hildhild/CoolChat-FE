@@ -45,6 +45,6 @@ export const deleteChatApi = (id) => {
     return axios.delete(`/chat/conversations/${id}/`);
 }
 
-export const toggleChatModeApi = (id) => {
-    return axios.post(`/chat/conversations/${id}/toggle_mode/`);
+export const switchToAIModeApi = (id) => {
+    return axios.post(`/chat/conversations/${id}/end_conversation/`);
 }

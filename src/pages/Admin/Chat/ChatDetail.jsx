@@ -17,7 +17,7 @@ import { IoIosSend } from "react-icons/io";
 import { DotsSpinner, LoadingProcess } from "../../../components";
 import { useEffect, useState } from "react";
 import { animateScroll } from "react-scroll";
-import { getChatDetailApi, toggleChatModeApi } from "../../../services/chatApi";
+import { getChatDetailApi, switchToAIModeApi } from "../../../services/chatApi";
 import { useParams } from "react-router-dom";
 import { formatTimeFromNow } from "../../../utils";
 import useWebSocket from "react-use-websocket";
@@ -203,18 +203,20 @@ function ChatDetail() {
   };
 
   const handleToggleChatMode = async () => {
-    setIsLoading(true);
-    await toggleChatModeApi(chatDetail.id)
-      .then((res) => {
-        if (res.status === 200) {
-          toast.success("Thay đổi chế độ thành công");
-          handleGetChatDetail();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    setIsLoading(false);
+    if (chatDetail.mode === "HUMAN") {
+      setIsLoading(true);
+      await switchToAIModeApi(chatDetail.id)
+        .then((res) => {
+          if (res.status === 200) {
+            toast.success("Đã chuyến sang chế độ tự động chat");
+            handleGetChatDetail();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -290,13 +292,14 @@ function ChatDetail() {
                 <Tooltip
                   content={
                     chatDetail?.mode === "AI"
-                      ? "Tắt chế độ tự động chat"
+                      ? "Đang ở chế độ tự động chat"
                       : "Bật chế độ tự động chat"
                   }
                 >
                   <button
                     className="border-r-[1px] border-[#b9b9b9] px-3 py-2 bg-gray-100 hover:bg-[#b9b9b9] hover:text-gray-100"
                     onClick={handleToggleChatMode}
+                    disabled={chatDetail?.mode === "AI"}
                   >
                     {chatDetail?.mode === "AI" ? <LuBot /> : <LuBotOff />}
                   </button>
