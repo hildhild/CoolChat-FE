@@ -2,6 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import store from '../store/store.jsx';
 import { setToken } from '../store/slices/UserSlice.jsx';
+import { errors } from '../constants/errors.jsx';
 
 const instance = axios.create({ //Tạo 1 instance cua axios để có thể tùy chỉnh như timeout, headers,...
     baseURL: import.meta.env.VITE_API_CORE_ENDPOINT
@@ -34,11 +35,10 @@ instance.interceptors.response.use(function (response) { //Máy chặn yêu cầ
     if (res.data.errors && res.data.errors.length > 0 && (res.data.errors[0] === "Given token not valid for any token type" || res.data.errors[0] === "Authentication credentials were not provided.")) {
         store.dispatch(setToken(""));
         localStorage.removeItem("token");
-        window.location.replace("/login");
     } else if (res.data.errors && res.data.errors.length > 0) {
-        toast.error(res.data.errors[0]);
+        toast.error(errors[res.data.errors[0]] ? errors[res.data.errors[0]] : "Đã xảy ra lỗi");
     } else if (res.data.error) {
-        toast.error(res.data.error);
+        toast.error(errors[res.data.error] ? errors[res.data.error] : "Đã xảy ra lỗi");
     }
     return res;
 });

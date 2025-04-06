@@ -16,6 +16,7 @@ import {
   changeAgentOfChatApi,
   deleteChatApi,
   editIsActiveChatDetailApi,
+  switchToAIModeApi,
 } from "../../../services/chatApi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -30,6 +31,21 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
   const navigate = useNavigate();
   const userRole = useSelector((state) => state.user.role);
   const [agentId, setAgentId] = useState(chatDetail.agent?.toString());
+
+  const handleCloseConversation = async () => {
+    await deleteChatApi(chatDetail.id)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 204) {
+          toast.success("Cuộc hội thoại đã được đóng");
+          // navigate("/chat");
+          refetch();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleConfirmModal = async () => {
     onClose();
@@ -48,13 +64,10 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
     //     });
     // } else
     if (action === "finish") {
-      await deleteChatApi(chatDetail.id)
+      await switchToAIModeApi(chatDetail.id)
         .then((res) => {
-          console.log(res);
-          if (res.status === 204) {
-            toast.success("Cuộc hội thoại đã được đóng");
-            // navigate("/chat");
-            refetch();
+          if (res.status === 200) {
+            handleCloseConversation();
           }
         })
         .catch((err) => {

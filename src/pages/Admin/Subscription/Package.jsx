@@ -4,11 +4,12 @@ import PriceBg from "@/assets/pricebg.png";
 import { useTranslation } from "react-i18next";
 import { initSubscriptionPaymentApi } from "../../../services/subscriptionApi";
 import { motion } from "framer-motion";
+import { Select, SelectItem } from "@nextui-org/react";
 
 const packages = [
   {
     name: "Miễn phí",
-    price: "0",
+    price: 0,
     credit: "_",
     des: [
       "Thời hạn: 1 tháng",
@@ -18,10 +19,14 @@ const packages = [
     ],
     type: "SUBSCRIPTION",
     packageName: "FREE",
+    period: "MONTHLY",
+    storage: "100MB",
+    query: 500,
+    agent: 2,
   },
   {
     name: "Sơ cấp",
-    price: "2,000,000",
+    price: 2000000,
     credit: "_",
     des: [
       "Thời hạn: 1 tháng",
@@ -31,10 +36,14 @@ const packages = [
     ],
     type: "SUBSCRIPTION",
     packageName: "STARTER",
+    period: "MONTHLY",
+    storage: "5GB",
+    query: 5000,
+    agent: 5,
   },
   {
     name: "Chuyên nghiệp",
-    price: "7,000,000",
+    price: 7000000,
     credit: "_",
     des: [
       "Thời hạn: 1 tháng",
@@ -44,16 +53,27 @@ const packages = [
     ],
     type: "SUBSCRIPTION",
     packageName: "PROFESSIONAL",
+    period: "MONTHLY",
+    storage: "20GB",
+    query: 20000,
+    agent: 20,
   },
 ];
 
-export const Package = ({tierName}) => {
+export const Package = ({ tierName, isActive }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
+  const [subscriptionType, setSubscriptionType] = useState("STARTER");
+  const [starterPeriod, setStarterPeriod] = useState("MONTHLY");
+  const [professionalPeriod, setProfessionalPeriod] = useState("MONTHLY");
 
-  const handleInitSubscriptionPayment = async (type, name, isNew) => {
+  const handleInitSubscriptionPayment = async (type, name) => {
     setIsLoading(true);
-    await initSubscriptionPaymentApi(type, name, isNew).then((res) => {
+    await initSubscriptionPaymentApi(
+      type,
+      name,
+      subscriptionType === "STARTER" ? starterPeriod : professionalPeriod
+    ).then((res) => {
       console.log(123, res);
       if (res.status === 200) {
         window.open(res.data.checkout_url, "_self");
@@ -92,7 +112,13 @@ export const Package = ({tierName}) => {
                   transition={{ duration: 0.5, ease: "easeOut" }}
                   className="text-[32px] font-bold"
                 >
-                  {onePackage.price}
+                  {onePackage.packageName === "STARTER"
+                    ? starterPeriod === "MONTHLY"
+                      ? onePackage.price.toLocaleString("en-US")
+                      : (onePackage.price * 12).toLocaleString("en-US")
+                    : professionalPeriod === "MONTHLY"
+                    ? onePackage.price.toLocaleString("en-US")
+                    : (onePackage.price * 12).toLocaleString("en-US")}
                 </motion.span>
                 <span className="text-[24px]"> vnđ</span>
               </div>
@@ -101,30 +127,79 @@ export const Package = ({tierName}) => {
               </div> */}
             </div>
             <ul className="px-[16px] py-[24px]">
-              {onePackage.des.map((feature, index) => (
-                <li className="text-[16px] py-4 text-center" key={index}>
-                  {feature}
-                </li>
-              ))}
+              <li className="text-[16px] py-4 flex items-center justify-center gap-3">
+                Thời hạn: {onePackage.packageName === "FREE" && "1 tháng"}
+                {onePackage.packageName !== "FREE" && (
+                  <Select
+                    size="sm"
+                    className="w-28"
+                    selectedKeys={[
+                      onePackage.packageName === "STARTER"
+                        ? starterPeriod
+                        : professionalPeriod,
+                    ]}
+                    onChange={
+                      onePackage.packageName === "STARTER"
+                        ? (e) => {
+                            if (e.target.value)
+                              setStarterPeriod(e.target.value);
+                          }
+                        : (e) => {
+                            if (e.target.value)
+                              setProfessionalPeriod(e.target.value);
+                          }
+                    }
+                    selectionMode="single"
+                  >
+                    <SelectItem key="MONTHLY">1 tháng</SelectItem>
+                    <SelectItem key="YEARLY">1 năm</SelectItem>
+                  </Select>
+                )}
+              </li>
+              <li className="text-[16px] py-4 text-center">
+                Kho lưu trữ tài liệu: {onePackage.storage}
+              </li>
+              <li className="text-[16px] py-4 text-center">
+                {onePackage.packageName === "STARTER"
+                  ? starterPeriod === "MONTHLY"
+                    ? onePackage.query.toLocaleString("en-US")
+                    : (onePackage.query * 12).toLocaleString("en-US")
+                  : onePackage.packageName === "PROFESSIONAL"
+                  ? professionalPeriod === "MONTHLY"
+                    ? onePackage.query.toLocaleString("en-US")
+                    : (onePackage.query * 12).toLocaleString("en-US")
+                  : onePackage.query.toLocaleString("en-US")}{" "}
+                truy vấn AI
+              </li>
+              <li className="text-[16px] py-4 text-center">
+                {onePackage.agent} tài khoản nhân viên CSKH
+              </li>
             </ul>
             <div className="px-[16px] py-[24px] border-t-[2px] border-gray-200 flex justify-center items-center">
               {onePackage.name === "Miễn phí" ? (
                 <button
-                  className={`transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] ${tierName === "FREE" ? "border-success-500 text-success-500 hover:bg-success-500" : "border-red-500 text-red-500 hover:bg-red-500"} bg-white rounded-full  hover:text-white`}
+                  className={`transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] ${
+                    tierName === "FREE"
+                      ? "border-success-500 text-success-500 hover:bg-success-500"
+                      : "border-red-500 text-red-500 hover:bg-red-500"
+                  } bg-white rounded-full  hover:text-white`}
                   disabled
                 >
-                  {tierName=== "FREE"? "Đang sử dụng" : "Đã sử dụng hết"}
+                  {tierName === "FREE" ? "Đang sử dụng" : "Đã sử dụng hết"}
                 </button>
               ) : (
                 <button
-                  className="transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white"
-                  onClick={() =>
+                  className={`transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white ${
+                    isActive && "opacity-50"
+                  }`}
+                  onClick={() => {
+                    setSubscriptionType(onePackage.packageName);
                     handleInitSubscriptionPayment(
                       onePackage.type,
-                      onePackage.packageName,
-                      true
-                    )
-                  }
+                      onePackage.packageName
+                    );
+                  }}
+                  disabled={isActive}
                 >
                   Mua ngay
                 </button>

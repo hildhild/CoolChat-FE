@@ -190,7 +190,7 @@ function Subscription() {
               </div>
             </div>
             <div>
-              {data?.is_active ? (
+              {new Date(data?.current_period_end) >= new Date() ? (
                 <>
                   <span className="font-semibold">Hạn sử dụng:</span>{" "}
                   {dateTimeToString(new Date(data?.current_period_end))}
@@ -225,7 +225,7 @@ function Subscription() {
                   </Tooltip>
                 }
               >
-                <Package tierName={data?.tier_name}/>
+                <Package tierName={data?.tier_name} isActive={data?.is_active}/>
               </Tab>
               <Tab
                 key="additional_charge"

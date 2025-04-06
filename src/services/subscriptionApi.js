@@ -1,9 +1,9 @@
 import axios from './axios';
 
-export const initSubscriptionPaymentApi = (type, name, isNew) => {
+export const initSubscriptionPaymentApi = (type, name, period) => {
     return axios.post(`/subscription/subscriptions/initiate_payment/`, {
         payment_type: type,
-        is_new_subscription: isNew,
+        billing_period: period,
         tier_name: name
     });
 }
@@ -20,7 +20,7 @@ export const getPaymentsApi = (page, size) => {
     return axios.get(`/subscription/payments/`, {
         params: {
             page: page,
-        page_size: size
+            page_size: size
         }
     });
 }
