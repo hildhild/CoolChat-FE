@@ -302,7 +302,7 @@ export const DocumentList = ({
               console.error("❌ Error while checking training status:", err);
               clearInterval(interval);
             }
-          }, 3000);
+          }, 1000);
         }
       })
       .catch((err) => {
