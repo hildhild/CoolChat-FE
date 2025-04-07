@@ -16,6 +16,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
+  CircularProgress,
 } from "@nextui-org/react";
 import { FaDownload, FaEdit, FaInfoCircle, FaTrash } from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
@@ -30,13 +31,14 @@ import {
   downloadDocumentApi,
   editDocumentNameApi,
   editUrlDocumentApi,
+  getTrainingStatusApi,
   trainApi,
   updatePrioritiesApi,
 } from "../../../services/documentApi";
 import { SelectPriority } from "./SelectPriority";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
-import { FaRegCircleCheck } from "react-icons/fa6";
+import { FaRegCircleCheck, FaRegCircleXmark } from "react-icons/fa6";
 import { BsFiletypeTxt, BsFiletypeDocx, BsFiletypePdf } from "react-icons/bs";
 
 const translateDocumentType = (type) => {
@@ -64,12 +66,12 @@ export const DocumentList = ({
   documentPages,
   documentOfPage,
   refetch,
-  handleTrain,
 }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [updatePriorities, setUpdatePriorities] = useState([]);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const [canTrain, setCanTrain] = useState(true);
   const {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
@@ -207,12 +209,18 @@ export const DocumentList = ({
         );
       }
     } else if (columnKey === "training_status") {
-      return cellValue === "TRAINED" || cellValue === "PENDING" ? (
+      return cellValue === "TRAINED" ? (
         <div className="flex justify-center">
           <FaRegCircleCheck className="text-success" />
         </div>
+      ) : cellValue === "PENDING" ? (
+        <div className="flex justify-center">
+          <div class="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+        </div>
       ) : (
-        <></>
+        <div className="flex justify-center">
+          <FaRegCircleXmark className="text-danger" />
+        </div>
       );
     } else if (columnKey === "operation") {
       return (
@@ -271,12 +279,38 @@ export const DocumentList = ({
     }
   };
 
+  const handleTrain = async () => {
+    await trainApi()
+      .then((res) => {
+        console.log(12, res);
+        if (res.status === 200) {
+          refetch();
+          toast.success("Đang chờ đào tạo");
+          setCanTrain(false);
+          const interval = setInterval(async () => {
+            try {
+              const res = await getTrainingStatusApi();
+              if (res.data.is_training === false) {
+                clearInterval(interval);
+                toast.success("Đào tạo thành công");
+                setCanTrain(true);
+                refetch();
+              } else {
+                console.log("⏳ Training in progress...");
+              }
+            } catch (err) {
+              console.error("❌ Error while checking training status:", err);
+              clearInterval(interval);
+            }
+          }, 3000);
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+  };
+
   const handleUpdatePriority = async () => {
-    if (!updatePriorities.every((item) => item.priority)) {
-      toast.error("Vui lòng chọn độ ưu tiên cho tri thức");
-      return;
-    }
-    setIsLoading(true);
     await updatePrioritiesApi(updatePriorities)
       .then(async (res) => {
         console.log(12, res);
@@ -289,6 +323,24 @@ export const DocumentList = ({
       .catch((err) => {
         console.log(2, err);
       });
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    console.log(1);
+    if (updatePriorities.length === 0) {
+      console.log(2);
+
+      handleTrain();
+    } else {
+      console.log(3);
+
+      if (!updatePriorities.every((item) => item.priority)) {
+        toast.error("Vui lòng chọn độ ưu tiên cho tri thức");
+        return;
+      }
+      handleUpdatePriority();
+    }
     setIsLoading(false);
   };
 
@@ -300,8 +352,8 @@ export const DocumentList = ({
         if (res.status === 204) {
           setCurDoc(null);
           // refetch();
-          toast.success("Xóa tri thức thành công");
-          handleTrain();
+          toast.success("Tri thức sẽ được xoá khi đào tạo");
+          refetch();
         }
       })
       .catch((err) => {
@@ -325,7 +377,7 @@ export const DocumentList = ({
             setCurDoc(null);
             // refetch();
             toast.success("Chỉnh sửa tri thức thành công");
-            handleTrain();
+            refetch();
           }
         })
         .catch((err) => {
@@ -338,7 +390,7 @@ export const DocumentList = ({
             setCurDoc(null);
             // refetch();
             toast.success("Chỉnh sửa tri thức thành công");
-            handleTrain();
+            refetch();
           }
         })
         .catch((err) => {
@@ -618,7 +670,10 @@ export const DocumentList = ({
           </TableHeader>
           <TableBody items={data ? data : []}>
             {(item) => (
-              <TableRow key={item.key}>
+              <TableRow
+                key={item.key}
+                className={`${item.isDeleted && "opacity-50"}`}
+              >
                 {(columnKey) => (
                   <TableCell>{renderCell(item, columnKey)}</TableCell>
                 )}
@@ -644,11 +699,7 @@ export const DocumentList = ({
         >
           SO SÁNH CHATBOT
         </Button>
-        <Button
-          color="success"
-          isDisabled={updatePriorities.length <= 0}
-          onClick={handleUpdatePriority}
-        >
+        <Button color="success" onClick={handleSave} isDisabled={!canTrain}>
           LƯU VÀ ĐÀO TẠO
         </Button>
       </div>

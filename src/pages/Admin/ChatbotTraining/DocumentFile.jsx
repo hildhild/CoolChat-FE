@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { LoadingProcess } from "../../../components";
 import { addDocumentFileApi } from "../../../services/documentApi";
 
-export const DocumentFile = ({ refetch, handleTrain }) => {
+export const DocumentFile = ({ refetch }) => {
   const { t } = useTranslation();
   const [files, setFiles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +75,7 @@ export const DocumentFile = ({ refetch, handleTrain }) => {
           // refetch();
           setFiles([]);
           toast.success("Tải tài liệu lên thành công");
-          handleTrain();
+          refetch();
         }
       })
       .catch((err) => {

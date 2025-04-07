@@ -7,7 +7,7 @@ import { addDocumentUrlApi } from "../../../services/documentApi";
 import { LoadingProcess } from "../../../components";
 import { toast } from "react-toastify";
 
-export const DocumentUrl = ({refetch, handleTrain}) => {
+export const DocumentUrl = ({refetch}) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     control,
@@ -33,7 +33,7 @@ export const DocumentUrl = ({refetch, handleTrain}) => {
           // refetch();
           reset();
           toast.success("Thêm tài liệu thành công");
-          handleTrain();
+          refetch();
         }
       })
       .catch((err) => {

@@ -12,7 +12,7 @@ import { DocumentUrl } from "./DocumentUrl";
 import { useQuery } from "@tanstack/react-query";
 import { LoadingProcess, ToggleSection } from "../../../components";
 import useDebounce from "../../../hooks/useDebounce";
-import { getDocumentsApi, trainApi } from "../../../services/documentApi";
+import { getDocumentsApi } from "../../../services/documentApi";
 import { toast } from "react-toastify";
 
 function ChatbotTraining() {
@@ -60,20 +60,6 @@ function ChatbotTraining() {
     },
   });
 
-  const handleTrain = async () => {
-    await trainApi()
-      .then((res) => {
-        console.log(12, res);
-        if (res.status === 200) {
-          refetch();
-          toast.success("Đào tạo thành công");
-        }
-      })
-      .catch((err) => {
-        console.log(2, err);
-      });
-  };
-
   return (
     <DashboardLayout page="chatbot-training">
       <LoadingProcess isLoading={isLoading} />
@@ -96,7 +82,6 @@ function ChatbotTraining() {
             documentPages={documentPages}
             documentOfPage={documentOfPage}
             refetch={refetch}
-            handleTrain={handleTrain}
           />
         </ToggleSection>
         <ToggleSection
@@ -127,7 +112,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentFile refetch={refetch} handleTrain={handleTrain} />
+                <DocumentFile refetch={refetch} />
               </Tab>
               <Tab
                 key="text"
@@ -140,7 +125,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentText refetch={refetch} handleTrain={handleTrain} />
+                <DocumentText refetch={refetch} />
               </Tab>
               <Tab
                 key="web"
@@ -153,7 +138,7 @@ function ChatbotTraining() {
                   </Tooltip>
                 }
               >
-                <DocumentUrl refetch={refetch} handleTrain={handleTrain} />
+                <DocumentUrl refetch={refetch} />
               </Tab>
             </Tabs>
           </div>

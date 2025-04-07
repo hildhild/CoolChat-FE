@@ -7,7 +7,7 @@ import { addDocumentTextApi } from "../../../services/documentApi";
 import { toast } from "react-toastify";
 import { Controller, useForm } from "react-hook-form";
 
-export const DocumentText = ({ refetch, handleTrain }) => {
+export const DocumentText = ({ refetch }) => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     control,
@@ -31,7 +31,7 @@ export const DocumentText = ({ refetch, handleTrain }) => {
           // refetch();
           reset();
           toast.success("Thêm tài liệu thành công");
-          handleTrain();
+          refetch();
         }
       })
       .catch((err) => {
@@ -51,7 +51,7 @@ export const DocumentText = ({ refetch, handleTrain }) => {
         control={control}
         name="text"
         rules={{
-          required:"Bắt buộc",
+          required: "Bắt buộc",
           maxLength: {
             value: 100000,
             message: "Tối đa 100,000 ký tự",
@@ -73,9 +73,7 @@ export const DocumentText = ({ refetch, handleTrain }) => {
         )}
       />
       {errors.text && (
-        <div className="text-red-500 text-xs mb-4">
-          {errors.text.message}
-        </div>
+        <div className="text-red-500 text-xs mb-4">{errors.text.message}</div>
       )}
       <div className="mb-5 flex justify-between items-center">
         <div className="text-sm text-neutral-600">
