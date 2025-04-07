@@ -17,8 +17,9 @@ import {
   ModalBody,
   ModalFooter,
   CircularProgress,
+  Tooltip,
 } from "@nextui-org/react";
-import { FaDownload, FaEdit, FaInfoCircle, FaTrash } from "react-icons/fa";
+import { FaDownload, FaEdit, FaHistory, FaInfoCircle, FaTrash } from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +33,7 @@ import {
   editDocumentNameApi,
   editUrlDocumentApi,
   getTrainingStatusApi,
+  restoreDocumentApi,
   trainApi,
   updatePrioritiesApi,
 } from "../../../services/documentApi";
@@ -76,6 +78,11 @@ export const DocumentList = ({
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
     onClose: onCloseDelete,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenRestore,
+    onOpen: onOpenRestore,
+    onClose: onCloseRestore,
   } = useDisclosure();
   const {
     isOpen: isOpenEdit,
@@ -226,42 +233,64 @@ export const DocumentList = ({
       return (
         <div className="flex gap-3">
           {cellValue.document_type === "URL" ? (
-            <button
-              onClick={() => {
-                onOpen();
-                setCurDoc(cellValue);
-              }}
-              className="hover:opacity-70"
-            >
-              <FaInfoCircle className="text-blue-500" />
-            </button>
+            <Tooltip content="Chi tiết">
+              <button
+                onClick={() => {
+                  onOpen();
+                  setCurDoc(cellValue);
+                }}
+                className="hover:opacity-70"
+              >
+                <FaInfoCircle className="text-blue-500" />
+              </button>
+            </Tooltip>
           ) : (
-            <button
-              onClick={() => handleDownloadDocument(cellValue.id)}
-              className="hover:opacity-70"
-            >
-              <FaDownload className="text-green-500" />
-            </button>
+            <Tooltip content="Tải xuống">
+              <button
+                onClick={() => handleDownloadDocument(cellValue.id)}
+                className="hover:opacity-70"
+              >
+                <FaDownload className="text-green-500" />
+              </button>
+            </Tooltip>
           )}
-          <button
-            className="hover:opacity-70"
-            onClick={() => {
-              onOpenEdit();
-              setCurDoc(cellValue);
-              reset(cellValue);
-            }}
-          >
-            <FaEdit className="text-black" />
-          </button>
-          <button
-            onClick={() => {
-              onOpenDelete();
-              setCurDoc(cellValue);
-            }}
-            className="hover:opacity-70"
-          >
-            <FaTrash className="text-red-500" />
-          </button>
+          <Tooltip content="Chỉnh sửa">
+            <button
+              className="hover:opacity-70"
+              onClick={() => {
+                onOpenEdit();
+                setCurDoc(cellValue);
+                reset(cellValue);
+              }}
+            >
+              <FaEdit className="text-black" />
+            </button>
+          </Tooltip>
+          {cellValue.isDeleted ? (
+            <Tooltip content="Khôi phục">
+              <button
+                onClick={() => {
+                  onOpenRestore();
+                  setCurDoc(cellValue);
+                }}
+                className="hover:opacity-70"
+              >
+                <FaHistory className="text-green-500" />
+              </button>
+            </Tooltip>
+          ) : (
+            <Tooltip content="Xóa">
+              <button
+                onClick={() => {
+                  onOpenDelete();
+                  setCurDoc(cellValue);
+                }}
+                className="hover:opacity-70"
+              >
+                <FaTrash className="text-red-500" />
+              </button>
+            </Tooltip>
+          )}
         </div>
       );
     } else if (columnKey === "document_type") {
@@ -362,6 +391,24 @@ export const DocumentList = ({
     setIsLoading(false);
   };
 
+  const handleConfirmRestore= async () => {
+    onCloseRestore();
+    setIsLoading(true);
+    await restoreDocumentApi(curDoc.id)
+      .then((res) => {
+        if (res.status === 204) {
+          setCurDoc(null);
+          // refetch();
+          toast.success("Tri thức đã được khôi phục");
+          refetch();
+        }
+      })
+      .catch((err) => {
+        console.log(2, err);
+      });
+    setIsLoading(false);
+  };
+
   const handleConfirmEdit = async (data) => {
     onCloseEdit();
     setIsLoading(true);
@@ -411,6 +458,16 @@ export const DocumentList = ({
         onConfirm={handleConfirmDelete}
         title="Xóa tri thức"
         description="Bạn có muốn xóa tri thức này không?"
+      />
+      <ConfirmModal
+        isOpen={isOpenRestore}
+        onClose={() => {
+          onCloseRestore();
+          setCurDoc(null);
+        }}
+        onConfirm={handleConfirmRestore}
+        title="Khôi phục tri thức"
+        description="Bạn có muốn khôi phục tri thức này không?"
       />
       <Modal
         isOpen={isOpenEdit}
