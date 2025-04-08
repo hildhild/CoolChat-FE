@@ -30,10 +30,10 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const userRole = useSelector((state) => state.user.role);
-  const [agentId, setAgentId] = useState(chatDetail.agent?.toString());
+  const [agentId, setAgentId] = useState(chatDetail?.agent?.toString());
 
   const handleCloseConversation = async () => {
-    await deleteChatApi(chatDetail.id)
+    await deleteChatApi(chatDetail?.id)
       .then((res) => {
         console.log(res);
         if (res.status === 204) {
@@ -51,7 +51,7 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
     onClose();
     setIsLoading(true);
     // if (action === "finish") {
-    //   await editIsActiveChatDetailApi(chatDetail.id, false)
+    //   await editIsActiveChatDetailApi(chatDetail?.id, false)
     //     .then((res) => {
     //       console.log(res);
     //       if (res.status === 200) {
@@ -64,17 +64,21 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
     //     });
     // } else
     if (action === "finish") {
-      await switchToAIModeApi(chatDetail.id)
-        .then((res) => {
-          if (res.status === 200) {
-            handleCloseConversation();
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (chatDetail?.mode === "HUMAN") {
+        await switchToAIModeApi(chatDetail?.id)
+          .then((res) => {
+            if (res.status === 200) {
+              handleCloseConversation();
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        await handleCloseConversation();
+      }
     } else if (action === "changeAgent") {
-      await changeAgentOfChatApi(chatDetail.id, agentId)
+      await changeAgentOfChatApi(chatDetail?.id, agentId)
         .then((res) => {
           console.log(12, res);
           if (res.status === 200) {
@@ -97,7 +101,7 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
         onClose={() => {
           onClose();
           setAction("");
-          setAgentId(chatDetail.agent.toString());
+          setAgentId(chatDetail?.agent.toString());
         }}
         onConfirm={handleConfirmModal}
         title={
@@ -118,7 +122,7 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
       <div className="flex flex-col items-center gap-1 mb-5">
         <div className="text-sm text-neutral-400">Khách hàng</div>
         <div className="text-lg text-coolchat font-semibold">
-          {chatDetail?.customer_name ? chatDetail.customer_name : "Không tên"}
+          {chatDetail?.customer_name ? chatDetail?.customer_name : "Không tên"}
         </div>
       </div>
       <Table
@@ -133,15 +137,15 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
           <TableColumn align="end">Value</TableColumn>
         </TableHeader>
         <TableBody>
-          {chatDetail.customer_email && (
+          {chatDetail?.customer_email && (
             <TableRow key="1" className="h-12">
               <TableCell>Email</TableCell>
               <TableCell className="font-semibold">
-                {chatDetail.customer_email}
+                {chatDetail?.customer_email}
               </TableCell>
             </TableRow>
           )}
-          {chatDetail.agent && userRole !== "AGENT" && (
+          {chatDetail?.agent && userRole !== "AGENT" && (
             <TableRow key="2" className="h-12">
               <TableCell>Nhân viên hỗ trợ</TableCell>
               <TableCell className="font-semibold">
@@ -175,21 +179,21 @@ export const ChatDetailBar = ({ chatDetail, refetch, agentList }) => {
           <TableRow key="3" className="h-12">
             <TableCell>Thời gian tạo</TableCell>
             <TableCell className="font-semibold">
-              {dateTimeToString(new Date(chatDetail.started_at))}
+              {dateTimeToString(new Date(chatDetail?.started_at))}
             </TableCell>
           </TableRow>
           {chatDetail?.ended_at && (
             <TableRow key="4" className="h-12">
               <TableCell>Thời gian đóng</TableCell>
               <TableCell className="font-semibold">
-                {dateTimeToString(new Date(chatDetail.ended_at))}
+                {dateTimeToString(new Date(chatDetail?.ended_at))}
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
       <div className="flex justify-end items-center gap-5 mt-10">
-        {chatDetail.is_active === true && (
+        {chatDetail?.is_active === true && (
           <Button
             color="danger"
             variant="bordered"
