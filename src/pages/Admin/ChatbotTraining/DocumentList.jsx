@@ -19,7 +19,13 @@ import {
   CircularProgress,
   Tooltip,
 } from "@nextui-org/react";
-import { FaDownload, FaEdit, FaHistory, FaInfoCircle, FaTrash } from "react-icons/fa";
+import {
+  FaDownload,
+  FaEdit,
+  FaHistory,
+  FaInfoCircle,
+  FaTrash,
+} from "react-icons/fa";
 import { MdSearch } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -266,7 +272,7 @@ export const DocumentList = ({
               <FaEdit className="text-black" />
             </button>
           </Tooltip>
-          {cellValue.isDeleted ? (
+          {cellValue.is_deleted ? (
             <Tooltip content="Khôi phục">
               <button
                 onClick={() => {
@@ -356,19 +362,15 @@ export const DocumentList = ({
 
   const handleSave = async () => {
     setIsLoading(true);
-    console.log(1);
     if (updatePriorities.length === 0) {
-      console.log(2);
-
-      handleTrain();
+      await handleTrain();
     } else {
-      console.log(3);
-
       if (!updatePriorities.every((item) => item.priority)) {
         toast.error("Vui lòng chọn độ ưu tiên cho tri thức");
+        setIsLoading(false);
         return;
       }
-      handleUpdatePriority();
+      await handleUpdatePriority();
     }
     setIsLoading(false);
   };
@@ -391,12 +393,12 @@ export const DocumentList = ({
     setIsLoading(false);
   };
 
-  const handleConfirmRestore= async () => {
+  const handleConfirmRestore = async () => {
     onCloseRestore();
     setIsLoading(true);
     await restoreDocumentApi(curDoc.id)
       .then((res) => {
-        if (res.status === 204) {
+        if (res.status === 200) {
           setCurDoc(null);
           // refetch();
           toast.success("Tri thức đã được khôi phục");
@@ -729,7 +731,7 @@ export const DocumentList = ({
             {(item) => (
               <TableRow
                 key={item.key}
-                className={`${item.isDeleted && "opacity-50"}`}
+                className={`${item.is_deleted && "opacity-50"}`}
               >
                 {(columnKey) => (
                   <TableCell>{renderCell(item, columnKey)}</TableCell>
@@ -747,6 +749,11 @@ export const DocumentList = ({
           totalCount={total}
           numOfPages={documentPages}
         />
+        <div className="text-red-500 italic text-sm mt-5">
+          * Lưu ý: Những tri thức bị làm mờ là những tri thức đã được xóa nhưng
+          vẫn còn đào tạo, chọn LƯU VÀ ĐÀO TẠO để hủy đào tạo và xóa vĩnh viễn
+          các tri thức này
+        </div>
       </div>
       <div className="flex gap-5 justify-end mb-5">
         <Button

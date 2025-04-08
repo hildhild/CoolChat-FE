@@ -54,7 +54,7 @@ export const deleteDocumentApi = (id) => {
 }
 
 export const restoreDocumentApi = (id) => {
-    return axios.delete(`/documents/${id}/restore/`);
+    return axios.patch(`/documents/${id}/restore/`);
 }
 
 export const editDocumentNameApi = (id, fileName) => {
