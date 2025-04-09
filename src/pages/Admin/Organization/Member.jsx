@@ -370,7 +370,7 @@ export const Member = () => {
       <Tabs
         variant="underlined"
         aria-label="Tabs variants"
-        className="mb-4 w-full"
+        className="w-full"
         classNames={{
           cursor: "w-full bg-coolchat",
           tabContent: "group-data-[selected=true]:text-coolchat",
@@ -414,8 +414,8 @@ export const Member = () => {
               label="Trạng thái"
               defaultSelectedKeys={[inviteStatus]}
               size="sm"
-              labelPlacement="outside"
-              className="w-32"
+              labelPlacement="outside-left"
+              className="w-44"
               onChange={(e) => setInviteStatus(e.target.value)}
             >
               <SelectItem key="">Tất cả</SelectItem>

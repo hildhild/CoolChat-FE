@@ -202,9 +202,9 @@ export const EditChatbotStyle = ({ refetch }) => {
           </div>
         </div>
       </div>
-      <div className="mt-5">
+      {/* <div className="mt-5">
         <Button color="success">XEM CHATBOT</Button>
-      </div>
+      </div> */}
     </div>
   );
 };

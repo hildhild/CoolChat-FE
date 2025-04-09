@@ -46,18 +46,8 @@ export const ChangePassword = () => {
       if (res.status === 200) {
         dispatch(setToken(""));
         localStorage.setItem("token", "");
-        navigate("/login");
         toast.success("Đổi mật khẩu thành công, vui lòng đăng nhập lại.");
       }
-      // else {
-      //   if (res?.data.current_password) {
-      //     toast.error("Mật khẩu hiện tại: " + res.data.current_password[0]);
-      //   } else if (res?.data.new_password) {
-      //     toast.error("Mật khẩu mới: " + res.data.new_password[0]);
-      //   } else if (res?.data.new_password2) {
-      //     toast.error("Xác nhận mật khẩu mới: " + res.data.new_password2[0]);
-      //   }
-      // }
     });
     setIsLoading(false);
   };
