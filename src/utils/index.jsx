@@ -71,9 +71,24 @@ const createImage = (url) =>
 export const formatTimeFromNow = (timestamp) => {
   dayjs.extend(relativeTime);
   dayjs.locale("vi");
-  return dayjs(timestamp).fromNow(true).replace("một", "1").replace("vài", "Vài");
+  return dayjs(timestamp)
+    .fromNow(true)
+    .replace("một", "1")
+    .replace("vài", "Vài");
 };
 
 export const truncateString = (str, maxLength) => {
   return str?.length > maxLength ? str.slice(0, maxLength) + "..." : str;
-}
+};
+
+export const getFirstAndLastDayString = (year, month) => {
+  const firstDay = new Date(year, month - 1, 2);
+  const lastDay = new Date(year, month, 1);
+
+  const formatDate = (date) => date.toISOString().slice(0, 10);
+
+  return {
+    firstDay: formatDate(firstDay),
+    lastDay: formatDate(lastDay),
+  };
+};

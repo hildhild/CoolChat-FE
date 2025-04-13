@@ -1,0 +1,60 @@
+.custom-datepicker .react-datepicker-wrapper {
+  width: 100%;
+}
+
+.custom-datepicker .react-datepicker-popper {
+  z-index: 12 !important;
+}
+
+.custom-datepicker .react-datepicker-wrapper .react-datepicker__input-container .react-datepicker__calendar-icon {
+  right: 0.5rem;
+  padding: 0.75rem 0.5rem;
+  vertical-align: middle;
+  color: #757575;
+}
+
+.react-datepicker__close-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px; /* Set height */
+  width: 24px;  /* Set width */
+  border-radius: 50%; /* Make it circular */
+  background-color: transparent;
+}
+
+.react-datepicker__close-icon::after {
+  background-color: white;
+  border: 1px solid rgb(10 48 87);
+  color:rgb(10 48 87);
+  height: 24px;
+  width: 24px;
+  content: 'x';
+  font-size: 16px;
+  position: absolute; /* Use absolute positioning */
+  top: 85%; /* Position from the top */
+  right: 10%;
+  transform: translate(-50%, -50%); /* Center it */
+}
+.year-picker-popout .react-datepicker__year-wrapper {
+  display: flex;
+  justify-content: center;
+}
+.year-picker-popout .react-datepicker__year-text--selected {
+  background-color: #bad9f1 !important; 
+  color: black !important;
+}
+
+.year-picker-popout .react-datepicker__year-text:hover {
+  transition: background-color 0.2s ease-in-out;
+  color: black !important;
+}
+
+.year-picker-popout .react-datepicker__year-text--selected:hover {
+  background-color: #216ba5 !important; 
+  color: black !important;
+}
+
+.year-picker-popout .react-datepicker__year-text:not(.react-datepicker__year-text--selected):not(:hover) {
+  background-color: transparent !important; 
+}

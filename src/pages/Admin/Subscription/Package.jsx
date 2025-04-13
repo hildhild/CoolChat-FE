@@ -60,7 +60,7 @@ const packages = [
   },
 ];
 
-export const Package = ({ tierName, isActive }) => {
+export const Package = ({ tierName }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
   const [subscriptionType, setSubscriptionType] = useState("STARTER");
@@ -190,7 +190,7 @@ export const Package = ({ tierName, isActive }) => {
               ) : (
                 <button
                   className={`transition ease-in-out delay-100 hover:-translate-y-1 duration-200 px-[16px] pt-[11.2px] pb-[12.8px] border-[2px] border-[#4880FF] text-[#4880FF] bg-white rounded-full hover:bg-[#4880FF] hover:text-white ${
-                    isActive && "opacity-50"
+                    tierName === onePackage.packageName && "opacity-50"
                   }`}
                   onClick={() => {
                     setSubscriptionType(onePackage.packageName);
@@ -199,7 +199,7 @@ export const Package = ({ tierName, isActive }) => {
                       onePackage.packageName
                     );
                   }}
-                  disabled={isActive}
+                  disabled={tierName === onePackage.packageName}
                 >
                   Mua ngay
                 </button>
@@ -213,6 +213,7 @@ export const Package = ({ tierName, isActive }) => {
           </div>
         ))}
       </div>
+      <div className="italic text-sm text-red-500 mt-5">* Lưu ý: Nếu bạn đăng ký mua gói mới thì tất cả tài nguyên còn lại của gói hiện tại sẽ không còn</div>
     </>
   );
 };

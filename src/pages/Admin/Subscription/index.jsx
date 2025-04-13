@@ -1,12 +1,26 @@
-import { Chip, Progress, Tab, Tabs, Tooltip } from "@nextui-org/react";
+import {
+  Button,
+  Chip,
+  Progress,
+  Select,
+  SelectItem,
+  Tab,
+  Tabs,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
 import { DashboardLayout } from "../../../layouts";
 import { useTranslation } from "react-i18next";
 import PriceBg from "@/assets/pricebg.png";
-import { LoadingProcess, ToggleSection } from "../../../components";
+import {
+  ConfirmModal,
+  LoadingProcess,
+  ToggleSection,
+} from "../../../components";
 import { useEffect, useState } from "react";
 import {
-  getCurrentSubscriptionInfoApi,
-  initSubscriptionPaymentApi,
+  getActiveSubscriptionInfoApi,
+  renewSubscriptionApi,
 } from "../../../services/subscriptionApi";
 import { PaymentCancel } from "./PaymentCancel";
 import { PaymentSuccess } from "./PaymentSuccess";
@@ -20,6 +34,9 @@ import { Package } from "./Package";
 
 function Subscription() {
   const { t } = useTranslation();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [addtionalPeriod, setAdditionalPeriod] = useState("MONTHLY");
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     data,
@@ -29,10 +46,10 @@ function Subscription() {
     queryKey: ["subscriptionInfo"],
     queryFn: async () => {
       try {
-        const res = await getCurrentSubscriptionInfoApi();
+        const res = await getActiveSubscriptionInfoApi();
         console.log(13, res);
         if (res.status === 200) {
-          return res.data.results[0];
+          return res.data;
         } else {
           // toast.error(res.data.detail);
           return [];
@@ -82,18 +99,60 @@ function Subscription() {
   //   },
   // ];
 
+  const handleRenewSubscription = async () => {
+    setIsLoading(true);
+    await renewSubscriptionApi(addtionalPeriod).then((res) => {
+      if (res.status === 200) {
+        window.open(res.data.payment_link, "_self");
+      }
+    });
+    setIsLoading(false);
+  };
+
   return (
     <DashboardLayout page="subscription">
-      <LoadingProcess isLoading={isLoadingInfo} />
+      <ConfirmModal
+        isOpen={isOpen}
+        onClose={() => {
+          setAdditionalPeriod("MONTHLY");
+          onClose();
+        }}
+        onConfirm={() => {
+          onClose();
+          handleRenewSubscription();
+        }}
+        title="Gia hạn"
+        description=<div>
+          <div className="italic text-neutral-500  mb-5">
+            * Chọn thời hạn để gia hạn thêm thời gian cho gói cước hiện tại
+          </div>
+          <div className="flex justify-between items-center">
+            <div>Thời hạn:</div>
+            <Select
+              size="sm"
+              className="w-28"
+              selectedKeys={[addtionalPeriod]}
+              onChange={(e) => {
+                if (e.target.value) setAdditionalPeriod(e.target.value);
+              }}
+              selectionMode="single"
+            >
+              <SelectItem key="MONTHLY">1 tháng</SelectItem>
+              <SelectItem key="YEARLY">1 năm</SelectItem>
+            </Select>
+          </div>
+        </div>
+      />
+      <LoadingProcess isLoading={isLoadingInfo || isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">THANH TOÁN</div>
         <div className="bg-white px-5 py-8 rounded-xl mb-8">
           <div className="font-semibold text-lg mb-5">Đang sử dụng</div>
           <div className="flex flex-col items-center">
             <Chip color="primary" variant="flat" size="lg" className="mb-8">
-              {data?.tier_name === "Free"
+              {data?.tier_display === "Free"
                 ? "DÙNG THỬ MIỄN PHÍ"
-                : data?.tier_name === "Starter"
+                : data?.tier_display === "Starter"
                 ? "GÓI SƠ CẤP"
                 : "GÓI CHUYÊN NGHIỆP"}
             </Chip>
@@ -164,8 +223,8 @@ function Subscription() {
               <div className="grid-cols-4 lg:grid-cols-5 gap-3 grid w-full items-center mb-3">
                 <div
                   className={`col-span-1 font-semibold ${
-                    data?.human_agents_count === data?.total_human_agents_limit &&
-                    "text-red-500"
+                    data?.human_agents_count ===
+                      data?.total_human_agents_limit && "text-red-500"
                   }`}
                 >
                   Tài khoản nhân viên CSKH:
@@ -191,10 +250,20 @@ function Subscription() {
             </div>
             <div>
               {new Date(data?.current_period_end) >= new Date() ? (
-                <>
+                <div className="flex gap-3 items-center">
                   <span className="font-semibold">Hạn sử dụng:</span>{" "}
                   {dateTimeToString(new Date(data?.current_period_end))}
-                </>
+                  {data?.tier_name !== "FREE" && (
+                    <Button
+                      size="sm"
+                      color="primary"
+                      variant="bordered"
+                      onClick={onOpen}
+                    >
+                      Gia hạn
+                    </Button>
+                  )}
+                </div>
               ) : (
                 <Chip color="danger" variant="bordered">
                   Đã hết hạn
@@ -225,7 +294,7 @@ function Subscription() {
                   </Tooltip>
                 }
               >
-                <Package tierName={data?.tier_name} isActive={data?.is_active}/>
+                <Package tierName={data?.tier_name} />
               </Tab>
               <Tab
                 key="additional_charge"

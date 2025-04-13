@@ -8,6 +8,13 @@ export const initSubscriptionPaymentApi = (type, name, period) => {
     });
 }
 
+export const renewSubscriptionApi = (period) => {
+    return axios.post(`/subscription/subscriptions/renew/`, {
+        billing_period: period
+    });
+}
+
+
 export const initChargePaymentApi = (type, name, quantity) => {
     return axios.post(`/subscription/subscriptions/initiate_payment/`, {
         payment_type: type,
@@ -31,4 +38,8 @@ export const cancelPaymentApi = (id) => {
 
 export const getCurrentSubscriptionInfoApi = () => {
     return axios.get(`/subscription/subscriptions/`);
+}
+
+export const getActiveSubscriptionInfoApi = () => {
+    return axios.get(`/subscription/subscriptions/active/`);
 }

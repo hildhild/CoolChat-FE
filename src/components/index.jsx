@@ -10,5 +10,6 @@ export { TableBottom } from "./TableBottom";
 export { UploadImage } from "./UploadImage";
 import DotsSpinner from "./DotsSpinner";
 export { ToggleSection } from "./ToggleSection";
+import CustomDatePicker from "./CustomDatePicker/CustomDatePicker";
 
-export { Header, Footer, LoadingProcess, ChatBox, SelectLanguage, DotsSpinner};
+export { Header, Footer, LoadingProcess, ChatBox, SelectLanguage, DotsSpinner, CustomDatePicker};
