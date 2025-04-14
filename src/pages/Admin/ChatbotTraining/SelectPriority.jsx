@@ -13,8 +13,15 @@ export const SelectPriority = ({ id, value, setUpdatePriorities }) => {
 
   const handleChangePriority = (priority) => {
     setPriority(priority);
-    setUpdatePriorities(pre => [...pre.filter(item => item.id !== id), { id: id, priority: priority}].filter(item => (item.id === id && item.priority !== value) || item.id !== id))
-  }
+    setUpdatePriorities((pre) =>
+      [
+        ...pre.filter((item) => item.id !== id),
+        { id: id, priority: priority },
+      ].filter(
+        (item) => (item.id === id && item.priority !== value) || item.id !== id
+      )
+    );
+  };
 
   return (
     <Select
@@ -23,7 +30,11 @@ export const SelectPriority = ({ id, value, setUpdatePriorities }) => {
       defaultSelectedKeys={[priority]}
       size="sm"
       className="w-full"
-      onChange={(e) => handleChangePriority(e.target.value)}
+      onChange={(e) => {
+        if (e.target.value) {
+          handleChangePriority(e.target.value);
+        }
+      }}
       isRequired
     >
       <SelectItem key="HIGH">Cao</SelectItem>

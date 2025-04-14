@@ -74,12 +74,13 @@ export const DocumentList = ({
   documentPages,
   documentOfPage,
   refetch,
+  canTrain,
 }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [updatePriorities, setUpdatePriorities] = useState([]);
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [canTrain, setCanTrain] = useState(true);
+  const [isNotPending, setIsNotPending] = useState(false);
   const {
     isOpen: isOpenDelete,
     onOpen: onOpenDelete,
@@ -97,6 +98,19 @@ export const DocumentList = ({
     onOpenChange: onOpenChangeEdit,
   } = useDisclosure();
   const [curDoc, setCurDoc] = useState(null);
+
+  const handleCheckTrainStatus = async () => {
+    setIsLoading(true);
+    const res = await getTrainingStatusApi();
+    if (res.data.is_training === false) {
+      setIsNotPending(true);
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    handleCheckTrainStatus();
+  }, []);
 
   const data = documentList?.map((document) => {
     return {
@@ -321,14 +335,14 @@ export const DocumentList = ({
         if (res.status === 200) {
           refetch();
           toast.success("Đang chờ đào tạo");
-          setCanTrain(false);
+          setIsNotPending(false);
           const interval = setInterval(async () => {
             try {
               const res = await getTrainingStatusApi();
               if (res.data.is_training === false) {
                 clearInterval(interval);
                 toast.success("Đào tạo thành công");
-                setCanTrain(true);
+                setIsNotPending(true);
                 refetch();
               } else {
                 console.log("⏳ Training in progress...");
@@ -518,7 +532,7 @@ export const DocumentList = ({
                 </div>
                 {curDoc.document_type === "URL" && (
                   <>
-                    <div className="grid grid-cols-6 items-center">
+                    {/* <div className="grid grid-cols-6 items-center">
                       <div className="col-span-2">
                         Đường dẫn <span className="text-red-500">(*)</span>:
                       </div>{" "}
@@ -547,7 +561,7 @@ export const DocumentList = ({
                           {errors.url.message}
                         </div>
                       )}
-                    </div>
+                    </div> */}
                     <div className="grid grid-cols-6 items-center">
                       <div className="col-span-2">
                         Mô tả <span className="text-red-500">(*)</span>:
@@ -675,9 +689,9 @@ export const DocumentList = ({
               onChange={(e) => setDocumentType(e.target.value)}
             >
               <SelectItem key="">Tất cả</SelectItem>
-              <SelectItem key="FILE">FILE</SelectItem>
-              <SelectItem key="TEXT">TEXT</SelectItem>
-              <SelectItem key="URL">URL</SelectItem>
+              <SelectItem key="FILE">Tập tin</SelectItem>
+              <SelectItem key="TEXT">Văn bản</SelectItem>
+              <SelectItem key="URL">Website</SelectItem>
             </Select>
             <Select
               aria-label="select priority"
@@ -689,10 +703,9 @@ export const DocumentList = ({
               onChange={(e) => setPriority(e.target.value)}
             >
               <SelectItem key="">Tất cả</SelectItem>
-              <SelectItem key="HIGH">HIGH</SelectItem>
-              <SelectItem key="MEDIUM">MEDIUM</SelectItem>
-              <SelectItem key="LOW">LOW</SelectItem>
-              <SelectItem key="NONE">NONE</SelectItem>
+              <SelectItem key="HIGH">Cao</SelectItem>
+              <SelectItem key="MEDIUM">Trung bình</SelectItem>
+              <SelectItem key="LOW">Thấp</SelectItem>
             </Select>
             <Button
               variant="bordered"
@@ -756,14 +769,22 @@ export const DocumentList = ({
         </div>
       </div>
       <div className="flex gap-5 justify-end mb-5">
-        <Button
+        {/* <Button
           color="primary"
           onClick={() => navigate("comparison")}
           isDisabled={!isEditted}
         >
           SO SÁNH CHATBOT
-        </Button>
-        <Button color="success" onClick={handleSave} isDisabled={!canTrain}>
+        </Button> */}
+        <Button
+          color="success"
+          onClick={handleSave}
+          isDisabled={
+            (canTrain && !isNotPending) ||
+            (!canTrain && !isNotPending && updatePriorities.length > 0) ||
+            (!canTrain && isNotPending && updatePriorities.length <= 0)
+          }
+        >
           LƯU VÀ ĐÀO TẠO
         </Button>
       </div>

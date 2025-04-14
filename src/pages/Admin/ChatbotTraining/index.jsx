@@ -25,6 +25,7 @@ function ChatbotTraining() {
   const [total, setTotal] = useState(0);
   const [documentPages, setDocumentPages] = useState(0);
   const [documentOfPage, setDocumentOfPage] = useState(0);
+  const [canTrain, setCanTrain] = useState(false);
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: [
@@ -49,6 +50,7 @@ function ChatbotTraining() {
           setTotal(res.data.count);
           setDocumentOfPage(res.data.results.length);
           setDocumentPages(Math.ceil(res.data.count / pageSize));
+          setCanTrain(res.data.has_documents_needing_training);
           return res.data.results;
         } else {
           // toast.error(res.data.detail);
@@ -82,6 +84,7 @@ function ChatbotTraining() {
             documentPages={documentPages}
             documentOfPage={documentOfPage}
             refetch={refetch}
+            canTrain={canTrain}
           />
         </ToggleSection>
         <ToggleSection
