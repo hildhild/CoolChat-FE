@@ -32,13 +32,15 @@ instance.interceptors.response.use(function (response) { //Máy chặn yêu cầ
         console.log('Error: ', error.message);
     }
     console.log(1, res);
-    if (res.data.errors && res.data.errors.length > 0 && (res.data.errors[0] === "Given token not valid for any token type" || res.data.errors[0] === "Authentication credentials were not provided.")) {
+    if (res.data?.errors && res.data?.errors.length > 0 && (res.data?.errors[0] === "Given token not valid for any token type" || res.data.errors[0] === "Authentication credentials were not provided.")) {
         store.dispatch(setToken(""));
         localStorage.removeItem("token");
-    } else if (res.data.errors && res.data.errors.length > 0) {
-        toast.error(errors[res.data.errors[0]] ? errors[res.data.errors[0]] : "Đã xảy ra lỗi");
-    } else if (res.data.error) {
-        toast.error(errors[res.data.error] ? errors[res.data.error] : "Đã xảy ra lỗi");
+    } else if (res.data?.errors && res.data?.errors.length > 0) {
+        toast.error(errors[res.data?.errors[0]] ? errors[res.data?.errors[0]] : "Đã xảy ra lỗi");
+    } else if (res.data?.error) {
+        toast.error(errors[res.data?.error] ? errors[res.data?.error] : "Đã xảy ra lỗi");
+    } else {
+        toast.error("Lỗi không xác định")
     }
     return res;
 });

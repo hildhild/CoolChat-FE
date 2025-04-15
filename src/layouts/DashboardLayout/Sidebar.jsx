@@ -301,7 +301,7 @@ export const Sidebar = ({ page }) => {
           <LargeSidebar page={page} isExpanded={isExpanded} />
         </div>
         <div
-          className="absolute md:hidden w-[100vw] h-[100vh] bg-[#00000030] z-50"
+          className="fixed md:hidden w-[100vw] h-[100vh] bg-[#00000030] z-50"
           onClick={() => dispatch(toggleIsExpanded())}
         >
           <LargeSidebar page={page} isExpanded={isExpanded} />

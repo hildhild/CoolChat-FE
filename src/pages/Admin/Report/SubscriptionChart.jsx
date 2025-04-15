@@ -47,7 +47,7 @@ export const SubscriptionChart = ({
 
   return (
     <div className="bg-white px-5 py-8 rounded-xl">
-      <div className="flex w-full justify-between items-center mb-5">
+      <div className="flex flex-col md:flex-row w-full justify-between items-center mb-5">
         <div className="font-semibold text-lg mb-5">Đăng ký</div>
         <div className="flex items-center gap-3">
           <div className="w-52">

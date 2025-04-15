@@ -140,9 +140,9 @@ export const EditChatbotInterface = ({
         title="Khôi phục mặc định"
         description="Bạn có chắc chắn muốn khôi phục lại cấu hình mặc định?"
       />
-      <div className="flex gap-8 mb-5">
+      <div className="flex flex-col lg:flex-row gap-8 mb-5">
         <div>
-          <div className="mb-2 text-center py-1">Ảnh đại diện</div>
+          <div className="mb-2 w-[130px] text-center py-1">Ảnh đại diện</div>
           <UploadImage
             image={avatar}
             setImage={setAvatar}

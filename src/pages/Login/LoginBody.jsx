@@ -127,7 +127,7 @@ function LoginBody() {
         </div>
         <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
       </div>
-      <div className="w-full">
+      {/* <div className="w-full">
         <Button
           className="bg-white border-[1px] border-[#677283] w-full rounded-xl font-semibold mb-7"
           onClick={onSubmitWithReCAPTCHA}
@@ -149,13 +149,13 @@ function LoginBody() {
           <img src={GoogleLogo} className="w-7 h-7"></img>
           {t("continue_with_google_csr")}
         </Button>
-      </div>
-      <div className="flex justify-center items-center pt-7 w-full">
+      </div> */}
+      {/* <div className="flex justify-center items-center pt-7 w-full">
         <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
         <div className="text-lg mx-5 uppercase">{t("or")}</div>
         <div className="h-[1px] w-[20%] md:w-[30%] bg-slate-200"></div>
-      </div>
-      <div className="flex w-full justify-center items-center py-5">
+      </div> */}
+      <div className="flex w-full justify-center items-center pb-5">
         <img src={LogoOnly} className="w-10 h-10 mr-2"></img>
         <div className="font-semibold">{t("enter_your_account")}</div>
       </div>

@@ -222,7 +222,7 @@ function ChatDetail() {
   return (
     <DashboardLayout page="chat">
       <LoadingProcess isLoading={isLoading} />
-      <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 max-h-[calc(100vh-32px)] relative flex flex-col">
+      <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh] relative flex flex-col">
         <Breadcrumbs className="mb-6">
           <BreadcrumbItem href="/chat">
             <div className="font-semibold text-2xl">HỘI THOẠI</div>
@@ -231,7 +231,7 @@ function ChatDetail() {
             <div className="font-semibold text-2xl">CHI TIẾT HỘI THOẠI</div>
           </BreadcrumbItem>
         </Breadcrumbs>
-        <div className="grid grid-cols-3 gap-5">
+        <div className="flex flex-col-reverse lg:grid lg:grid-cols-3 gap-5">
           <div
             className={`${
               showDetail ? "col-span-2" : "col-span-3"

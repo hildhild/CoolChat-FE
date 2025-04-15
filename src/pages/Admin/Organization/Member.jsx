@@ -303,13 +303,13 @@ export const Member = () => {
   };
 
   const handleDeleteMember = async (id) => {
+    onClose();
     setIsLoading(true);
     await removeMemberApi(id).then((res) => {
       if (res.status === 200) {
         toast.success("Xóa thành viên thành công");
         setMemberId(null);
         refetchMember();
-        onClose();
       }
       // else {
       //   if (res?.data.non_field_errors) {
@@ -321,14 +321,13 @@ export const Member = () => {
   };
 
   const handleRevokeInvitation = async (id) => {
+    onClose();
     setIsLoading(true);
     await revokeInviteApi(id).then((res) => {
-      console.log(4, res);
       if (res.status === 200) {
         toast.success("Hủy lời mời thành công");
         setInvitationId(null);
         refetchInvitation();
-        onClose();
       }
       // else {
       //   if (res?.data.detail) {
