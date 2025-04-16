@@ -107,9 +107,9 @@ function PriceSection() {
   return (
     <section id="pricing-section" className="py-[64px]">
       <div className="max-w-[1140px] px-[16px] mt-[32px] mx-[auto] relative">
-        <div className="text-[24px] md:text-[32px] min-[1140px]:h-[78px] flex items-end font-semibold justify-start py-[10px] mb-[32px] px-[16px]">
+        <motion.div className="text-[24px] md:text-[32px] min-[1140px]:h-[78px] flex items-end font-semibold justify-start py-[10px] mb-[32px] px-[16px]">
           {t("supported_price")}
-        </div>
+        </motion.div>
         <div className="w-full">
           <div className={`grid grid-cols-1 md:grid-cols-3 gap-20 mx-[16px]`}>
             {/* {packages.map((onePackage, index) => (
@@ -163,7 +163,12 @@ function PriceSection() {
               </div>
             ))} */}
             {packages.map((onePackage, index) => (
-              <div
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.2 }}
+                viewport={{ once: true }}
                 key={index}
                 className={`p-[16px] rounded-xl col-span-1 shadow-lg`}
                 style={{
@@ -259,7 +264,7 @@ function PriceSection() {
                     </button>
                   </a>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

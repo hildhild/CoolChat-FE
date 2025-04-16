@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronLeft, faChevronRight, faRobot, faBook, faDollarSign } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faRobot,
+  faBook,
+  faDollarSign,
+} from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
-
+import { motion } from "framer-motion";
 
 const NextArrow = (props) => {
   const { onClick } = props;
@@ -31,27 +37,27 @@ const PrevArrow = (props) => {
 const HorizontalTabs = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [slidesToShow, setSlidesToShow] = useState(3);
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const tabData = [
     {
-      title: t('fea1'),
+      title: t("fea1"),
       icon: faRobot,
-      content: t('fea1_des'),
+      content: t("fea1_des"),
       bgColor: "bg-amber-500",
       iconColor: "text-amber-500",
     },
     {
-      title: t('fea2'),
+      title: t("fea2"),
       icon: faBook,
-      content: t('fea2_des'),
+      content: t("fea2_des"),
       bgColor: "bg-cyan-500",
       iconColor: "text-cyan-500",
     },
     {
-      title: t('fea3'),
+      title: t("fea3"),
       icon: faDollarSign,
-      content: t('fea3_des'),
+      content: t("fea3_des"),
       bgColor: "bg-[#7fab3d]",
       iconColor: "text-[#7fab3d]",
     },
@@ -89,10 +95,10 @@ const HorizontalTabs = () => {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -110,16 +116,28 @@ const HorizontalTabs = () => {
 
   return (
     <div className="max-w-[1140px] mt-[50px] mx-auto px-[16px]">
-      <div className="text-[16px] font-medium text-gray-600 mb-2 px-4 text-left md:text-left">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="text-[16px] font-medium text-gray-600 mb-2 px-4 text-left md:text-left"
+      >
         COOLCHAT IN ACTION
-      </div>
-      
+      </motion.div>
+
       {/* Container chính */}
-      <div className="relative flex flex-col md:flex-row md:items-end justify-between px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="relative flex flex-col md:flex-row md:items-end justify-between px-4"
+      >
         {/* Container chứa nội dung */}
         <div className="flex-1 text-left md:text-left">
           <h2 className="text-2xl md:text-[32px] font-semibold text-gray-800 mb-6">
-            {t('outstanding_features')}
+            {t("outstanding_features")}
           </h2>
         </div>
 
@@ -128,16 +146,22 @@ const HorizontalTabs = () => {
           <PrevArrow onClick={handlePrev} />
           <NextArrow onClick={handleNext} />
         </div>
-      </div>
+      </motion.div>
 
       <div className="relative overflow-hidden">
         <div
           className="flex transition-transform duration-300"
-          style={{ transform: `translateX(-${activeIndex * (100 / slidesToShow)}%)` }}
+          style={{
+            transform: `translateX(-${activeIndex * (100 / slidesToShow)}%)`,
+          }}
         >
           {tabData.map((tab, index) => (
-            <div
+            <motion.div
               key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.2 }}
+              viewport={{ once: true }}
               className="w-full md:w-1/3 flex-shrink-0 p-4 box-border mb-[16px]"
               style={{ width: `${100 / slidesToShow}%` }}
             >
@@ -145,16 +169,21 @@ const HorizontalTabs = () => {
                 <div className="relative">
                   <div className={`${tab.bgColor} p-2 flex  justify-start`}>
                     <div className="bg-white p-2 rounded-md shadow-md flex ">
-                      <FontAwesomeIcon icon={tab.icon} className={`text-xl ${tab.iconColor}`} />
+                      <FontAwesomeIcon
+                        icon={tab.icon}
+                        className={`text-xl ${tab.iconColor}`}
+                      />
                     </div>
                   </div>
                 </div>
                 <div className="p-4">
-                  <h3 className="text-xl font-bold text-gray-800">{tab.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-800">
+                    {tab.title}
+                  </h3>
                   <p className="mt-2 text-gray-600">{tab.content}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
