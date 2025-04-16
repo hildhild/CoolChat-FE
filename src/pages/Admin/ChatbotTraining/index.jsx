@@ -14,6 +14,8 @@ import { LoadingProcess, ToggleSection } from "../../../components";
 import useDebounce from "../../../hooks/useDebounce";
 import { getDocumentsApi } from "../../../services/documentApi";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import PreviewChatBox from "../ChatbotEditting/PreviewChatbox";
 
 function ChatbotTraining() {
   const [page, setPage] = useState(1);
@@ -26,6 +28,9 @@ function ChatbotTraining() {
   const [documentPages, setDocumentPages] = useState(0);
   const [documentOfPage, setDocumentOfPage] = useState(0);
   const [canTrain, setCanTrain] = useState(false);
+  const chatbotConfig = useSelector((state) => state.chatbotConfig.config);
+  const [previewConfig, setPreviewConfig] = useState(chatbotConfig);
+  const [isPreview, setIsPreview] = useState(false);
 
   const { data, refetch, isLoading } = useQuery({
     queryKey: [
@@ -64,6 +69,11 @@ function ChatbotTraining() {
 
   return (
     <DashboardLayout page="chatbot-training">
+      <PreviewChatBox
+        config={previewConfig}
+        isPreview={isPreview}
+        setIsPreview={setIsPreview}
+      />
       <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">ĐÀO TẠO CHATBOT</div>
