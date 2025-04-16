@@ -136,7 +136,7 @@ const HorizontalTabs = () => {
       >
         {/* Container chứa nội dung */}
         <div className="flex-1 text-left md:text-left">
-          <h2 className="text-2xl md:text-[32px] font-semibold text-gray-800 mb-6">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
             {t("outstanding_features")}
           </h2>
         </div>

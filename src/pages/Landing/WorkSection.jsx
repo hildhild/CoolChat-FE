@@ -12,7 +12,7 @@ export const WorkSection = () => {
           viewport={{ once: true }}
           className="text-center mb-16 animate-on-scroll"
         >
-          <h2 className="text-3xl font-bold mb-4 text-gray-900 relative inline-block">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 relative inline-block">
             Cách CoolChat hoạt động
             <span className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-[#4880FF] to-blue-200 rounded"></span>
           </h2>

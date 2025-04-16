@@ -1,5 +1,5 @@
 import { Button, Link } from "@nextui-org/react";
-import { BsArrowRight } from "react-icons/bs";
+import { BsArrowDown, BsArrowRight } from "react-icons/bs";
 import { LuMessageCircle } from "react-icons/lu";
 import { motion } from "framer-motion";
 import Logo from "@/assets/CoolChat Logo/3.png";
@@ -44,10 +44,10 @@ export const Company = () => {
               <img src={Logo} className="w-16 h-16" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-md">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-white drop-shadow-md">
             Về <span className="relative inline-block">CoolChat</span>
           </h1>
-          <p className="text-xl md:text-2xl mb-10 text-white/90 drop-shadow">
+          <p className="text-xl mb-10 text-white/90 drop-shadow">
             Chúng tôi đang xây dựng tương lai của dịch vụ chăm sóc khách hàng
             thông qua công nghệ chatbot thông minh
           </p>
@@ -64,7 +64,7 @@ export const Company = () => {
               }}
             >
               <div className="flex items-center">
-                Liên hệ với chúng tôi <BsArrowRight className="ml-2 h-5 w-5" />
+                Liên hệ với chúng tôi <BsArrowDown className="ml-2 h-5 w-5" />
               </div>
             </Button>
           </motion.div>

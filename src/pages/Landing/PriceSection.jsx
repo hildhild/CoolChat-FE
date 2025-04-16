@@ -107,7 +107,7 @@ function PriceSection() {
   return (
     <section id="pricing-section" className="py-[64px]">
       <div className="max-w-[1140px] px-[16px] mt-[32px] mx-[auto] relative">
-        <motion.div className="text-[24px] md:text-[32px] min-[1140px]:h-[78px] flex items-end font-semibold justify-start py-[10px] mb-[32px] px-[16px]">
+        <motion.div className="text-3xl font-bold text-gray-900 min-[1140px]:h-[78px] flex items-end justify-start py-[10px] mb-[32px] px-[16px]">
           {t("supported_price")}
         </motion.div>
         <div className="w-full">

@@ -38,20 +38,20 @@ const WelcomeSection = () => {
         transition={{ duration: 0.6 }}
       >
         <div className="content max-w-lg text-center lg:text-left flex-1 z-20 lg:mr-8 overflow-hidden mb-16">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 mt-24">
-            <div>COOLCHAT -</div>
-            <div>MAKE IT COOL</div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 mt-24">
+            <div className="drop-shadow-md">COOLCHAT -</div>
+            <div className="drop-shadow-md">MAKE IT COOL</div>
           </h1>
-          <p className="text-base sm:text-lg mb-6">{t("web_des")}</p>
-          <div className="signup-form max-w-lg lg:max-w-md text-center lg:text-left flex gap-3 z-20 lg:mr-8 xl:pb-[24px] justify-center lg:justify-start">
+          <p className="text-xl mb-8 drop-shadow">{t("web_des")}</p>
+          <div className="mb-4 signup-form max-w-lg lg:max-w-md text-center lg:text-left flex flex-col sm:flex-row gap-3 z-20 lg:mr-8 xl:pb-[24px] justify-center lg:justify-start">
             <button
-              className="btn-signup rounded-lg text-[#4880FF] bg-[#fff] hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto mb-4 align-middle"
+              className="btn-signup rounded-lg text-[#4880FF] bg-[#fff] hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto align-middle"
               onClick={handleFreeTrialClick}
             >
               {t("free_trial")}
             </button>
             <a href="https://www.youtube.com/@hild_____">
-              <button className="btn-signup rounded-lg text-white bg-transparent border-white border-2 hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto mb-4 align-middle">
+              <button className="btn-signup rounded-lg text-white bg-transparent border-white border-2 hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto align-middle">
                 Xem demo
               </button>
             </a>
