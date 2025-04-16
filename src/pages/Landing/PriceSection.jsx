@@ -169,7 +169,6 @@ function PriceSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
                 viewport={{ once: true }}
-                key={index}
                 className={`p-[16px] rounded-xl col-span-1 shadow-lg`}
                 style={{
                   backgroundImage: `url(${PriceBg})`,

@@ -89,13 +89,13 @@ const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center justify-center">
-          <div className="mr-6">
+          {/* <div className="mr-6">
             <SelectLanguage
               handleClick={handleSelectLangClick1}
               showMenu={showMenu1}
               setShowMenu={setShowMenu1}
             />
-          </div>
+          </div> */}
           <button
             className={`hamburger hamburger--spin ${
               isMobileMenuOpen ? "is-active" : ""
@@ -125,11 +125,19 @@ const Header = () => {
             {menuItems.map((item) => (
               <button
                 key={item.name}
+                // onClick={() => {
+                //   window.scrollTo({
+                //     top: document.getElementById(item.href).offsetTop,
+                //     behavior: "smooth",
+                //   });
+                //   setIsMobileMenuOpen(false);
+                // }}
                 onClick={() => {
-                  window.scrollTo({
-                    top: document.getElementById(item.href).offsetTop,
-                    behavior: "smooth",
-                  });
+                  if (item.href === "/about-us") {
+                    navigate(item.href);
+                  } else {
+                    navigate("/", { state: { scrollTo: item.href } });
+                  }
                   setIsMobileMenuOpen(false);
                 }}
                 className="block text-lg text-gray-800 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300 text-center"
@@ -139,7 +147,7 @@ const Header = () => {
             ))}
             <Link
               to="/login"
-              className="block text-lg text-gray-800 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300"
+              className="block text-lg text-coolchat font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {t("login")}

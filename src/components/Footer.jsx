@@ -55,21 +55,21 @@ function Footer() {
                         </div><div className="col-span-1 px-[32px] py-[32px]">
                             <div className=" mb-3 font-semibold uppercase">{t('contact_support')}</div>
                             <div className="text-[#9a9a9a] mb-3 text-[14px]"><strong>Hotline:</strong> 0357677243</div>
-                            <div className="text-[#9a9a9a] mb-3 text-[14px]"><strong>Email:</strong> <a href="mailto:ccc.support@gmail.com" className="transition duration-200 delay-100 text-[#9a9a9a] no-underline hover:underline-offset-4 hover:underline hover:text-white">ccc.support@gmail.com</a></div>
+                            <div className="text-[#9a9a9a] mb-3 text-[14px]"><strong>Email:</strong> <a href="mailto:ccc.support@gmail.com" className="break-all transition duration-200 delay-100 text-[#9a9a9a] no-underline hover:underline-offset-4 hover:underline hover:text-white">ccc.support@gmail.com</a></div>
                             <div className="mb-3">
                                 <a href="#" className="text-[14px] transition duration-200 delay-100 text-[#9a9a9a] no-underline hover:underline-offset-4 hover:underline hover:text-white">{t('document')}</a>
                             </div>
-                            <div className="flex mt-4 space-x-[30px]">
-                                <a href="https://www.youtube.com/@hild_____" target="_blank" rel="noopener noreferrer" className="w-[25px] h-[25px] text-white hover:-translate-y-0.5">
+                            <div className="flex mt-4 items-center gap-3">
+                                <a href="https://www.youtube.com/@hild_____" target="_blank" rel="noopener noreferrer" className="text-white hover:-translate-y-0.5">
                                     <FontAwesomeIcon icon={faYoutube} className='text-[25px]' />
                                 </a>
-                                <a href="#" target="_blank" rel="noopener noreferrer" className="w-[25px] h-[25px] text-white hover:-translate-y-0.5">
+                                <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:-translate-y-0.5">
                                     <FontAwesomeIcon icon={faFacebookSquare} className='text-[25px]' />
                                 </a>
-                                <a href="#" target="_blank" rel="noopener noreferrer" className="w-[25px] h-[25px]">
+                                <a href="#" target="_blank" rel="noopener noreferrer">
                                     <img src={ZaloLogo} alt="Zalo" className="w-[25px] h-[25px] transition duration-300 transform hover:scale-110 hover:-translate-y-0.5" />
                                 </a>
-                                <a href="#" target="_blank" rel="noopener noreferrer" className="w-[25px] h-[25px] text-white hover:-translate-y-0.5">
+                                <a href="#" target="_blank" rel="noopener noreferrer" className="text-white hover:-translate-y-0.5">
                                     <FontAwesomeIcon icon={faLinkedin} className='text-[25px]' />
                                 </a>
                             </div>

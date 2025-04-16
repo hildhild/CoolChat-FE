@@ -45,9 +45,9 @@ const HeaderAuthen = () => {
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center justify-center">
-          <div className="mr-6">
+          {/* <div className="mr-6">
             <SelectLanguage handleClick={handleSelectLangClick1} showMenu={showMenu1} setShowMenu={setShowMenu1} />
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

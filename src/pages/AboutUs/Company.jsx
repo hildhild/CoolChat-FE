@@ -6,7 +6,7 @@ import Logo from "@/assets/CoolChat Logo/3.png";
 
 export const Company = () => {
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-24 overflow-hidden px-4">
       <div className="absolute inset-0 bg-gradient-to-br from-[#4880FF] via-[#5D8DFF] to-[#3060D8] z-0"></div>
       <div className="absolute inset-0 opacity-20 z-0">
         <svg

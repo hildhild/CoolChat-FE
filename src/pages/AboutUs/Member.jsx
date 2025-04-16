@@ -6,7 +6,7 @@ import Huy from "@/assets/huy.jpg";
 export const Member = () => {
   return (
     <section className="py-24 bg-white relative max-w-[1140px] mx-auto">
-      <div className="container relative mx-auto px-4 md:px-6 z-10">
+      <div className="container relative mx-auto px-8 z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
