@@ -115,7 +115,7 @@ const HorizontalTabs = () => {
   };
 
   return (
-    <div className="max-w-[1140px] mt-[50px] mx-auto px-[16px]">
+    <div className="max-w-[1200px] mt-[50px] mx-auto px-[16px]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

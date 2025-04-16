@@ -32,7 +32,7 @@ const WelcomeSection = () => {
   return (
     <section className="welcome-section relative lg:bg-gradient-to-r bg-gradient-to-b from-[#4880FF] to-[#a3dffa] text-white mt-16 pt-20 pb-16 flex items-center justify-center overflow-hidden">
       <motion.div
-        className="w-full max-w-[1140px] mx-auto px-8 flex flex-col lg:flex-row items-center justify-between overflow-hidden mb-8 z-30"
+        className="w-full max-w-[1200px] mx-auto px-8 flex flex-col lg:flex-row items-center justify-between overflow-hidden mb-8 z-30"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

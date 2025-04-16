@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import Logo from "@/assets/CoolChat Logo/3.png";
 
 export const  Mission = () => {
-    return  <section className="py-24 bg-white relative max-w-[1140px] mx-auto">
-    <div className="container mx-auto px-8">
+    return  <section className="py-24 bg-white relative">
+    <div className="container mx-auto px-8 max-w-[1200px]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <motion.div
           initial={{ opacity: 0, x: -50 }}

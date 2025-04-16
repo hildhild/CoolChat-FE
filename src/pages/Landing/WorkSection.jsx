@@ -4,7 +4,7 @@ export const WorkSection = () => {
   return (
     <section className="py-24 relative" id="work-section">
       <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50 to-white"></div>
-      <div className="container relative mx-auto px-8 md:px-8 z-10 max-w-[1140px]">
+      <div className="container relative px-8 md:px-8 z-10 mx-auto max-w-[1200px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

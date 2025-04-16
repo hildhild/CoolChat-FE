@@ -251,7 +251,7 @@ export const DocumentList = ({
       );
     } else if (columnKey === "operation") {
       return (
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           {cellValue.document_type === "URL" ? (
             <Tooltip content="Chi tiết">
               <button

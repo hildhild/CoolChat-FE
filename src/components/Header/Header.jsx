@@ -30,7 +30,7 @@ const Header = () => {
 
   return (
     <header className="bg-white fixed top-0 w-full z-50 shadow-md font-nunito">
-      <div className="max-w-[1140px] mx-auto flex justify-between items-center h-16 px-[32px]">
+      <div className="max-w-[1200px] mx-auto flex justify-between items-center h-16 px-[32px]">
         {/* Logo */}
         <button
           className="flex-shrink-0"

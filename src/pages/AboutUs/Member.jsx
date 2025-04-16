@@ -5,8 +5,8 @@ import Huy from "@/assets/huy.jpg";
 
 export const Member = () => {
   return (
-    <section className="py-24 bg-white relative max-w-[1140px] mx-auto">
-      <div className="container relative mx-auto px-8 z-10">
+    <section className="py-24 bg-white relative">
+      <div className="container relative mx-auto px-8 z-10 max-w-[1200px]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -26,9 +26,9 @@ export const Member = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { name: "Lê Đình Huy", role: "Giám đốc Frontend", img: Huy },
-            { name: "Phạm Đức Thắng", role: "Giám đốc Backend", img: Thang },
-            { name: "Nguyễn Đức An", role: "Giám đốc AI", img: An },
+            { name: "Lê Đình Huy", role: "Trưởng nhóm Front-end", img: Huy },
+            { name: "Phạm Đức Thắng", role: "Trưởng nhóm Back-end", img: Thang },
+            { name: "Nguyễn Đức An", role: "Trưởng nhóm AI", img: An },
           ].map((member, index) => (
             <motion.div
               key={index}
