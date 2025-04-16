@@ -193,7 +193,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
         </>
       )}
 
-      {userRole === "AGENT" && (
+      {/* {userRole === "AGENT" && (
         <Link to="/appointment">
           {page === "appointment" ? (
             <div
@@ -219,7 +219,7 @@ const LargeSidebar = ({ page, isExpanded }) => {
             </div>
           )}
         </Link>
-      )}
+      )} */}
       <Link to="/organization">
         {page === "organization" ? (
           <div
@@ -419,7 +419,7 @@ export const Sidebar = ({ page }) => {
             </Link>
           </>
         )}
-        {userRole === "AGENT" && (
+        {/* {userRole === "AGENT" && (
           <Link to="/appointment">
             <Tooltip content="Lịch hẹn" placement="right">
               {page === "appointment" ? (
@@ -440,7 +440,7 @@ export const Sidebar = ({ page }) => {
               )}
             </Tooltip>
           </Link>
-        )}
+        )} */}
         <Link to="/organization">
           <Tooltip content="Tổ chức" placement="right">
             {page === "organization" ? (

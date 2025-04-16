@@ -240,6 +240,15 @@ export const OrganizationInfo = () => {
             </div>
           )}
         </div> */}
+        <Input
+          name="role"
+          label="Vai trò"
+          type="text"
+          variant="bordered"
+          value={userRole === 'OWNER' ? "Chủ sở hữu" : userRole === "ADMIN" ? "Quản trị viên" : "Nhân viên CSKH"}
+          isDisabled
+          className={userRole !== 'OWNER' && `opacity-100`}
+        />
       </div>
       {userRole === "OWNER" && (
         <div className="flex gap-5 justify-end">

@@ -117,7 +117,7 @@ const DashboardHeader = () => {
                   src: userInfo.avatar
                     ? userInfo.avatar
                     : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png",
-                  className: "bg-white",
+                  className: "bg-white border-2 border-coolchat",
                 }}
               />
             </DropdownTrigger>

@@ -81,9 +81,9 @@ function App() {
       <Route path="/setting" element={<Setting />} />
 
       <Route path="/organization" element={<Organization />} />
-      {userRole === "AGENT" && (
+      {/* {userRole === "AGENT" && (
         <Route path="/appointment" element={<Appointment />} />
-      )}
+      )} */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
