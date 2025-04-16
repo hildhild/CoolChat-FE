@@ -17,6 +17,7 @@ import {
   Organization,
   Appointment,
   NotFound,
+  AboutUs,
 } from "./pages";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { PaymentCancel, PaymentSuccess } from "./pages/Admin/Subscription";
@@ -31,6 +32,7 @@ function App() {
   useEffect(() => {
     const authPages = [
       "/",
+      "/about-us",
       "/login",
       "/sign-up",
       "/forgot-password",
@@ -56,6 +58,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/about-us" element={<AboutUs />} />
       <Route path="/sign-up" element={<Signup />} />
       <Route path="/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />

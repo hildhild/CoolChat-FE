@@ -8,7 +8,7 @@ const NextArrow = (props) => {
   const { onClick } = props;
   return (
     <div
-      className="transition ease-in-out delay-100 duration-200 cursor-pointer bg-[#F4F5F7] text-[#80AB3D] rounded-full w-[30px] h-[30px] grid place-content-center hover:bg-[#80AB3D] hover:text-white"
+      className="transition ease-in-out delay-100 duration-200 cursor-pointer bg-[#F4F5F7] text-coolchat rounded-full w-[30px] h-[30px] grid place-content-center hover:bg-coolchat hover:text-white"
       onClick={onClick}
     >
       <FontAwesomeIcon icon={faChevronRight} className="text-[16px]" />
@@ -20,7 +20,7 @@ const PrevArrow = (props) => {
   const { onClick } = props;
   return (
     <div
-      className="transition ease-in-out delay-100 duration-200 cursor-pointer bg-[#F4F5F7] text-[#80AB3D] rounded-full w-[30px] h-[30px] grid place-content-center hover:bg-[#80AB3D] hover:text-white"
+      className="transition ease-in-out delay-100 duration-200 cursor-pointer bg-[#F4F5F7] text-coolchat rounded-full w-[30px] h-[30px] grid place-content-center hover:bg-coolchat hover:text-white"
       onClick={onClick}
     >
       <FontAwesomeIcon icon={faChevronLeft} className="text-[16px]" />

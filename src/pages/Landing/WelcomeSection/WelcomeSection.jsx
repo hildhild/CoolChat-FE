@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import ImageCarousel from "./ImageCarousel";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 
 const WelcomeSection = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const handleFreeTrialClick = () => {
-    window.location.href =
-      "/sign-up"; // Redirect to the specified URL
+    window.location.href = "/sign-up"; // Redirect to the specified URL
   };
 
   useEffect(() => {
@@ -31,28 +31,37 @@ const WelcomeSection = () => {
 
   return (
     <section className="welcome-section relative lg:bg-gradient-to-r bg-gradient-to-b from-[#4880FF] to-[#a3dffa] text-white mt-16 pt-20 pb-16 flex items-center justify-center overflow-hidden">
-      <div className="w-full max-w-[1140px] mx-auto px-8 flex flex-col lg:flex-row items-center justify-between overflow-hidden mb-8 z-30">
+      <motion.div
+        className="w-full max-w-[1140px] mx-auto px-8 flex flex-col lg:flex-row items-center justify-between overflow-hidden mb-8 z-30"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="content max-w-lg text-center lg:text-left flex-1 z-20 lg:mr-8 overflow-hidden mb-16">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 mt-24 ">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 mt-24">
             <div>COOLCHAT -</div>
             <div>MAKE IT COOL</div>
           </h1>
-          <p className="text-base sm:text-lg mb-6">
-            {t('web_des')}
-          </p>
-          <div className="signup-form max-w-lg lg:max-w-md text-center lg:text-left flex-1 z-20 lg:mr-8 xl:pb-[24px]">
+          <p className="text-base sm:text-lg mb-6">{t("web_des")}</p>
+          <div className="signup-form max-w-lg lg:max-w-md text-center lg:text-left flex gap-3 z-20 lg:mr-8 xl:pb-[24px] justify-center lg:justify-start">
             <button
               className="btn-signup rounded-lg text-[#4880FF] bg-[#fff] hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto mb-4 align-middle"
               onClick={handleFreeTrialClick}
             >
-              {t('free_trial')}
+              {t("free_trial")}
             </button>
+            <a href="https://www.youtube.com/@hild_____">
+              <button className="btn-signup rounded-lg text-white bg-transparent border-white border-2 hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto mb-4 align-middle">
+                Xem demo
+              </button>
+            </a>
           </div>
         </div>
+
         <div className="illustration lg:max-w-lg lg:mt-0 flex justify-end items-center relative zoom-restrict">
           <ImageCarousel />
         </div>
-      </div>
+      </motion.div>
       <svg
         className="absolute bottom-0 left-0 w-full z-10"
         xmlns="http://www.w3.org/2000/svg"

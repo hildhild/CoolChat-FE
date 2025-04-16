@@ -9,7 +9,7 @@ function Footer() {
     const { t } = useTranslation();
 
     return (
-        <div className="bg-[#303030] text-white">
+        <div className="bg-[#303030] text-white" id="footer">
             <div className='w-full max-w-[1140px] px-[32px] my-[0px] mx-[auto]'>
                 <div className="md:flex border-b-[0.8px] border-[#8787875c]">
                     <div className="md:w-[400px] px-[32px] sm:px-[16px] py-[32px] grid grid-cols-1 sm:grid-cols-3 md:block w-full">

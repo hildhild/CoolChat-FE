@@ -17,6 +17,7 @@ import {
 } from "./Admin";
 import { Appointment } from "./CSR";
 import { NotFound } from "./NotFound";
+export { AboutUs } from "./AboutUs";
 
 export {
   Landing,

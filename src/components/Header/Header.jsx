@@ -16,8 +16,9 @@ const Header = () => {
   const menuItems = [
     { name: t("feature"), href: "feature-section" },
     { name: t("price"), href: "pricing-section" },
-    { name: t("about_us"), href: "/" },
-    { name: t("guide"), href: "/" },
+    { name: "Hoạt động", href: "work-section" },
+    { name: t("about_us"), href: "/about-us" },
+    // { name: t("guide"), href: "/" },
   ];
 
   const handleSelectLangClick = () => {
@@ -33,7 +34,7 @@ const Header = () => {
         {/* Logo */}
         <button
           className="flex-shrink-0"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() => navigate("/", { state: { scrollTo: "/" } })}
         >
           <img src={Logo} alt="Logo" className="h-10 w-auto" />
         </button>
@@ -43,12 +44,21 @@ const Header = () => {
           {menuItems.map((item) => (
             <button
               key={item.name}
-              onClick={() =>
-                window.scrollTo({
-                  top: item.href === "/" ? 0 : document.getElementById(item.href).offsetTop,
-                  behavior: "smooth",
-                })
-              }
+              onClick={() => {
+                if (item.href === "/about-us") {
+                  navigate(item.href);
+                } else {
+                  // navigate("/")
+                  // window.scrollTo({
+                  //   top:
+                  //     item.href === "/"
+                  //       ? 0
+                  //       : document.getElementById(item.href).offsetTop,
+                  //   behavior: "smooth",
+                  // });
+                  navigate("/", { state: { scrollTo: item.href } });
+                }
+              }}
               className="text-base text-gray-700 font-semibold hover:text-[#4880FF] hover:-translate-y-1 transition duration-300"
             >
               {item.name}

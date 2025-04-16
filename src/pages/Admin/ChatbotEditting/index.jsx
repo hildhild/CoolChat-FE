@@ -118,6 +118,7 @@ function ChatbotEditting() {
                 <div className="font-semibold text-lg mb-3 block lg:hidden">
                   Facebook
                 </div>
+                <div className="text-red-500 italic">* Tính năng sẽ được hoàn thiện trong tương lai</div>
                 <div className="flex flex-col gap-4 justify-center items-center">
                   <GiNightSleep size={80} />
                   <div>Chưa có trang nào ở đây</div>
