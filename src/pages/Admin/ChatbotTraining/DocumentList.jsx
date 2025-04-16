@@ -780,8 +780,7 @@ export const DocumentList = ({
           color="success"
           onClick={handleSave}
           isDisabled={
-            (canTrain && !isNotPending) ||
-            (!canTrain && !isNotPending && updatePriorities.length > 0) ||
+            !isNotPending ||
             (!canTrain && isNotPending && updatePriorities.length <= 0)
           }
         >
