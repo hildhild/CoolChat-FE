@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingProcess } from "../../../components";
 import PriceBg from "@/assets/pricebg.png";
 import { useTranslation } from "react-i18next";
@@ -63,7 +63,6 @@ const packages = [
 export const Package = ({ tierName }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation();
-  const [subscriptionType, setSubscriptionType] = useState("STARTER");
   const [starterPeriod, setStarterPeriod] = useState("MONTHLY");
   const [professionalPeriod, setProfessionalPeriod] = useState("MONTHLY");
 
@@ -72,7 +71,7 @@ export const Package = ({ tierName }) => {
     await initSubscriptionPaymentApi(
       type,
       name,
-      subscriptionType === "STARTER" ? starterPeriod : professionalPeriod
+      name === "STARTER" ? starterPeriod : professionalPeriod
     ).then((res) => {
       console.log(123, res);
       if (res.status === 200) {
@@ -193,7 +192,6 @@ export const Package = ({ tierName }) => {
                     tierName === onePackage.packageName && "opacity-50"
                   }`}
                   onClick={() => {
-                    setSubscriptionType(onePackage.packageName);
                     handleInitSubscriptionPayment(
                       onePackage.type,
                       onePackage.packageName
@@ -213,7 +211,10 @@ export const Package = ({ tierName }) => {
           </div>
         ))}
       </div>
-      <div className="italic text-sm text-red-500 mt-5">* Lưu ý: Nếu bạn đăng ký mua gói mới thì tất cả tài nguyên còn lại của gói hiện tại sẽ không còn</div>
+      <div className="italic text-sm text-red-500 mt-5">
+        * Lưu ý: Nếu bạn đăng ký mua gói mới thì tất cả tài nguyên còn lại của
+        gói hiện tại sẽ không còn
+      </div>
     </>
   );
 };

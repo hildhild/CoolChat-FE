@@ -29,6 +29,7 @@ function SignUpBody() {
     handleSubmit: createHandleSubmit,
     formState: { errors: createErrors },
     watch: createWatch,
+    reset: createReset,
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
@@ -49,6 +50,7 @@ function SignUpBody() {
     handleSubmit: joinHandleSubmit,
     formState: { errors: joinErrors },
     watch: joinWatch,
+    reset: joinReset,
   } = useForm({
     mode: "onSubmit",
     defaultValues: {
@@ -70,7 +72,9 @@ function SignUpBody() {
           if (res.status === 201) {
             if (step === "create") {
               toast.success(t("create_org_success"));
+              createReset();
             } else if (step === "join") {
+              joinReset();
               navigate("/login");
               toast.success(t("join_org_success"));
             }

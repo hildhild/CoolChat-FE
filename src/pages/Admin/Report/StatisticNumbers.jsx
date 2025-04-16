@@ -139,15 +139,25 @@ export const StatisticNumbers = ({ alltimeData }) => {
             </div>
           </div>
           <div className="text-3xl font-semibold">
-            {alltimeData?.avg_conversation_duration_minutes.toFixed(1)}
+            {alltimeData?.avg_conversation_duration_minutes
+              ? alltimeData?.avg_conversation_duration_minutes?.toFixed(1)
+              : 0}
           </div>
         </div>
       </div>
-      <div className="italic text-end w-full text-neutral-500 text-sm">
-        Số liệu thu thập từ{" "}
-        {moment(alltimeData?.first_conversation_date).format("DD-MM-YYYY").replaceAll("-", "/")} đến{" "}
-        {moment(alltimeData?.last_conversation_date).format("DD-MM-YYYY").replaceAll("-", "/")}
-      </div>
+      {alltimeData?.first_conversation_date &&
+        alltimeData?.last_conversation_date && (
+          <div className="italic text-end w-full text-neutral-500 text-sm">
+            Số liệu thu thập từ{" "}
+            {moment(alltimeData?.first_conversation_date)
+              .format("DD-MM-YYYY")
+              .replaceAll("-", "/")}{" "}
+            đến{" "}
+            {moment(alltimeData?.last_conversation_date)
+              .format("DD-MM-YYYY")
+              .replaceAll("-", "/")}
+          </div>
+        )}
     </div>
   );
 };

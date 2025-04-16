@@ -38,16 +38,19 @@ export const ChatPieChart = ({ alltimeData }) => {
     <div className="bg-white px-5 py-8 rounded-xl flex flex-col">
       <div className="flex w-full justify-between">
         <div className="font-semibold text-lg mb-5">Tin nhắn</div>
-        <div className="italic text-end text-neutral-500 text-sm">
-          Thời gian:{" "}
-          {moment(alltimeData?.first_conversation_date)
-            .format("DD-MM-YYYY")
-            .replaceAll("-", "/")}
-          {" - "}
-          {moment(alltimeData?.last_conversation_date)
-            .format("DD-MM-YYYY")
-            .replaceAll("-", "/")}
-        </div>
+        {alltimeData?.first_conversation_date &&
+          alltimeData?.last_conversation_date && (
+            <div className="italic text-end text-neutral-500 text-sm">
+              Thời gian:{" "}
+              {moment(alltimeData?.first_conversation_date)
+                .format("DD-MM-YYYY")
+                .replaceAll("-", "/")}
+              {" - "}
+              {moment(alltimeData?.last_conversation_date)
+                .format("DD-MM-YYYY")
+                .replaceAll("-", "/")}
+            </div>
+          )}
       </div>
       <div className="flex-grow flex items-center">
         <div className="w-full">
