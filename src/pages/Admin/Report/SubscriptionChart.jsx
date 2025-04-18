@@ -61,7 +61,7 @@ export const SubscriptionChart = ({
       <div className="flex flex-col md:flex-row w-full justify-between items-center mb-5">
         <div className="font-semibold text-lg">{types[type]}</div>
         <div className="flex items-center gap-3">
-          <div className="w-52">
+          <div className="w-44">
             <Select
               aria-label="Select filter type"
               variant="bordered"
@@ -96,9 +96,9 @@ export const SubscriptionChart = ({
               <SelectItem key="failed_payments">Số hóa đơn đã hủy</SelectItem> */}
             </Select>
           </div>
-          <div className="w-28">
+          <div className="w-24">
             <CustomDatePicker
-              id="monthyear"
+              id="year"
               value={selectedDate}
               onChange={(date) => date && setSelectedDate(date)}
               locale="vi"
