@@ -104,20 +104,21 @@ function ChatDetail() {
         } else {
           setTypingUser(null);
         }
-      } else if (lastJsonMessage.type === "mode_change") {
-        if (lastJsonMessage.mode && chatDetail) {
-          setChatDetail({
-            ...chatDetail,
-            mode: lastJsonMessage.mode
-          });
+      } 
+      // else if (lastJsonMessage.type === "mode_change") {
+      //   if (lastJsonMessage.mode && chatDetail) {
+      //     setChatDetail({
+      //       ...chatDetail,
+      //       mode: lastJsonMessage.mode
+      //     });
           
-          if (lastJsonMessage.mode === "AI" && chatDetail.mode === "HUMAN") {
-            toast.info("Cuộc hội thoại đã chuyển sang chế độ AI");
-          } else if (lastJsonMessage.mode === "HUMAN" && chatDetail.mode === "AI") {
-            toast.info("Cuộc hội thoại đã chuyển sang chế độ hỗ trợ");
-          }
-        }
-      }
+      //     if (lastJsonMessage.mode === "AI" && chatDetail.mode === "HUMAN") {
+      //       toast.info("Cuộc hội thoại đã chuyển sang chế độ AI");
+      //     } else if (lastJsonMessage.mode === "HUMAN" && chatDetail.mode === "AI") {
+      //       toast.info("Cuộc hội thoại đã chuyển sang chế độ hỗ trợ");
+      //     }
+      //   }
+      // }
     }
   }, [lastJsonMessage]);
 

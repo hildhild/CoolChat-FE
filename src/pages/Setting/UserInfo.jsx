@@ -74,7 +74,7 @@ export const UserInfo = () => {
             setImageFile={setAvatarFile}
             isEditable={isEditProfile}
             curImage={userInfo.avatar}
-            defaultImage="https://cdn-icons-png.flaticon.com/512/6676/6676023.png"
+            defaultImage="https://cdn-icons-png.flaticon.com/512/4194/4194959.png"
           />
         </div>
       </div>

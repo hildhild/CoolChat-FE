@@ -4,7 +4,16 @@ import { CustomDatePicker } from "../../../components";
 import { useEffect, useState } from "react";
 
 const types = {
-  monthly_revenue: "Tổng chi",
+  completed_amount: "Tổng chi tiêu (VNĐ)",
+  completed_payments: "Số hóa đơn",
+  // total_payments: "Tổng số hóa đơn",
+  // total_amount: "Tổng số tiền (VNĐ)",
+  // subscription_payments: "Số hóa đơn gói đăng ký",
+  // subscription_amount: "Số tiền gói đăng ký (VNĐ)",
+  // additional_charge_payments: "Số hóa đơn gói bổ sung",
+  // additional_charge_amount: "Số tiền gói bổ sung (VNĐ)",
+  // pending_payments: "Số hóa đơn đang chờ",
+  // failed_payments: "Số hóa đơn đã hủy",
 };
 
 export const SubscriptionChart = ({
@@ -13,7 +22,7 @@ export const SubscriptionChart = ({
   selectedDate,
   setSelectedDate,
 }) => {
-  const [type, setType] = useState("monthly_revenue");
+  const [type, setType] = useState("completed_amount");
   const options = {
     chart: {
       id: "basic-bar",
@@ -35,7 +44,9 @@ export const SubscriptionChart = ({
       defaultLocale: "vi",
     },
     xaxis: {
-      categories: monthlySubscription?.map((item) => item.month.slice(5, 7)),
+      categories: monthlySubscription?.map(
+        (item) => "T" + item.month.slice(5, 7)
+      ),
     },
   };
   const series = [
@@ -48,7 +59,7 @@ export const SubscriptionChart = ({
   return (
     <div className="bg-white px-5 py-8 rounded-xl">
       <div className="flex flex-col md:flex-row w-full justify-between items-center mb-5">
-        <div className="font-semibold text-lg mb-5">Đăng ký</div>
+        <div className="font-semibold text-lg">{types[type]}</div>
         <div className="flex items-center gap-3">
           <div className="w-52">
             <Select
@@ -58,7 +69,31 @@ export const SubscriptionChart = ({
               radius="sm"
               onChange={(e) => setType(e.target.value)}
             >
-              <SelectItem key="monthly_revenue">Tổng chi</SelectItem>
+              <SelectItem key="completed_amount">
+                Tổng chi tiêu (VNĐ)
+              </SelectItem>
+              <SelectItem key="completed_payments">Số hóa đơn</SelectItem>
+              {/* <SelectItem key="total_payments">Tổng số hóa đơn</SelectItem>
+              <SelectItem key="total_amount">Tổng số tiền (VNĐ)</SelectItem>
+              <SelectItem key="subscription_payments">
+                Số hóa đơn gói đăng ký
+              </SelectItem>
+              <SelectItem key="subscription_amount">
+                Số tiền gói đăng ký (VNĐ)
+              </SelectItem>
+              <SelectItem key="additional_charge_payments">
+                Số hóa đơn gói bổ sung
+              </SelectItem>
+              <SelectItem key="additional_charge_amount">
+                Số tiền gói bổ sung (VNĐ)
+              </SelectItem>
+              <SelectItem key="completed_payments">
+                Số hóa đơn hoàn thành
+              </SelectItem>
+              <SelectItem key="pending_payments">
+                Số hóa đơn đang chờ
+              </SelectItem>
+              <SelectItem key="failed_payments">Số hóa đơn đã hủy</SelectItem> */}
             </Select>
           </div>
           <div className="w-28">
@@ -70,8 +105,7 @@ export const SubscriptionChart = ({
               showYearPicker
               isClearable={false}
               format="yyyy"
-              minDate={new Date(alltimeData?.first_conversation_date)}
-              maxDate={new Date(alltimeData?.last_conversation_date)}
+              maxDate={new Date()}
             />
           </div>
         </div>

@@ -116,8 +116,8 @@ const DashboardHeader = () => {
                 avatarProps={{
                   src: userInfo.avatar
                     ? userInfo.avatar
-                    : "https://cdn-icons-png.flaticon.com/512/6676/6676023.png",
-                  className: "bg-white border-2 border-coolchat",
+                    : "https://cdn-icons-png.flaticon.com/512/4194/4194959.png",
+                  className: `bg-white border-2 border-coolchat ${!userInfo.avatar && "p-1"}`,
                 }}
               />
             </DropdownTrigger>

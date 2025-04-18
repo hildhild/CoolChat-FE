@@ -14,8 +14,7 @@ import {
 import { StatisticNumbers } from "./StatisticNumbers";
 import { LoadingProcess } from "../../../components";
 import {
-  getMonthlySubscriptionApi,
-  getOrgUsageApi,
+  getMonthlyPaymentApi,
   getReportAllTimeApi,
   getReportDailyApi,
 } from "../../../services/reportApi";
@@ -55,9 +54,9 @@ function Report() {
     setIsLoading(false);
   };
 
-  const handleMonthlySubscriptionReport = async () => {
+  const handleMonthlySubscriptionReport = async (firstMonth, lastMonth) => {
     setIsLoading(true);
-    await getMonthlySubscriptionApi().then((res) => {
+    await getMonthlyPaymentApi(firstMonth, lastMonth).then((res) => {
       console.log(1, res);
       if (res.status === 200) {
         setMonthlySubscription(res.data.results);
@@ -162,7 +161,7 @@ function Report() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
         />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-5">
           {/* <div className="bg-white p-5 rounded-xl">
             <div className="flex w-full justify-between">
               <div className="font-semibold text-lg mb-5">Vị trí</div>

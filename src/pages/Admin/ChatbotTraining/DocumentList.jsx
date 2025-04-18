@@ -397,7 +397,11 @@ export const DocumentList = ({
         if (res.status === 204) {
           setCurDoc(null);
           // refetch();
-          toast.success("Tri thức sẽ được xoá khi đào tạo");
+          if (curDoc.training_status !== "UNTRAINED") {
+            toast.success("Tri thức sẽ được xoá khi đào tạo");
+          } else {
+            toast.success("Xóa tri thức thành công");
+          }
           refetch();
         }
       })

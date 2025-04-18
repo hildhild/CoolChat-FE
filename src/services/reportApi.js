@@ -32,4 +32,16 @@ export const getOrgUsageApi = () => {
     return axios.get(`/reports/organization-usage-snapshot/`);
 }
 
+export const getMonthlyPaymentApi = (firstMonth, lastMonth) => {
+    return axios.get(`/reports/monthly-payments/`, {
+        params: {
+            month__gte: firstMonth, 
+            month__lte: lastMonth, 
+            page: 1, 
+            page_size: 12,
+            ordering: "month"
+        }
+    });
+}
+
 
