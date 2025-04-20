@@ -82,3 +82,13 @@ export const editSwitchMessageApi = (value) => {
         }
     });
 }
+
+export const changeLimitationApi = (value) => {
+    const formData = new FormData();
+    formData.append("rate_limit_threshold", value);
+    return axios.patch(`/chatbot/config/`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
+    });
+}

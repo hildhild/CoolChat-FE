@@ -15,6 +15,8 @@ import { LoadingProcess, ToggleSection } from "../../../components";
 import { EmbedCode } from "./EmbedCode";
 import { setChatbotConfig } from "../../../store/slices/ChatbotConfigSlice";
 import PreviewChatBox from "./PreviewChatbox";
+import { MdOutlineWebAsset, MdSpeed, MdStyle } from "react-icons/md";
+import { EditChatbotLimitation } from "./EditChatbotLimitation";
 
 function ChatbotEditting() {
   const [allowedDomains, setAllowedDomains] = useState([]);
@@ -55,22 +57,55 @@ function ChatbotEditting() {
         <ToggleSection title="Cấu hình chatbot" Icon={RiComputerLine}>
           <div className="bg-white px-5 py-8 rounded-xl mb-8">
             <Tabs
-              variant="underlined"
-              aria-label="Tabs variants"
+              size="lg"
+              aria-label="edit chatbot"
               className="mb-4"
               classNames={{
                 cursor: "w-full bg-coolchat",
-                tabContent: "group-data-[selected=true]:text-coolchat",
+                tabContent: "group-data-[selected=true]:text-white",
               }}
             >
-              <Tab key="interface" title="Giao diện">
+              <Tab
+                key="interface"
+                title={
+                  <Tooltip content="Giao diện">
+                    <div className="flex gap-3 items-center px-5">
+                      <MdOutlineWebAsset size={25} />
+                      <span className="hidden md:block">Giao diện</span>
+                    </div>
+                  </Tooltip>
+                }
+              >
                 <EditChatbotInterface
                   setPreviewConfig={setPreviewConfig}
                   setIsPreview={setIsPreview}
                 />
               </Tab>
-              <Tab key="style" title="Phong cách">
+              <Tab
+                key="style"
+                title={
+                  <Tooltip content="Phong cách">
+                    <div className="flex gap-3 items-center px-5">
+                      <MdStyle size={25} />
+                      <span className="hidden md:block">Phong cách</span>
+                    </div>
+                  </Tooltip>
+                }
+              >
                 <EditChatbotStyle refetch={handleGetChatbotConfig} />
+              </Tab>
+              <Tab
+                key="limitation"
+                title={
+                  <Tooltip content="Giới hạn truy vấn">
+                    <div className="flex gap-3 items-center px-5">
+                      <MdSpeed size={25} />
+                      <span className="hidden md:block">Giới hạn truy vấn</span>
+                    </div>
+                  </Tooltip>
+                }
+              >
+                <EditChatbotLimitation refetch={handleGetChatbotConfig} />
               </Tab>
             </Tabs>
           </div>
@@ -118,7 +153,9 @@ function ChatbotEditting() {
                 <div className="font-semibold text-lg mb-3 block lg:hidden">
                   Facebook
                 </div>
-                <div className="text-red-500 italic">* Tính năng sẽ được hoàn thiện trong tương lai</div>
+                <div className="text-red-500 italic">
+                  * Tính năng sẽ được hoàn thiện trong tương lai
+                </div>
                 <div className="flex flex-col gap-4 justify-center items-center">
                   <GiNightSleep size={80} />
                   <div>Chưa có trang nào ở đây</div>
