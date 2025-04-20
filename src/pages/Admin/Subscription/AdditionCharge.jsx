@@ -11,7 +11,7 @@ const charges = [
     name: "Truy vấn AI",
     price: "300,000",
     credit: "_",
-    des: ["1000 truy vấn", "Cho mọi gói đăng ký"],
+    des: ["1000 truy vấn sử dụng đến hết chu kỳ", "Cho mọi gói đăng ký"],
     type: "ADDITIONAL_CHARGE",
     packageName: "AI_QUERIES",
   },
@@ -19,7 +19,7 @@ const charges = [
     name: "Kho lưu trữ tài liệu",
     price: "400,000",
     credit: "_",
-    des: ["1 GB sử dụng trong 1 tháng", "Cho mọi gói đăng ký"],
+    des: ["1 GB sử dụng đến hết chu kỳ", "Cho mọi gói đăng ký"],
     type: "ADDITIONAL_CHARGE",
     packageName: "STORAGE",
   },
@@ -27,7 +27,7 @@ const charges = [
     name: "Tài khoản nhân viên CSKH",
     price: "300,000",
     credit: "_",
-    des: ["1 người sử dụng trong 1 tháng", "Cho mọi gói đăng ký"],
+    des: ["1 tài khoản sử dụng đến hết chu kỳ", "Cho mọi gói đăng ký"],
     type: "ADDITIONAL_CHARGE",
     packageName: "HUMAN_AGENTS",
   },
@@ -74,7 +74,7 @@ export const AddionCharge = () => {
   return (
     <>
       <LoadingProcess isLoading={isLoading} />
-      <div className={`grid grid-cols-1 md:grid-cols-3 gap-20`}>
+      <div className={`grid grid-cols-1 xl:grid-cols-3 gap-20`}>
         {charges.map((item, index) => (
           <div
             key={index}

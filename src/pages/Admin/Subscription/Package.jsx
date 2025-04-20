@@ -84,7 +84,7 @@ export const Package = ({ tierName }) => {
   return (
     <>
       <LoadingProcess isLoading={isLoading} />
-      <div className={`grid grid-cols-1 md:grid-cols-3 gap-20`}>
+      <div className={`grid grid-cols-1 xl:grid-cols-3 gap-20`}>
         {packages.map((onePackage, index) => (
           <div
             key={index}
