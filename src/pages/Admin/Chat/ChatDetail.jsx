@@ -15,7 +15,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { LuBot, LuBotOff } from "react-icons/lu";
 import { IoIosSend } from "react-icons/io";
 import { DotsSpinner, LoadingProcess } from "../../../components";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animateScroll } from "react-scroll";
 import { getChatDetailApi, switchToAIModeApi } from "../../../services/chatApi";
 import { useParams } from "react-router-dom";
@@ -104,21 +104,23 @@ function ChatDetail() {
         } else {
           setTypingUser(null);
         }
-      } 
-      // else if (lastJsonMessage.type === "mode_change") {
-      //   if (lastJsonMessage.mode && chatDetail) {
-      //     setChatDetail({
-      //       ...chatDetail,
-      //       mode: lastJsonMessage.mode
-      //     });
-          
-      //     if (lastJsonMessage.mode === "AI" && chatDetail.mode === "HUMAN") {
-      //       toast.info("Cuộc hội thoại đã chuyển sang chế độ AI");
-      //     } else if (lastJsonMessage.mode === "HUMAN" && chatDetail.mode === "AI") {
-      //       toast.info("Cuộc hội thoại đã chuyển sang chế độ hỗ trợ");
-      //     }
-      //   }
-      // }
+      } else if (lastJsonMessage.type === "mode_change") {
+        if (lastJsonMessage.mode && chatDetail) {
+          setChatDetail({
+            ...chatDetail,
+            mode: lastJsonMessage.mode,
+          });
+
+          if (lastJsonMessage.mode === "AI" && chatDetail.mode === "HUMAN") {
+            toast.info("Cuộc hội thoại đã chuyển sang chế độ AI");
+          } else if (
+            lastJsonMessage.mode === "HUMAN" &&
+            chatDetail.mode === "AI"
+          ) {
+            toast.info("Cuộc hội thoại đã chuyển sang chế độ hỗ trợ");
+          }
+        }
+      }
     }
   }, [lastJsonMessage]);
 
@@ -222,7 +224,7 @@ function ChatDetail() {
       await switchToAIModeApi(chatDetail.id)
         .then((res) => {
           if (res.status === 200) {
-            toast.success("Đã chuyến sang chế độ tự động chat");
+            toast.success("Thao tác thành công");
             handleGetChatDetail();
           }
         })
@@ -232,6 +234,16 @@ function ChatDetail() {
       setIsLoading(false);
     }
   };
+
+  const textareaRef = useRef(null);
+
+  // Auto resize height textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [messageInput]);
 
   return (
     <DashboardLayout page="chat">
@@ -412,17 +424,27 @@ function ChatDetail() {
               chatDetail?.is_active &&
               chatDetail?.mode !== "AI" && (
                 <div className="flex gap-2 justify-between items-center p-3 border-t-[1px] border-gray-200 h-[64px]">
-                  <button className="w-8 h-8 flex justify-center items-center rounded-full">
+                  {/* <button className="w-8 h-8 flex justify-center items-center rounded-full">
                     <FaFileCirclePlus size={25} />
-                  </button>
-                  <input
-                    className="flex-grow !bg-white !border-none !outline-none"
+                  </button> */}
+                  {/* <input
+                    className="flex-grow !bg-white !border-none !outline-none px-5 break-normal"
                     placeholder="Aa"
                     value={messageInput}
                     onChange={handleInputChange}
                     onBlur={handleBlur}
                     onKeyDown={handleKeyDown}
-                  ></input>
+                  ></input> */}
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
+                    value={messageInput}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Aa"
+                    className="flex-grow bg-white rounded-lg px-4 py-2 text-sm outline-none text-black resize-none overflow-y-auto max-h-[3.5rem]" 
+                  />
                   <Button
                     className="flex justify-center items-center"
                     color="primary"

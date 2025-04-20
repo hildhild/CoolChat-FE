@@ -36,9 +36,9 @@ instance.interceptors.response.use(function (response) { //Máy chặn yêu cầ
         store.dispatch(setToken(""));
         localStorage.removeItem("token");
     } else if (res.data?.errors && res.data?.errors.length > 0) {
-        toast.error(errors[res.data?.errors[0]] ? errors[res.data?.errors[0]] : "Đã xảy ra lỗi");
+        toast.error(res.data?.errors[0] ? res.data?.errors[0] : "Đã xảy ra lỗi");
     } else if (res.data?.error) {
-        toast.error(errors[res.data?.error] ? errors[res.data?.error] : "Đã xảy ra lỗi");
+        toast.error(res.data?.error ? res.data?.error : "Đã xảy ra lỗi");
     } else {
         toast.error("Lỗi không xác định")
     }

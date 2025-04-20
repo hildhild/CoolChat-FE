@@ -45,7 +45,7 @@ function Setting() {
           </div>
         </ToggleSection>
 
-        {userRole !== "AGENT" && (
+        {/* {userRole !== "AGENT" && (
           <ToggleSection title="Thông báo và Cảnh báo" Icon={FaBell}>
             <div className="bg-white px-5 py-8 rounded-xl">
               <Tabs
@@ -133,7 +133,7 @@ function Setting() {
               </Tabs>
             </div>
           </ToggleSection>
-        )}
+        )} */}
       </div>
     </DashboardLayout>
   );

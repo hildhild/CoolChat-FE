@@ -82,12 +82,12 @@ const DashboardHeader = () => {
 
         {/* Actions */}
         <div className="flex gap-7 justify-end items-center">
-          <div className="md:flex hidden gap-7 justify-end items-center">
-            {/* <SelectLanguage
+          {/* <div className="md:flex hidden gap-7 justify-end items-center">
+            <SelectLanguage
               handleClick={handleSelectLangClick}
               showMenu={showMenu}
               setShowMenu={setShowMenu}
-            /> */}
+            />
             <Badge content="99+" shape="circle" color="danger">
               <Button
                 radius="full"
@@ -98,7 +98,7 @@ const DashboardHeader = () => {
                 <FaBell size={24} className="text-coolchat" />
               </Button>
             </Badge>
-          </div>
+          </div> */}
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <User
