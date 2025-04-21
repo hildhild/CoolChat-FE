@@ -195,10 +195,10 @@ function PriceSection() {
                       {onePackage.packageName === "STARTER"
                         ? starterPeriod === "MONTHLY"
                           ? onePackage.price.toLocaleString("en-US")
-                          : (onePackage.price * 12).toLocaleString("en-US")
+                          : (onePackage.price * 12 * 80 / 100).toLocaleString("en-US")
                         : professionalPeriod === "MONTHLY"
                         ? onePackage.price.toLocaleString("en-US")
-                        : (onePackage.price * 12).toLocaleString("en-US")}
+                        : (onePackage.price * 12 * 80 / 100).toLocaleString("en-US")}
                     </motion.span>
                     <span className="text-[24px]"> vnđ</span>
                   </div>
