@@ -143,26 +143,26 @@ function Chat() {
         return "";
       }
     } else if (columnKey === "last_message") {
-      return (
+      return cellValue ? (
         <div>
-          {cellValue && (
-            <span>
-              {cellValue?.sender_type === "SYSTEM" ||
-              cellValue?.sender_type === "AI"
-                ? "Hệ thống"
-                : cellValue?.sender_type === "CUSTOMER"
-                ? "Khách hàng"
-                : cellValue?.sender === userId
-                ? "Bạn"
-                : cellValue?.sender_type === "AGENT"
-                ? "Nhân viên"
-                : ""}
-              :{" "}
-            </span>
-          )}
+          <span>
+            {cellValue?.sender_type === "SYSTEM" ||
+            cellValue?.sender_type === "AI"
+              ? "Hệ thống"
+              : cellValue?.sender_type === "CUSTOMER"
+              ? "Khách hàng"
+              : cellValue?.sender === userId
+              ? "Bạn"
+              : cellValue?.sender_type === "AGENT"
+              ? "Nhân viên"
+              : ""}
+            :{" "}
+          </span>
 
           {truncateString(cellValue?.content, 50)}
         </div>
+      ) : (
+        <div className="text-neutral-400">Chưa có tin nhắn</div>
       );
     } else if (columnKey === "last_time") {
       return <div>{cellValue && formatTimeFromNow(cellValue)}</div>;
