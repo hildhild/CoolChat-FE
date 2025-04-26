@@ -145,22 +145,27 @@ function Chat() {
     } else if (columnKey === "last_message") {
       return (
         <div>
-          <span>
-            {cellValue?.sender_type === "SYSTEM" ||
-            cellValue?.sender_type === "AI"
-              ? "Hệ thống"
-              : cellValue?.sender_type === "CUSTOMER"
-              ? "Khách hàng"
-              : cellValue?.sender === userId
-              ? "Bạn"
-              : "Nhân viên"}
-            :{" "}
-          </span>
+          {cellValue && (
+            <span>
+              {cellValue?.sender_type === "SYSTEM" ||
+              cellValue?.sender_type === "AI"
+                ? "Hệ thống"
+                : cellValue?.sender_type === "CUSTOMER"
+                ? "Khách hàng"
+                : cellValue?.sender === userId
+                ? "Bạn"
+                : cellValue?.sender_type === "AGENT"
+                ? "Nhân viên"
+                : ""}
+              :{" "}
+            </span>
+          )}
+
           {truncateString(cellValue?.content, 50)}
         </div>
       );
     } else if (columnKey === "last_time") {
-      return <div>{formatTimeFromNow(cellValue)}</div>;
+      return <div>{cellValue && formatTimeFromNow(cellValue)}</div>;
     } else if (columnKey === "is_active") {
       return (
         <Tooltip content={cellValue ? "Đang hoạt động" : "Đã kết thúc"}>
