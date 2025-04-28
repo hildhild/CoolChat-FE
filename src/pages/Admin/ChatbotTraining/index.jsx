@@ -77,7 +77,7 @@ function ChatbotTraining() {
       <LoadingProcess isLoading={isLoading} />
       <div className="w-full bg-[#f6f5fa] px-5 mt-16 py-7 min-h-[100vh]">
         <div className="font-semibold mb-6 text-2xl">ĐÀO TẠO CHATBOT</div>
-        <ToggleSection title="Gán nhãn tri thức" Icon={MdLabel}>
+        <ToggleSection title="Quản lý tri thức" Icon={MdLabel}>
           <DocumentList
             documentList={data}
             page={page}
