@@ -341,7 +341,14 @@ export const DocumentList = ({
               const res = await getTrainingStatusApi();
               if (res.data.is_training === false) {
                 clearInterval(interval);
-                toast.success("Đào tạo thành công");
+                if (
+                  res.data.document_counts.total ===
+                  res.data.document_counts.trained
+                ) {
+                  toast.success("Đào tạo thành công");
+                } else {
+                  toast.error("Đào tạo thất bại, vui lòng thử lại");
+                }
                 setIsNotPending(true);
                 refetch();
               } else {
