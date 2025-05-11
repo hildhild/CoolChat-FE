@@ -50,7 +50,7 @@ const WelcomeSection = () => {
             >
               {t("free_trial")}
             </button>
-            <a href="https://www.youtube.com/@hild_____">
+            <a href="https://youtu.be/lNOFD5Oyo6U">
               <button className="btn-signup rounded-lg text-white bg-transparent border-white border-2 hover:-translate-y-1 transition duration-300 font-semibold py-2 px-6 w-full sm:w-auto align-middle">
                 Xem demo
               </button>
